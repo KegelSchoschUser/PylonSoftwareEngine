@@ -1,0 +1,23 @@
+﻿using PylonGameEngine.Mathematics;
+using System;
+using System.Collections.Generic;
+using Vortice.Direct2D1;
+
+namespace PylonGameEngine.UI.Drawing
+{
+    public class LinearGradientBrush
+    {
+        internal ID2D1LinearGradientBrush br;
+        public LinearGradientBrush(Graphics g, Vector2 StartPoint, Vector2 EndPoint, List<ValueTuple<float, RGBColor>> ColorStops)
+        {
+            GradientStop[] gradientStops = new GradientStop[ColorStops.Count];
+            for (int i = 0; i < ColorStops.Count; i++)
+            {
+                gradientStops[i] = new GradientStop(ColorStops[i].Item1, ColorStops[i].Item2.ToMSColor());
+            }
+
+            var collection = g.RenderTarget.CreateGradientStopCollection(gradientStops, Gamma.Linear, ExtendMode.Mirror);
+            br = g.RenderTarget.CreateLinearGradientBrush(new LinearGradientBrushProperties(StartPoint.ToPoint(), EndPoint.ToPoint()), collection);
+        }
+    }
+}

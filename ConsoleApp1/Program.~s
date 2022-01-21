@@ -1,0 +1,603 @@
+
+    public class CameraScript1 : GameScript
+    {
+        public override void UpdateTick()
+        {
+            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.Num1))
+            {
+                ((CameraObject)Parent).Activate();
+
+            }
+        }
+    }
+
+    public class CameraScript2 : GameScript
+    {
+        public override void UpdateTick()
+        {
+            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.Num2))
+            {
+                ((CameraObject)Parent).Activate();
+
+            }
+        }
+    }
+
+    public class MyScript : GameScript
+    {
+        bool Trackmouse = true;
+        public override void UpdateFrame()
+        {
+            float multiplier = 2f;
+            if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.I))
+            {
+                Console.WriteLine();
+                Console.WriteLine(MyGameWorld.ActiveCamera.Position);
+                Console.WriteLine(MyGameWorld.ActiveCamera.Rotation);
+            }
+
+            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.LeftShift))
+            {
+                multiplier = 4f;
+            }
+
+            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.W))
+            {
+                MyGameWorld.Objects[0].Position += MyGameWorld.Objects[0].Forward * multiplier;
+            }
+            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.S))
+            {
+                MyGameWorld.Objects[0].Position += MyGameWorld.Objects[0].Backward * multiplier;
+            }
+            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.A))
+            {
+                MyGameWorld.Objects[0].Position += MyGameWorld.Objects[0].Left * multiplier;
+            }
+            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.D))
+            {
+                MyGameWorld.Objects[0].Position += MyGameWorld.Objects[0].Right * multiplier;
+            }
+            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.Space))
+            {
+                MyGameWorld.Objects[0].Position += MyGameWorld.Objects[0].Up * multiplier;
+            }
+            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.C))
+            {
+                MyGameWorld.Objects[0].Position += MyGameWorld.Objects[0].Down * multiplier;
+            }
+
+
+
+            if (Trackmouse) {
+                //  Console.WriteLine(Mouse.Delta);
+                
+                ((TextObject)MyGameWorld.GUIObjects[0]).Text = Mouse.Delta.ToString();
+                //Random r = new Random();
+                //((TextObject)MyGameWorld.GUIObjects[0]).Text = r.Next(0, 1000).ToString();
+                MyGameWorld.Objects[0].Rotation.X += Mouse.Delta.Y / 4f;
+                MyGameWorld.Objects[0].Rotation.Y += Mouse.Delta.X / 4f;
+            }
+            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.Q))
+            {
+                MyGameWorld.Objects[0].Rotation.Z += 3f;
+            }
+            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.E))
+            {
+                MyGameWorld.Objects[0].Rotation.Z -= 3f;
+            }
+
+            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.LeftAlt) && PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.F4))
+            {
+                MyGame.Stop();
+            }
+        }
+
+        public override void UpdateTick()
+        {
+
+
+            if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.G))
+            {
+                Mouse.LockCursor(GlobalManager.MainWindow.Rect);
+                Console.WriteLine(Mouse.CursorLockState);
+            }
+            if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.T))
+            {
+                Mouse.UnlockCursor();
+                Console.WriteLine(Mouse.CursorLockState);
+
+            }
+            if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.H))
+            {
+                Mouse.HideCursor();
+            }
+            if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.J))
+            {
+
+                Mouse.ShowCursor();
+
+            }
+
+            if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.Numpad0))
+            {
+                Trackmouse = !Trackmouse;
+            }
+        }
+        //public override void UpdateFrame()
+        //{
+        //   BillBoard.DrawLine(MyGameWorld.Objects[0].Position, MyGameWorld.Objects[0].Position + (MyGameWorld.Objects[0].Forward * 100f), 0.25f, GlobalResources.Materials[2]);
+        //    BillBoard.DrawLine(new Vector3(0, 0, 0), new Vector3(1, 0, 0) * 100f, 0.25f, GlobalResources.Materials[2]);
+        //    BillBoard.DrawLine(new Vector3(0, 0, 0), new Vector3(0, 1, 0) * 100f, 0.25f, GlobalResources.Materials[3]);
+        //    BillBoard.DrawLine(new Vector3(0, 0, 0), new Vector3(0, 0, 1) * 100f, 0.25f, GlobalResources.Materials[4]);
+        //}
+    }
+
+    public class GenerationScript : GameScript
+    {
+        private struct ChunkPos
+        {
+            public int X;
+            public int Z;
+
+
+            public ChunkPos(int x, int y)
+            {
+                X = x;
+                Z = y;
+            }
+        }
+
+        private ChunkPos curChunk = new ChunkPos(-1, -1);
+        private readonly int chunkDist = 10;
+        private readonly int chunkSize = 16;
+        private readonly int chunkScale = 2;
+        public readonly float YMultiplier = 100f;
+        public readonly float XMultiplier = .5f;
+        public readonly float ZMultiplier = .5f;
+        private readonly Dictionary<ChunkPos, GameObject3D> chunks = new Dictionary<ChunkPos, GameObject3D>();
+        private readonly FastNoise fastNoise = new FastNoise();
+        public override void UpdateTick()
+        {
+            //return;
+            int curChunkPosX = (int)System.MathF.Floor(((GameObject3D)Parent).Position.X / (chunkSize * chunkScale)) * (chunkSize * chunkScale);
+            int curChunkPosZ = (int)System.MathF.Floor(((GameObject3D)Parent).Position.Z / (chunkSize * chunkScale)) * (chunkSize * chunkScale);
+
+            if (curChunk.X != curChunkPosX || curChunk.Z != curChunkPosZ || curChunk.Z != curChunkPosZ)
+            {
+                curChunk.X = curChunkPosX;
+                curChunk.Z = curChunkPosZ;
+
+
+                for (int chunkX = curChunkPosX - (chunkSize * chunkScale) * chunkDist; chunkX <= curChunkPosX + (chunkSize * chunkScale) * chunkDist; chunkX += (chunkSize * chunkScale))
+                {
+                    for (int chunkZ = curChunkPosZ - (chunkSize * chunkScale) * chunkDist; chunkZ <= curChunkPosZ + (chunkSize * chunkScale) * chunkDist; chunkZ += (chunkSize * chunkScale))
+                    {
+                        ChunkPos cp = new ChunkPos(chunkX, chunkZ);
+
+                        if (!chunks.ContainsKey(cp))
+                        {
+
+                            var vertices = new List<Vertex>();
+
+                            for (int x = 0; x < (chunkSize); x++)
+                            {
+                                for (int z = 0; z < (chunkSize); z++)
+                                {
+                                    vertices.AddRange(Mesh.CreateQuad(x, 0, z, chunkScale, chunkScale));
+                                }
+                            }
+                            Random random = new Random();
+                            for (int i = 0; i < vertices.Count; i+=6)
+                            {
+
+                                if(random.Next(0,2) == 0)
+                                {
+                                    vertices[i] = new Vertex(vertices[i].Position.X, fastNoise.GetPerlin((vertices[i].Position.X + cp.X) * XMultiplier, (vertices[i].Position.Z + cp.Z) * ZMultiplier) * YMultiplier, vertices[i].Position.Z,
+                                    vertices[i].TextureCoordinate.X, vertices[i].TextureCoordinate.Y);
+
+
+                                    vertices[i + 1] = new Vertex(vertices[i + 1].Position.X, fastNoise.GetPerlin((vertices[i + 1].Position.X + cp.X) * XMultiplier, (vertices[i + 1].Position.Z + cp.Z) * ZMultiplier) * YMultiplier, vertices[i + 1].Position.Z,
+                                    vertices[i + 1].TextureCoordinate.X, vertices[i + 1].TextureCoordinate.Y);
+
+
+                                    vertices[i + 2] = new Vertex(vertices[i + 2].Position.X, fastNoise.GetPerlin((vertices[i + 2].Position.X + cp.X) * XMultiplier, (vertices[i + 2].Position.Z + cp.Z) * ZMultiplier) * YMultiplier, vertices[i + 2].Position.Z,
+                                    vertices[i + 2].TextureCoordinate.X, vertices[i + 2].TextureCoordinate.Y);
+
+
+                                    vertices[i + 3] = new Vertex(vertices[i + 3].Position.X, fastNoise.GetPerlin((vertices[i + 3].Position.X + cp.X) * XMultiplier, (vertices[i + 3].Position.Z + cp.Z) * ZMultiplier) * YMultiplier, vertices[i + 3].Position.Z,
+                                    vertices[i + 3].TextureCoordinate.X, vertices[i + 3].TextureCoordinate.Y);
+
+
+                                    vertices[i + 4] = new Vertex(vertices[i + 4].Position.X, fastNoise.GetPerlin((vertices[i + 4].Position.X + cp.X) * XMultiplier, (vertices[i + 4].Position.Z + cp.Z) * ZMultiplier) * YMultiplier, vertices[i + 4].Position.Z,
+                                    vertices[i + 4].TextureCoordinate.X, vertices[i + 4].TextureCoordinate.Y);
+
+
+                                    vertices[i + 5] = new Vertex(vertices[i + 5].Position.X, fastNoise.GetPerlin((vertices[i + 5].Position.X + cp.X) * XMultiplier, (vertices[i + 5].Position.Z + cp.Z) * ZMultiplier) * YMultiplier, vertices[i + 5].Position.Z,
+                                    vertices[i + 5].TextureCoordinate.X, vertices[i + 5].TextureCoordinate.Y);
+                                }
+                                else
+                                {
+                                    vertices[i] = new Vertex(vertices[i].Position.X, fastNoise.GetPerlin((vertices[i].Position.X + cp.X) * XMultiplier, (vertices[i].Position.Z + cp.Z) * ZMultiplier) * YMultiplier, vertices[i].Position.Z,
+                                    vertices[i].TextureCoordinate.X + 1, vertices[i].TextureCoordinate.Y);
+
+
+                                    vertices[i + 1] = new Vertex(vertices[i + 1].Position.X, fastNoise.GetPerlin((vertices[i + 1].Position.X + cp.X) * XMultiplier, (vertices[i + 1].Position.Z + cp.Z) * ZMultiplier) * YMultiplier, vertices[i + 1].Position.Z,
+                                    vertices[i + 1].TextureCoordinate.X + 1, vertices[i + 1].TextureCoordinate.Y);
+
+
+                                    vertices[i + 2] = new Vertex(vertices[i + 2].Position.X, fastNoise.GetPerlin((vertices[i + 2].Position.X + cp.X) * XMultiplier, (vertices[i + 2].Position.Z + cp.Z) * ZMultiplier) * YMultiplier, vertices[i + 2].Position.Z,
+                                    vertices[i + 2].TextureCoordinate.X + 1, vertices[i + 2].TextureCoordinate.Y);
+
+
+                                    vertices[i + 3] = new Vertex(vertices[i + 3].Position.X, fastNoise.GetPerlin((vertices[i + 3].Position.X + cp.X) * XMultiplier, (vertices[i + 3].Position.Z + cp.Z) * ZMultiplier) * YMultiplier, vertices[i + 3].Position.Z,
+                                    vertices[i + 3].TextureCoordinate.X + 1, vertices[i + 3].TextureCoordinate.Y);
+
+
+                                    vertices[i + 4] = new Vertex(vertices[i + 4].Position.X, fastNoise.GetPerlin((vertices[i + 4].Position.X + cp.X) * XMultiplier, (vertices[i + 4].Position.Z + cp.Z) * ZMultiplier) * YMultiplier, vertices[i + 4].Position.Z,
+                                    vertices[i + 4].TextureCoordinate.X + 1, vertices[i + 4].TextureCoordinate.Y);
+
+
+                                    vertices[i + 5] = new Vertex(vertices[i + 5].Position.X, fastNoise.GetPerlin((vertices[i + 5].Position.X + cp.X) * XMultiplier, (vertices[i + 5].Position.Z + cp.Z) * ZMultiplier) * YMultiplier, vertices[i + 5].Position.Z,
+                                    vertices[i + 5].TextureCoordinate.X + 1, vertices[i + 5].TextureCoordinate.Y);
+
+                                }
+
+                                
+                            }
+                            vertices.Reverse();
+
+                                  var triangles = Mesh.CreateOrderedInicesList((chunkSize) * (chunkSize) * 6);
+                            MeshObject Chunk = new MeshObject
+                            {
+                                Position = new Vector3(cp.X, 0, cp.Z),
+                                Mesh = new Mesh(new SubMesh(vertices.ToArray(), triangles.ToArray())),
+                            };
+                            Chunk.Mesh.Materials.Add(GlobalResources.Materials[0]);
+                            lock (WorldManager.Objects.LOCK)
+                                MyGameWorld.Objects.Add(Chunk);
+
+                            chunks.Add(new ChunkPos(chunkX, chunkZ), Chunk);
+
+                        }
+                    }
+                }
+                //unload chunks
+                foreach (KeyValuePair<ChunkPos, GameObject3D> c in chunks)
+                {
+                    ChunkPos cp = c.Key;
+                    if (System.MathF.Abs(curChunkPosX - cp.X) > (chunkSize * chunkScale) * (chunkDist + 3) ||
+                        System.MathF.Abs(curChunkPosZ - cp.Z) > (chunkSize * chunkScale) * (chunkDist + 3) ||
+                        System.MathF.Abs(curChunkPosZ - cp.Z) > (chunkSize * chunkScale) * (chunkDist + 3))
+                    {
+                        chunks[c.Key].Destroy();
+                        chunks.Remove(c.Key);
+                    }
+                }
+
+            }
+        }
+    }
+
+    public static class Program
+    {
+        public static void Main()
+        {
+#if !DEBUG
+            MyGame.HideConsole();
+#endif
+            MyGame.Initialize(new MyGameOptions() { AppName = "GIW TEST", Version = new MyVersion(1, 0, 0), WindowSize = new System.Drawing.Size(1920, 1080), SplashScreenPath = null });
+            //WindowThreadManager.Execute(() => new D3D11GraphicsDevice()); //IMPORTANT BUT MUST BE FIXED LATER (SEVERITY: LOW)...
+            new D3D11GraphicsDevice();
+
+            var SpecularShader = new SpecularTextureShader("Grass.png");
+            SpecularShader.Input.ambientColor = new RGBColor(0.35f, 0.35f, 0.35f);
+            SpecularShader.Input.diffuseColor = new RGBColor(1, 1, 1);
+            SpecularShader.Input.lightDirection = new Vector3(0.15f, 1, 0.15f);
+            SpecularShader.Input.specularColor = new RGBColor(1, 0.784313725f, 0);
+            SpecularShader.Input.specularPower = 36f;
+
+            Material Grass = new Material("Grass", SpecularShader);
+            GlobalResources.Materials.Add(Grass);
+
+            MeshObject Plane = new MeshObject("Plane.obj", true);
+            MyGameWorld.Objects.Add(Plane);
+            var PlaneShader = new SpecularTextureShader("tex.png");
+            PlaneShader.Input.ambientColor = new RGBColor(0.35f, 0.35f, 0.35f);
+            PlaneShader.Input.diffuseColor = new RGBColor(1, 1, 1);
+            PlaneShader.Input.lightDirection = new Vector3(0.15f, 1, 0.15f);
+            PlaneShader.Input.specularColor = new RGBColor(1, 0.784313725f, 0);
+            PlaneShader.Input.specularPower = 36f;
+
+            GlobalResources.Materials[1].Shader = PlaneShader;
+            var RedColorShader = new ColorShader();
+            RedColorShader.Input.Color = new RGBColor(1, 0, 0);
+            Material Red = new Material("Red");
+            Red.Shader = RedColorShader;
+            GlobalResources.Materials.Add(Red);
+
+            GlobalResources.Materials[1].Shader = PlaneShader;
+            var GreenColorShader = new ColorShader();
+            GreenColorShader.Input.Color = new RGBColor(0, 1, 0);
+            Material Green = new Material("Green");
+            Green.Shader = GreenColorShader;
+            GlobalResources.Materials.Add(Green);
+
+            GlobalResources.Materials[1].Shader = PlaneShader;
+            var BlueColorShader = new ColorShader();
+            BlueColorShader.Input.Color = new RGBColor(0, 0, 1);
+            Material Blue = new Material("Blue");
+            Blue.Shader = BlueColorShader;
+            GlobalResources.Materials.Add(Blue);
+
+
+            MeshObject Window = new MeshObject("Window.obj", true);
+            MeshObject Spike = new MeshObject("Spike.obj", true);
+
+            CameraObject Camera1 = new CameraObject();
+            Camera1.AddScript(new CameraScript1());
+            Camera1.Position = new Vector3(0f, 0.574f, 0);
+            Camera1.Rotation = new Vector3(0f, 0f, 0f);
+            Camera1.Activate();
+
+            CameraObject Camera2 = new CameraObject();
+            Camera2.AddScript(new CameraScript2());
+            Camera2.Position = new Vector3(0, 5.855f, -8.254f);
+            Camera2.Rotation = new Vector3(20.5f, 0f, 0);
+
+            Plane.AddObject(Camera1);
+            Plane.AddObject(Camera2);
+            Plane.AddScript(new MyScript());
+            Plane.AddScript(new GenerationScript());
+
+
+            Plane.AddObject(Window);
+            Plane.AddObject(Spike);
+
+
+            Plane.Position.Y = 10f;
+            Plane.Rotation.Y = 0f;
+
+            TextObject textObject = new TextObject();
+            MyGameWorld.GUIObjects.Add(textObject);
+
+            MyGame.Start();
+
+            MyLog.Default.Write("PROGRAMM ENDED!", LogSeverity.Crash);
+
+        }
+
+
+
+        public static PylonGameEngine.Mathematics.Vector3 scale = new PylonGameEngine.Mathematics.Vector3();
+        public static float fl = 0;
+
+        public static MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
+        public static float Abstand = 2.5f;
+
+
+        public static float?[] Values = new float?[100];
+        public static float Master = 0f;
+        private static void NAudio_Tick(GameLoop sender)
+        {
+            Master = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Console).AudioMeterInformation.MasterPeakValue * 20f;
+            Parallel.For(0, enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Console).AudioMeterInformation.PeakValues.Count, i =>
+            {
+                Values[i] = (enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Console).AudioMeterInformation.PeakValues[i] * 1000f);
+            });
+
+
+            //   return;
+            fl += 5f * MyGame.GameTickLoop.DeltaTime * Master;
+
+            MyGameWorld.ActiveCamera.Position.Z = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Console).AudioMeterInformation.PeakValues.Count * 20 / 4;
+
+            float posX = (MyGameWorld.Objects.Count) * Abstand - 43;
+            MyGameWorld.ActiveCamera.Position.X = (MyGameWorld.Objects.Count) * Abstand;
+            Parallel.For(0, Values.Length, i =>
+            {
+                if (Values[i] != null)
+                {
+                    MeshObject Stripe = new MeshObject
+                    {
+                        Mesh = new Mesh(((MeshObject)MyGameWorld.Objects[0]).Mesh),
+
+
+                        Position = new Vector3(posX, 0, i * 20)
+                    };
+
+                    if (Stripe.Position.Z > 0f)
+                    {
+                        Stripe.Position.Z += Master * 8;
+                    }
+                    else
+                    {
+                        Stripe.Position.Z -= Master * 8;
+                    }
+
+
+
+                    Random r = new Random();
+                    Stripe.Rotation.Y = (fl) % 360;
+                    //scale.Y = ;
+                    Stripe.Scale.Y = (float)(Values[i] / 10);
+
+                    MyGameWorld.Objects.Add(Stripe);
+                }
+            });
+
+            while (MyGameWorld.Objects.Count > 500)
+            {
+                MyGameWorld.Objects.RemoveAt(1);
+            }
+
+        }
+
+        #region screenshot
+        public static unsafe void SaveScreenshot(string path, ContainerFormat format = ContainerFormat.Png)
+        {
+
+            ID3D11Texture2D source = MyGame.GameOptions.Headless ? D3D11GraphicsDevice.OffscreenTexture : D3D11GraphicsDevice.BackBufferTexture;
+
+            using (ID3D11Texture2D staging = D3D11GraphicsDevice.CaptureTexture(source))
+            {
+
+                staging.DebugName = "STAGING";
+
+                Texture2DDescription textureDesc = staging!.Description;
+
+                // Determine source format's WIC equivalent
+                Guid pfGuid = default;
+                //bool sRGB = false;
+                switch (textureDesc.Format)
+                {
+                    case Vortice.DXGI.Format.R32G32B32A32_Float:
+                        pfGuid = WICPixelFormat.Format128bppRGBAFloat;
+                        break;
+
+                    //case DXGI_FORMAT_R16G16B16A16_FLOAT: pfGuid = GUID_WICPixelFormat64bppRGBAHalf; break;
+                    //case DXGI_FORMAT_R16G16B16A16_UNORM: pfGuid = GUID_WICPixelFormat64bppRGBA; break;
+                    //case DXGI_FORMAT_R10G10B10_XR_BIAS_A2_UNORM: pfGuid = GUID_WICPixelFormat32bppRGBA1010102XR; break; // DXGI 1.1
+                    //case DXGI_FORMAT_R10G10B10A2_UNORM: pfGuid = GUID_WICPixelFormat32bppRGBA1010102; break;
+                    //case DXGI_FORMAT_B5G5R5A1_UNORM: pfGuid = GUID_WICPixelFormat16bppBGRA5551; break;
+                    //case DXGI_FORMAT_B5G6R5_UNORM: pfGuid = GUID_WICPixelFormat16bppBGR565; break;
+                    //case DXGI_FORMAT_R32_FLOAT: pfGuid = GUID_WICPixelFormat32bppGrayFloat; break;
+                    //case DXGI_FORMAT_R16_FLOAT: pfGuid = GUID_WICPixelFormat16bppGrayHalf; break;
+                    //case DXGI_FORMAT_R16_UNORM: pfGuid = GUID_WICPixelFormat16bppGray; break;
+                    //case DXGI_FORMAT_R8_UNORM: pfGuid = GUID_WICPixelFormat8bppGray; break;
+                    //case DXGI_FORMAT_A8_UNORM: pfGuid = GUID_WICPixelFormat8bppAlpha; break;
+
+                    case Vortice.DXGI.Format.R8G8B8A8_UNorm:
+                        pfGuid = WICPixelFormat.Format32bppRGBA;
+                        break;
+
+                    case Vortice.DXGI.Format.R8G8B8A8_UNorm_SRgb:
+                        pfGuid = WICPixelFormat.Format32bppRGBA;
+                        //sRGB = true;
+                        break;
+
+                    case Vortice.DXGI.Format.B8G8R8A8_UNorm: // DXGI 1.1
+                        pfGuid = WICPixelFormat.Format32bppBGRA;
+                        break;
+
+                    case Vortice.DXGI.Format.B8G8R8A8_UNorm_SRgb: // DXGI 1.1
+                        pfGuid = WICPixelFormat.Format32bppBGRA;
+                        //sRGB = true;
+                        break;
+
+                    case Vortice.DXGI.Format.B8G8R8X8_UNorm: // DXGI 1.1
+                        pfGuid = WICPixelFormat.Format32bppBGR;
+                        break;
+
+                    case Vortice.DXGI.Format.B8G8R8X8_UNorm_SRgb: // DXGI 1.1
+                        pfGuid = WICPixelFormat.Format32bppBGR;
+                        //sRGB = true;
+                        break;
+
+                    case Vortice.DXGI.Format.D24_UNorm_S8_UInt:
+                        pfGuid = WICPixelFormat.Format32bppRGBA;
+                        //sRGB = true;
+                        break;
+                    default:
+                        Console.WriteLine("Screenhot Error");
+                        return;
+                }
+;
+                // Screenshots don't typically include the alpha channel of the render target
+                Guid targetGuid = default;
+                switch (textureDesc.Format)
+                {
+                    case Vortice.DXGI.Format.R32G32B32A32_Float:
+                    case Vortice.DXGI.Format.R16G16B16A16_Float:
+                        //if (_IsWIC2())
+                        {
+                            targetGuid = WICPixelFormat.Format96bppRGBFloat;
+                        }
+                        //else
+                        //{
+                        //    targetGuid = WICPixelFormat.Format24bppBGR;
+                        //}
+                        break;
+
+                    case Vortice.DXGI.Format.R16G16B16A16_UNorm:
+                        targetGuid = WICPixelFormat.Format48bppBGR;
+                        break;
+
+                    case Vortice.DXGI.Format.B5G5R5A1_UNorm:
+                        targetGuid = WICPixelFormat.Format16bppBGR555;
+                        break;
+
+                    case Vortice.DXGI.Format.B5G6R5_UNorm:
+                        targetGuid = WICPixelFormat.Format16bppBGR565;
+                        break;
+
+                    case Vortice.DXGI.Format.R32_Float:
+                    case Vortice.DXGI.Format.R16_Float:
+                    case Vortice.DXGI.Format.R16_UNorm:
+                    case Vortice.DXGI.Format.R8_UNorm:
+                    case Vortice.DXGI.Format.A8_UNorm:
+                        targetGuid = WICPixelFormat.Format8bppGray;
+                        break;
+
+                    default:
+                        targetGuid = WICPixelFormat.Format24bppBGR;
+                        break;
+                }
+
+                using IWICImagingFactory wicFactory = new IWICImagingFactory();
+                //using IWICBitmapDecoder decoder = wicFactory.CreateDecoderFromFileName(path);
+
+
+                using Stream stream = File.OpenWrite(path);
+                using IWICStream wicStream = wicFactory.CreateStream(stream);
+                using IWICBitmapEncoder encoder = wicFactory.CreateEncoder(format, wicStream);
+                // Create a Frame encoder
+                SharpGen.Runtime.Win32.PropertyBag props = new SharpGen.Runtime.Win32.PropertyBag();
+                IWICBitmapFrameEncode frame = encoder.CreateNewFrame(props);
+                frame.Initialize(props);
+                frame.SetSize(textureDesc.Width, textureDesc.Height);
+                frame.SetResolution(72, 72);
+                frame.SetPixelFormat(targetGuid);
+
+                ID3D11DeviceContext1 context = D3D11GraphicsDevice.DeviceContext;
+                //var mapped = context.Map(staging, 0, MapMode.Read, MapFlags.None);
+                Span<Color> colors = context.Map<Color>(staging, 0, 0, MapMode.Read, MapFlags.None);
+
+                // Check conversion
+                if (targetGuid != pfGuid)
+                {
+                    // Conversion required to write
+                    using (IWICBitmap bitmapSource = wicFactory.CreateBitmapFromMemory(
+                        textureDesc.Width,
+                        textureDesc.Height,
+                        pfGuid,
+                        colors))
+                    {
+                        using (IWICFormatConverter formatConverter = wicFactory.CreateFormatConverter())
+                        {
+                            if (!formatConverter.CanConvert(pfGuid, targetGuid))
+                            {
+                                context.Unmap(staging, 0);
+                                return;
+                            }
+
+                            formatConverter.Initialize(bitmapSource, targetGuid, BitmapDitherType.None, null, 0, BitmapPaletteType.MedianCut);
+                            frame.WriteSource(formatConverter, new System.Drawing.Rectangle(0, 0, textureDesc.Width, textureDesc.Height));
+                        }
+                    }
+                }
+                else
+                {
+                    // No conversion required
+                    int stride = WICPixelFormat.GetStride(pfGuid, textureDesc.Width);
+                    frame.WritePixels(textureDesc.Height, stride, colors);
+                }
+
+                context.Unmap(staging, 0);
+                frame.Commit();
+                encoder.Commit();
+
+            }
+        }
+        #endregion
+    }
+
