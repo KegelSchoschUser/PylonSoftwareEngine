@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace PylonGameEngine.Utils
+namespace PylonGameEngine.Utilities
 {
     [AttributeUsage(AttributeTargets.All, Inherited = false)]
     public sealed class WorkInProgressAttribute : Attribute

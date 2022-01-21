@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace PylonGameEngine.Utils
+namespace PylonGameEngine.Utilities
 {
     internal static class MemoryHelper
     {

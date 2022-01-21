@@ -2,7 +2,7 @@
 using PylonGameEngine.Mathematics;
 using PylonGameEngine.ShaderLibrary;
 using PylonGameEngine.UI.Drawing;
-using PylonGameEngine.Utils;
+using PylonGameEngine.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

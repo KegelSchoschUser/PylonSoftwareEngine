@@ -1,5 +1,5 @@
 ﻿using PylonGameEngine.GameWorld;
-using PylonGameEngine.Utils;
+using PylonGameEngine.Utilities;
 using System;
 
 namespace PylonGameEngine.UI

@@ -1,7 +1,7 @@
 ﻿using PylonGameEngine.General;
 using PylonGameEngine.Input;
 using PylonGameEngine.Mathematics;
-using PylonGameEngine.Utils;
+using PylonGameEngine.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

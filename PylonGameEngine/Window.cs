@@ -1,13 +1,13 @@
 ﻿using PylonGameEngine.Input;
 using PylonGameEngine.Mathematics;
-using PylonGameEngine.Utils.Win32;
+using PylonGameEngine.Utilities.Win32;
 using Linearstar.Windows.RawInput;
 using System;
 using System.Drawing;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static PylonGameEngine.Utils.Win32.Kernel32;
-using static PylonGameEngine.Utils.Win32.User32;
+using static PylonGameEngine.Utilities.Win32.Kernel32;
+using static PylonGameEngine.Utilities.Win32.User32;
 
 namespace PylonGameEngine
 {
@@ -107,10 +107,10 @@ namespace PylonGameEngine
         }
 
 
-        public Window(string title, Rectangle rectangle, string windowClassName)
+        public Window(string title, Vector2 Position, Vector2 Size, string windowClassName)
         {
             Title = title;
-            Rectangle = rectangle;
+            Rectangle = new Rectangle(Position.ToPoint(), new System.Drawing.Size(Position.ToPoint()));
             WindowClassName = windowClassName;
 
             fixed (char* lpszClassName = WindowClassName)

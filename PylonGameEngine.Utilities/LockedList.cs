@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace PylonGameEngine.Utils
+namespace PylonGameEngine.Utilities
 {
     [Serializable]
     public class LockedList<T> : IList<T> where T : UniqueNameInterface

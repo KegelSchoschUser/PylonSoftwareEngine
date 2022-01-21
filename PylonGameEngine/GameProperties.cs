@@ -1,5 +1,5 @@
 ﻿using PylonGameEngine.Mathematics;
-using PylonGameEngine.Utils;
+using PylonGameEngine.Utilities;
 using System.Drawing;
 
 namespace PylonGameEngine
@@ -8,8 +8,9 @@ namespace PylonGameEngine
     {
         public static string GameName = "My Game";
         public static MyVersion Version = new MyVersion(0, 0, 0);
-
-        public static Size StartWindowSize = new System.Drawing.Size(1920, 1080);
+        
+        public static Vector2 StartWindowSize = new Vector2(1920, 1080);
+        public static Vector2 StartWindowPosition = new Vector2(0, 0);
 
         public static int GameTickRate = 60;
         public static int RenderTickRate = -1;

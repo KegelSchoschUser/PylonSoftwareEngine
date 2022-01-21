@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PylonGameEngine.Utils
+namespace PylonGameEngine.Utilities
 {
     public class DiscordRPC
     {

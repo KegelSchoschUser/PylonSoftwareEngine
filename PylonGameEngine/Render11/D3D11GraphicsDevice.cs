@@ -1,5 +1,5 @@
 ﻿using PylonGameEngine.GameWorld;
-using PylonGameEngine.Utils.Win32;
+using PylonGameEngine.Utilities.Win32;
 using SharpGen.Runtime;
 using System;
 using System.Drawing;

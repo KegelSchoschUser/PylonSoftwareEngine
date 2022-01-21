@@ -1,6 +1,6 @@
-﻿namespace PylonGameEngine.Utils
+﻿namespace PylonGameEngine.Utilities
 {
-    public static class StringUtils
+    public static class StringUtilities
     {
         public static string SafeSubString(string s, int length)
         {

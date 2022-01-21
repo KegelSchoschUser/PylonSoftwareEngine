@@ -1,5 +1,5 @@
 ﻿using PylonGameEngine.Mathematics;
-using PylonGameEngine.Utils;
+using PylonGameEngine.Utilities;
 
 namespace PylonGameEngine.Billboarding
 {

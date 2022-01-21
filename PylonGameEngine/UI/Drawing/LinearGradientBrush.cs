@@ -17,7 +17,7 @@ namespace PylonGameEngine.UI.Drawing
             }
 
             var collection = g.RenderTarget.CreateGradientStopCollection(gradientStops, Gamma.Linear, ExtendMode.Mirror);
-            br = g.RenderTarget.CreateLinearGradientBrush(new LinearGradientBrushProperties(StartPoint.ToPoint(), EndPoint.ToPoint()), collection);
+            br = g.RenderTarget.CreateLinearGradientBrush(new LinearGradientBrushProperties(StartPoint.ToPointF(), EndPoint.ToPointF()), collection);
         }
     }
 }

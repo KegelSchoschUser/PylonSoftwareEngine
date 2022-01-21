@@ -1,4 +1,4 @@
-﻿namespace PylonGameEngine.Utils
+﻿namespace PylonGameEngine.Utilities
 {
     public class UniqueNameInterface
     {

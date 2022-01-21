@@ -1,7 +1,7 @@
 ﻿using PylonGameEngine.Audio;
 using PylonGameEngine.Physics;
 using PylonGameEngine.Render11;
-using PylonGameEngine.Utils;
+using PylonGameEngine.Utilities;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -27,7 +27,7 @@ namespace PylonGameEngine
         public static LockedList<Material> Materials = new LockedList<Material>(ref RenderLock);
         internal static bool RendererEnabled = true;
         internal static Unlicensed UnlicensedObject;
-        internal static Utils.DiscordRPC RPC;
+        internal static Utilities.DiscordRPC RPC;
 
         public static void Initialize()
         {
@@ -36,8 +36,8 @@ namespace PylonGameEngine
             GameProperties.SplashScreen.ShowAsync();
 
             //"925124183044792341"
-            RPC = new Utils.DiscordRPC("925124183044792341", GameProperties.GameName);
-            MainWindow = new Window(GameProperties.GameName, new System.Drawing.Rectangle(new System.Drawing.Point(0, 0), GameProperties.StartWindowSize), "PylonGameEngine");
+            RPC = new Utilities.DiscordRPC("925124183044792341", GameProperties.GameName);
+            MainWindow = new Window(GameProperties.GameName, GameProperties.StartWindowPosition, GameProperties.StartWindowSize, "PylonGameEngine");
             MainWindow.PlatformConstruct();
 
             RenderLoop = new GameLoop(GameProperties.RenderTickRate);

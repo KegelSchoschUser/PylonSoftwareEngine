@@ -3,7 +3,7 @@ using PylonGameEngine.GameWorld;
 using PylonGameEngine.GameWorld3D;
 using PylonGameEngine.Mathematics;
 using PylonGameEngine.ShaderLibrary;
-using PylonGameEngine.Utils;
+using PylonGameEngine.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;

@@ -1,7 +1,7 @@
 ﻿using BepuPhysics;
 using BepuUtilities.Memory;
 using PylonGameEngine.Mathematics;
-using PylonGameEngine.Utils;
+using PylonGameEngine.Utilities;
 using System;
 
 namespace PylonGameEngine.Physics

@@ -248,7 +248,7 @@ namespace PylonGameEngine.UI.Drawing
 
         public void DrawLine(Pen pen, Vector2 p1, Vector2 p2)
         {
-            RenderTarget.DrawLine(p1.ToPoint(), p2.ToPoint(), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawLine(p1.ToPointF(), p2.ToPointF(), pen.br, pen.Width, pen.StrokeStyle);
         }
 
         public void DrawLine(Pen pen, float x1, float y1, float x2, float y2)
@@ -457,12 +457,12 @@ namespace PylonGameEngine.UI.Drawing
 
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
             var sink = geometry.Open();
-            sink.BeginFigure(points[0].ToPoint(), FigureBegin.Filled);
+            sink.BeginFigure(points[0].ToPointF(), FigureBegin.Filled);
 
             List<PointF> Points = new List<PointF>();
             for (int i = 1; i < points.Length; i++)
             {
-                Points.Add(points[i].ToPoint());
+                Points.Add(points[i].ToPointF());
             }
             sink.AddLines(Points.ToArray());
             sink.EndFigure(FigureEnd.Closed);
@@ -478,12 +478,12 @@ namespace PylonGameEngine.UI.Drawing
 
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
             var sink = geometry.Open();
-            sink.BeginFigure(points[0].ToPoint(), FigureBegin.Filled);
+            sink.BeginFigure(points[0].ToPointF(), FigureBegin.Filled);
 
             List<PointF> Points = new List<PointF>();
             for (int i = 1; i < points.Length; i++)
             {
-                Points.Add(points[i].ToPoint());
+                Points.Add(points[i].ToPointF());
             }
             sink.AddLines(Points.ToArray());
             sink.EndFigure(FigureEnd.Closed);
@@ -501,12 +501,12 @@ namespace PylonGameEngine.UI.Drawing
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
 
             var sink = geometry.Open();
-            sink.BeginFigure(points[0].ToPoint(), FigureBegin.Filled);
+            sink.BeginFigure(points[0].ToPointF(), FigureBegin.Filled);
 
             List<PointF> Points = new List<PointF>();
             for (int i = 1; i < points.Length; i++)
             {
-                Points.Add(points[i].ToPoint());
+                Points.Add(points[i].ToPointF());
             }
             sink.AddLines(Points.ToArray());
             sink.EndFigure((FigureEnd)(Closed ? 1 : 0));
@@ -523,13 +523,13 @@ namespace PylonGameEngine.UI.Drawing
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
 
             var sink = geometry.Open();
-            sink.BeginFigure(Curve.Points[0].ToPoint(), FigureBegin.Filled);
+            sink.BeginFigure(Curve.Points[0].ToPointF(), FigureBegin.Filled);
 
             var CurveSegments = Curve.ToIndividualSegments();
             List<BezierSegment> segments = new List<BezierSegment>();
             foreach (var item in CurveSegments)
             {
-                segments.Add(new BezierSegment(item.Point1.ToPoint(), item.ControlPoint.ToPoint(), item.Point2.ToPoint()));
+                segments.Add(new BezierSegment(item.Point1.ToPointF(), item.ControlPoint.ToPointF(), item.Point2.ToPointF()));
             }
             //  sink.AddQuadraticBeziers(segments.ToArray());
             sink.AddBeziers(segments.ToArray());
@@ -548,9 +548,9 @@ namespace PylonGameEngine.UI.Drawing
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
 
             var sink = geometry.Open();
-            sink.BeginFigure(StartPoint.ToPoint(), FigureBegin.Filled);
+            sink.BeginFigure(StartPoint.ToPointF(), FigureBegin.Filled);
 
-            sink.AddArc(new ArcSegment(EndPoint.ToPoint(), new SizeF(Size.ToPoint()), 0f, SweepDirection.Clockwise, ArcSize.Large));
+            sink.AddArc(new ArcSegment(EndPoint.ToPointF(), new SizeF(Size.ToPointF()), 0f, SweepDirection.Clockwise, ArcSize.Large));
             sink.EndFigure((FigureEnd)(Closed ? 1 : 0));
 
             //var group = D3D11GraphicsDevice.Factory2D.CreateGeometryGroup(Vortice.Direct2D1.FillMode.Alternate, new ID2D1Geometry[] { geometry});
@@ -561,7 +561,7 @@ namespace PylonGameEngine.UI.Drawing
 
         public void DrawEllipse(Pen pen, Vector2 Center, Vector2 Size)
         {
-            RenderTarget.DrawEllipse(new Ellipse(Center.ToPoint(), Size.X, Size.Y), pen.br, pen.Width);
+            RenderTarget.DrawEllipse(new Ellipse(Center.ToPointF(), Size.X, Size.Y), pen.br, pen.Width);
         }
 
 
@@ -603,7 +603,7 @@ namespace PylonGameEngine.UI.Drawing
             textFormat.WordWrapping = (WordWrapping)WordWrapping;
             var textLayout = WriteFactory.CreateTextLayout(Text, textFormat, Size.X, Size.Y);
             var brush = CreateSolidBrush(f.Color);
-            RenderTarget.DrawTextLayout(Position.ToPoint(), textLayout, brush.br, DrawTextOptions.EnableColorFont);
+            RenderTarget.DrawTextLayout(Position.ToPointF(), textLayout, brush.br, DrawTextOptions.EnableColorFont);
             var Metrics = textLayout.Metrics;
             textFormat.Release();
             textLayout.Release();

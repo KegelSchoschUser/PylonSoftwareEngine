@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
-namespace PylonGameEngine.Utils
+namespace PylonGameEngine.Utilities
 {
     public class MyLog
     {

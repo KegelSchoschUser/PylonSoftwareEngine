@@ -1,5 +1,5 @@
 ﻿using PylonGameEngine.ShaderLibrary;
-using PylonGameEngine.Utils;
+using PylonGameEngine.Utilities;
 
 namespace PylonGameEngine
 {

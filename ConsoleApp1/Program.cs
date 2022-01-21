@@ -12,7 +12,7 @@ using PylonGameEngine.Mathematics;
 using PylonGameEngine.Physics;
 using PylonGameEngine.Render11;
 using PylonGameEngine.ShaderLibrary;
-using PylonGameEngine.Utils;
+using PylonGameEngine.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -485,7 +485,7 @@ public static class Program
     {
         GameProperties.GameName = "GIW TEST";
         GameProperties.Version = new MyVersion(1, 0, 0);
-        GameProperties.StartWindowSize = new System.Drawing.Size(1920, 1080);
+        GameProperties.StartWindowSize = new Vector2(1920, 1080);
         GameProperties.SplashScreen = new SplashScreen((Bitmap)Bitmap.FromFile("Splash.png"));
         GameProperties.RenderTickRate = 60;
         MyGame.Initialize();

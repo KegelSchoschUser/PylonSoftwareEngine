@@ -1,7 +1,7 @@
 ﻿using PylonGameEngine.Mathematics;
 using PylonGameEngine.Physics;
 using PylonGameEngine.Render11;
-using PylonGameEngine.Utils;
+using PylonGameEngine.Utilities;
 using System.Collections.Generic;
 
 namespace PylonGameEngine.GameWorld

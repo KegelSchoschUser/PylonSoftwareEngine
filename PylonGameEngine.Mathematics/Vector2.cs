@@ -181,7 +181,12 @@ namespace PylonGameEngine.Mathematics
             return new Vector2(-v.X, -v.Y);
         }
 
-        public PointF ToPoint()
+        public Point ToPoint()
+        {
+            return new Point((int)X, (int)Y);
+        }
+
+        public PointF ToPointF()
         {
             return new PointF(X, Y);
         }

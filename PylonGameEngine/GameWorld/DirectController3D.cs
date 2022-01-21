@@ -2,7 +2,7 @@
 using PylonGameEngine.Mathematics;
 using PylonGameEngine.UI;
 using PylonGameEngine.UI.Drawing;
-using PylonGameEngine.Utils;
+using PylonGameEngine.Utilities;
 
 namespace PylonGameEngine.GameWorld
 {

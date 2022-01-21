@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace PylonGameEngine.Utils
+namespace PylonGameEngine.Utilities
 {
     public class MyExceptions
     {
