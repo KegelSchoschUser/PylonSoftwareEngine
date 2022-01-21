@@ -22,16 +22,13 @@ namespace PylonGameEngine.Render11
     public static class Renderer
     {
         public static Renderphase[] RenderPhases;
-        internal static Unlicensed Unlicensed;
-
-
-
 
 
         public static void Initialize()
         {
-            Unlicensed = new Unlicensed();
+
         }
+
         private static void UpdateUI()
         {
             var objects = MyGameWorld.GUI.GetRenderOrder();
@@ -45,9 +42,6 @@ namespace PylonGameEngine.Render11
             MyGameWorld.DirectController3D.UpdateFrame();
             MyGameWorld.DirectController3D.QueueDraw();
             MyGameWorld.DirectController3D.OnDrawInternal();
-            Renderer.Unlicensed.UpdateFrame();
-            Renderer.Unlicensed.QueueDraw();
-            Renderer.Unlicensed.OnDrawInternal();
 
             objects.Clear();
         }

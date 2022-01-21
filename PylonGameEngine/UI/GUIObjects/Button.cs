@@ -21,20 +21,6 @@ namespace PylonGameEngine.GUI.GUIObjects
             }
         }
 
-        private float _EdgeSize = 0f;
-        public float EdgeSize
-        {
-            get
-            {
-                return _EdgeSize;
-            }
-            set
-            {
-                _EdgeSize = value;
-                QueueDraw();
-            }
-        }
-
         private Font _Font = new Font();
         public Font Font
         {
@@ -49,11 +35,103 @@ namespace PylonGameEngine.GUI.GUIObjects
             }
         }
 
+        private float _EdgeSize = 0f;
+        public float EdgeSize
+        {
+            get
+            {
+                return _EdgeSize;
+            }
+            set
+            {
+                _EdgeSize = value;
+                QueueDraw();
+            }
+        }
+
+        private float _EdgeThickness = 1f;
+        public float EdgeThickness
+        {
+            get
+            {
+                return _EdgeThickness;
+            }
+            set
+            {
+                _EdgeThickness = value;
+                QueueDraw();
+            }
+        }
+
+        private RGBColor _Color = RGBColor.Black;
+        public RGBColor Color
+        {
+            get
+            {
+                return _Color;
+            }
+            set
+            {
+                _Color = value;
+                QueueDraw();
+            }
+        }
+
+        private RGBColor _EdgeColor = RGBColor.Red;
+        public RGBColor EdgeColor
+        {
+            get
+            {
+                return _EdgeColor;
+            }
+            set
+            {
+                _EdgeColor = value;
+                QueueDraw();
+            }
+        }
+
+        private RGBColor _EdgeColorHover = RGBColor.Green;
+        public RGBColor EdgeColorHover
+        {
+            get
+            {
+                return _EdgeColorHover;
+            }
+            set
+            {
+                _EdgeColorHover = value;
+                QueueDraw();
+            }
+        }
+
+        private RGBColor _EdgeColorClicked = RGBColor.Blue;
+        public RGBColor EdgeColorClicked
+        {
+            get
+            {
+                return _EdgeColorClicked;
+            }
+            set
+            {
+                _EdgeColorClicked = value;
+                QueueDraw();
+            }
+        }
+
+        public delegate void Click(Button sender);
+        public event Click OnClick;
+
+        public Button()
+        {
+            OnClick += (sender) => { };
+        }
+
         public override void OnDraw(Graphics g)
         {
             g.Clear(RGBColor.Transparent);
-            var p = g.CreatePen(RGBColor.White, 3f);
-            var b = g.CreateSolidBrush(RGBColor.From255Range(40, 40, 40));
+            var b = g.CreateSolidBrush(Color);
+            var p = g.CreatePen(EdgeColor, EdgeThickness);
 
             float EdgeX;
             float EdgeY;
@@ -73,19 +151,18 @@ namespace PylonGameEngine.GUI.GUIObjects
 
             if (MouseHover == false)
             {
-                p.Color = new RGBColor(1, 1, 1);
+                p.Color = EdgeColor;
             }
             else
             {
                 if (LeftMousePressed)
                 {
-                    p.Color = new RGBColor(0, 1, 1);
+                    p.Color = EdgeColorClicked;
                 }
                 else
                 {
-                    p.Color = new RGBColor(1, 0, 0);
+                    p.Color = EdgeColorHover;
                 }
-
             }
 
             g.DrawRoundedRectangle(p, new Vector2(EdgeX, EdgeY));
@@ -94,8 +171,11 @@ namespace PylonGameEngine.GUI.GUIObjects
 
         public override void UpdateTick()
         {
-            if (MouseEnter || MouseLeave || Focused || FocusedLost)
+            if (MouseEnter || MouseLeave || Focused || FocusedLost || LeftMouseClicked || LeftMousePressed || RightMouseClicked || RightMousePressed || MiddleMouseClicked || MiddleMouseClicked)
                 QueueDraw();
+
+            if (LeftMouseClicked)
+                OnClick(this);
         }
     }
 }

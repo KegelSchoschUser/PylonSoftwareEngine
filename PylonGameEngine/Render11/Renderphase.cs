@@ -135,7 +135,7 @@ namespace PylonGameEngine.Render11
                 StructureByteStride = 0
             };
 
-            ID3D11Buffer MatrixBuffer = D3D11GraphicsDevice.Device.CreateBuffer(ref ObjectMatrix, BufferDescription);
+            ID3D11Buffer MatrixBuffer = D3D11GraphicsDevice.Device.CreateBuffer(in ObjectMatrix, BufferDescription);
 
             return MatrixBuffer;
         }

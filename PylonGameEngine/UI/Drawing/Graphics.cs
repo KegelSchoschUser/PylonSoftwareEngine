@@ -119,73 +119,73 @@ namespace PylonGameEngine.UI.Drawing
 
         public void Clear()
         {
-            RenderTarget.Clear(RGBColor.Transparent.ToMSColor());
+            RenderTarget.Clear(RGBColor.Transparent.ToVorticeColor());
         }
 
         public void Clear(RGBColor color)
         {
-            RenderTarget.Clear(color.ToMSColor());
+            RenderTarget.Clear(color.ToVorticeColor());
         }
 
         public void FillRectangle(LinearGradientBrush brush)
         {
-            RenderTarget.FillRectangle(new RectangleF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), brush.br);
+            RenderTarget.FillRectangle(new RawRectF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), brush.br);
         }
 
         public void FillRectangle(LinearGradientBrush brush, RectangleF rectangle)
         {
-            RenderTarget.FillRectangle(rectangle, brush.br);
+            RenderTarget.FillRectangle(new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom), brush.br);
         }
 
         public void FillRectangle(LinearGradientBrush brush, Vector2 Position, Vector2 Size)
         {
-            RenderTarget.FillRectangle(new RectangleF(Position.X, Position.Y, Size.X, Size.Y), brush.br);
+            RenderTarget.FillRectangle(new RawRectF(Position.X, Position.Y, Size.X, Size.Y), brush.br);
         }
 
         public void FillRectangle(SolidBrush brush)
         {
-            RenderTarget.FillRectangle(new RectangleF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), brush.br);
+            RenderTarget.FillRectangle(new RawRectF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), brush.br);
         }
 
         public void FillRectangle(SolidBrush brush, RectangleF rectangle)
         {
-            RenderTarget.FillRectangle(rectangle, brush.br);
+            RenderTarget.FillRectangle(new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom), brush.br);
         }
 
         public void FillRectangle(SolidBrush brush, Vector2 Position, Vector2 Size)
         {
-            RenderTarget.FillRectangle(new RectangleF(Position.X, Position.Y, Size.X, Size.Y), brush.br);
+            RenderTarget.FillRectangle(new RawRectF(Position.X, Position.Y, Size.X, Size.Y), brush.br);
         }
 
         public void FillRoundedRectangle(SolidBrush brush, Vector2 Position, Vector2 Size, float radius)
         {
-            RenderTarget.FillRoundedRectangle(new RoundedRectangle(new RectangleF(Position.X, Position.Y, Size.X, Size.Y), radius, radius), brush.br);
+            RenderTarget.FillRoundedRectangle(new RoundedRectangle(new RawRectF(Position.X, Position.Y, Size.X, Size.Y), radius, radius), brush.br);
         }
 
 
         public void FillRoundedRectangle(SolidBrush brush, float radius)
         {
-            RenderTarget.FillRoundedRectangle(new RoundedRectangle(new RectangleF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), radius, radius), brush.br);
+            RenderTarget.FillRoundedRectangle(new RoundedRectangle(new RawRectF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), radius, radius), brush.br);
         }
 
         public void FillRoundedRectangle(SolidBrush brush, Vector2 radius)
         {
-            RenderTarget.FillRoundedRectangle(new RoundedRectangle(new RectangleF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), radius.X, radius.Y), brush.br);
+            RenderTarget.FillRoundedRectangle(new RoundedRectangle(new RawRectF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), radius.X, radius.Y), brush.br);
         }
 
         public void FillRoundedRectangle(SolidBrush brush, RectangleF rectangle, Vector2 radius)
         {
-            RenderTarget.FillRoundedRectangle(new RoundedRectangle(rectangle, radius.X, radius.Y), brush.br);
+            RenderTarget.FillRoundedRectangle(new RoundedRectangle(new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom), radius.X, radius.Y), brush.br);
         }
 
         public void FillRoundedRectangle(LinearGradientBrush brush, Vector2 radius)
         {
-            RenderTarget.FillRoundedRectangle(new RoundedRectangle(new RectangleF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), radius.X, radius.Y), brush.br);
+            RenderTarget.FillRoundedRectangle(new RoundedRectangle(new RawRectF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), radius.X, radius.Y), brush.br);
         }
 
         public void FillRoundedRectangle(LinearGradientBrush brush, RectangleF rectangle, Vector2 radius)
         {
-            RenderTarget.FillRoundedRectangle(new RoundedRectangle(rectangle, radius.X, radius.Y), brush.br);
+            RenderTarget.FillRoundedRectangle(new RoundedRectangle(new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom), radius.X, radius.Y), brush.br);
         }
 
 
@@ -208,7 +208,7 @@ namespace PylonGameEngine.UI.Drawing
 
         public void DrawPixel(Pen pen, Vector2 Position)
         {
-            RenderTarget.FillRectangle(new RectangleF(Position.X, Position.Y, 1, 1), pen.br);
+            RenderTarget.FillRectangle(new Vortice.Mathematics.Rectangle(Position.X, Position.Y, 1, 1), pen.br);
         }
 
 
@@ -216,44 +216,44 @@ namespace PylonGameEngine.UI.Drawing
         {
             for (int i = 0; i < Positions.Length; i++)
             {
-                RenderTarget.FillRectangle(new RectangleF(Positions[i].X, Positions[i].Y, 1, 1), pen.br);
+                RenderTarget.FillRectangle(new Vortice.Mathematics.Rectangle(Positions[i].X, Positions[i].Y, 1, 1), pen.br);
             }
             
         }
 
         public void DrawRectangle(Pen pen)
         {
-            RenderTarget.DrawRectangle(new RectangleF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawRectangle(new Vortice.Mathematics.Rectangle(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), pen.br, pen.Width, pen.StrokeStyle);
         }
 
         public void DrawRectangle(Pen pen, Vector2 Position, Vector2 Size)
         {
-            RenderTarget.DrawRectangle(new RectangleF(Position.X, Position.Y, Size.X, Size.Y), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawRectangle(new Vortice.Mathematics.Rectangle(Position.X, Position.Y, Size.X, Size.Y), pen.br, pen.Width, pen.StrokeStyle);
         }
 
         public void DrawRectangle(Pen pen, RectangleF rectangle)
         {
-            RenderTarget.DrawRectangle(rectangle, pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawRectangle(new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom), pen.br, pen.Width, pen.StrokeStyle);
         }
 
         public void DrawRoundedRectangle(Pen pen, Vector2 radius)
         {
-            RenderTarget.DrawRoundedRectangle(new RoundedRectangle(new RectangleF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), radius.X, radius.Y), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawRoundedRectangle(new RoundedRectangle(new RawRectF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), radius.X, radius.Y), pen.br, pen.Width, pen.StrokeStyle);
         }
 
         public void DrawRoundedRectangle(Pen pen, RectangleF rectangle, Vector2 radius)
         {
-            RenderTarget.DrawRoundedRectangle(new RoundedRectangle(rectangle, radius.X, radius.Y), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawRoundedRectangle(new RoundedRectangle(new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom), radius.X, radius.Y), pen.br, pen.Width, pen.StrokeStyle);
         }
 
         public void DrawLine(Pen pen, Vector2 p1, Vector2 p2)
         {
-            RenderTarget.DrawLine(p1.ToPointF(), p2.ToPointF(), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawLine(p1.ToVorticePoint(), p2.ToVorticePoint(), pen.br, pen.Width, pen.StrokeStyle);
         }
 
         public void DrawLine(Pen pen, float x1, float y1, float x2, float y2)
         {
-            RenderTarget.DrawLine(new PointF(x1, y1), new PointF(x2, y2), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawLine(new Vortice.Mathematics.Point(x1, y1), new Vortice.Mathematics.Point(x2, y2), pen.br, pen.Width, pen.StrokeStyle);
         }
 
         public void DrawArrow(Pen pen, Vector2 p1, Vector2 p2)
@@ -381,7 +381,7 @@ namespace PylonGameEngine.UI.Drawing
 
         public void DrawBitmap(GIWBitmap bitmap, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
         {
-            DrawBitmap(bitmap, new RectangleF(PointF.Empty, RenderTarget.Size), opacity, interpolationMode);
+            DrawBitmap(bitmap, new Rectangle(Point.Empty, new System.Drawing.Size((int)RenderTarget.Size.Width, (int)RenderTarget.Size.Height)), opacity, interpolationMode);
         }
 
         public void DrawBitmap(GIWBitmap bitmap, RectangleF rectangle, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
@@ -392,7 +392,7 @@ namespace PylonGameEngine.UI.Drawing
 
         public void DrawBitmap(string FileName, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
         {
-            DrawBitmap(FileName, new RectangleF(PointF.Empty, RenderTarget.Size), opacity, interpolationMode);
+            DrawBitmap(FileName, new Rectangle(Point.Empty, new System.Drawing.Size((int)RenderTarget.Size.Width, (int)RenderTarget.Size.Height)), opacity, interpolationMode);
         }
 
         public void DrawBitmap(string FileName, RectangleF rectangle, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
@@ -430,7 +430,7 @@ namespace PylonGameEngine.UI.Drawing
 
         internal void DrawBitmap(ID2D1Bitmap1 Bitmap, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
         {
-            DrawBitmap(Bitmap, new RectangleF(PointF.Empty, RenderTarget.Size), opacity, interpolationMode);
+            DrawBitmap(Bitmap, new RectangleF(PointF.Empty, new System.Drawing.Size((int)RenderTarget.Size.Width, (int)RenderTarget.Size.Height)), opacity, interpolationMode);
         }
 
         internal void DrawBitmap(ID2D1Bitmap1 Bitmap, RectangleF rectangle, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
@@ -457,12 +457,12 @@ namespace PylonGameEngine.UI.Drawing
 
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
             var sink = geometry.Open();
-            sink.BeginFigure(points[0].ToPointF(), FigureBegin.Filled);
+            sink.BeginFigure(points[0].ToVorticePoint(), FigureBegin.Filled);
 
-            List<PointF> Points = new List<PointF>();
+            List<Vortice.Mathematics.Point> Points = new List<Vortice.Mathematics.Point>();
             for (int i = 1; i < points.Length; i++)
             {
-                Points.Add(points[i].ToPointF());
+                Points.Add(points[i].ToVorticePoint());
             }
             sink.AddLines(Points.ToArray());
             sink.EndFigure(FigureEnd.Closed);
@@ -478,12 +478,12 @@ namespace PylonGameEngine.UI.Drawing
 
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
             var sink = geometry.Open();
-            sink.BeginFigure(points[0].ToPointF(), FigureBegin.Filled);
+            sink.BeginFigure(points[0].ToVorticePoint(), FigureBegin.Filled);
 
-            List<PointF> Points = new List<PointF>();
+            List<Vortice.Mathematics.Point> Points = new List<Vortice.Mathematics.Point>();
             for (int i = 1; i < points.Length; i++)
             {
-                Points.Add(points[i].ToPointF());
+                Points.Add(points[i].ToVorticePoint());
             }
             sink.AddLines(Points.ToArray());
             sink.EndFigure(FigureEnd.Closed);
@@ -501,12 +501,12 @@ namespace PylonGameEngine.UI.Drawing
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
 
             var sink = geometry.Open();
-            sink.BeginFigure(points[0].ToPointF(), FigureBegin.Filled);
+            sink.BeginFigure(points[0].ToVorticePoint(), FigureBegin.Filled);
 
-            List<PointF> Points = new List<PointF>();
+            List<Vortice.Mathematics.Point> Points = new List<Vortice.Mathematics.Point>();
             for (int i = 1; i < points.Length; i++)
             {
-                Points.Add(points[i].ToPointF());
+                Points.Add(points[i].ToVorticePoint());
             }
             sink.AddLines(Points.ToArray());
             sink.EndFigure((FigureEnd)(Closed ? 1 : 0));
@@ -523,13 +523,13 @@ namespace PylonGameEngine.UI.Drawing
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
 
             var sink = geometry.Open();
-            sink.BeginFigure(Curve.Points[0].ToPointF(), FigureBegin.Filled);
+            sink.BeginFigure(Curve.Points[0].ToVorticePoint(), FigureBegin.Filled);
 
             var CurveSegments = Curve.ToIndividualSegments();
             List<BezierSegment> segments = new List<BezierSegment>();
             foreach (var item in CurveSegments)
             {
-                segments.Add(new BezierSegment(item.Point1.ToPointF(), item.ControlPoint.ToPointF(), item.Point2.ToPointF()));
+                segments.Add(new BezierSegment(item.Point1.ToVorticePoint(), item.ControlPoint.ToVorticePoint(), item.Point2.ToVorticePoint()));
             }
             //  sink.AddQuadraticBeziers(segments.ToArray());
             sink.AddBeziers(segments.ToArray());
@@ -548,9 +548,9 @@ namespace PylonGameEngine.UI.Drawing
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
 
             var sink = geometry.Open();
-            sink.BeginFigure(StartPoint.ToPointF(), FigureBegin.Filled);
+            sink.BeginFigure(StartPoint.ToVorticePoint(), FigureBegin.Filled);
 
-            sink.AddArc(new ArcSegment(EndPoint.ToPointF(), new SizeF(Size.ToPointF()), 0f, SweepDirection.Clockwise, ArcSize.Large));
+            sink.AddArc(new ArcSegment(EndPoint.ToVorticePoint(), new Vortice.Mathematics.Size(Size.X, Size.Y), 0f, SweepDirection.Clockwise, ArcSize.Large));
             sink.EndFigure((FigureEnd)(Closed ? 1 : 0));
 
             //var group = D3D11GraphicsDevice.Factory2D.CreateGeometryGroup(Vortice.Direct2D1.FillMode.Alternate, new ID2D1Geometry[] { geometry});
@@ -561,7 +561,7 @@ namespace PylonGameEngine.UI.Drawing
 
         public void DrawEllipse(Pen pen, Vector2 Center, Vector2 Size)
         {
-            RenderTarget.DrawEllipse(new Ellipse(Center.ToPointF(), Size.X, Size.Y), pen.br, pen.Width);
+            RenderTarget.DrawEllipse(new Ellipse(Center.ToVorticePoint(), Size.X, Size.Y), pen.br, pen.Width);
         }
 
 
@@ -603,7 +603,7 @@ namespace PylonGameEngine.UI.Drawing
             textFormat.WordWrapping = (WordWrapping)WordWrapping;
             var textLayout = WriteFactory.CreateTextLayout(Text, textFormat, Size.X, Size.Y);
             var brush = CreateSolidBrush(f.Color);
-            RenderTarget.DrawTextLayout(Position.ToPointF(), textLayout, brush.br, DrawTextOptions.EnableColorFont);
+            RenderTarget.DrawTextLayout(Position, textLayout, brush.br, DrawTextOptions.EnableColorFont);
             var Metrics = textLayout.Metrics;
             textFormat.Release();
             textLayout.Release();
@@ -613,7 +613,7 @@ namespace PylonGameEngine.UI.Drawing
         internal ID2D1Bitmap1 GetAsBitmapI()
         {
             var bitmapProperties = new BitmapProperties1(RenderTarget.PixelFormat);
-            var bitmap = DeviceContext.CreateBitmap(RenderTarget.Size.ToSize(), IntPtr.Zero, 0, ref bitmapProperties);
+            var bitmap = DeviceContext.CreateBitmap(new Vortice.Mathematics.SizeI((int)RenderTarget.Size.Width, (int)RenderTarget.Size.Height), IntPtr.Zero, 0, ref bitmapProperties);
             bitmap.CopyFromRenderTarget(RenderTarget);
             return bitmap;
         }
@@ -621,7 +621,7 @@ namespace PylonGameEngine.UI.Drawing
         public GIWBitmap GetAsBitmap()
         {
             var bitmapProperties = new BitmapProperties1(RenderTarget.PixelFormat);
-            var bitmap = DeviceContext.CreateBitmap(RenderTarget.Size.ToSize(), IntPtr.Zero, 0, ref bitmapProperties);
+            var bitmap = DeviceContext.CreateBitmap(new Vortice.Mathematics.SizeI((int)RenderTarget.Size.Width, (int)RenderTarget.Size.Height), IntPtr.Zero, 0, ref bitmapProperties);
             bitmap.CopyFromRenderTarget(RenderTarget);
             return new GIWBitmap(bitmap);
         }

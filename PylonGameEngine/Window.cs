@@ -110,7 +110,7 @@ namespace PylonGameEngine
         public Window(string title, Vector2 Position, Vector2 Size, string windowClassName)
         {
             Title = title;
-            Rectangle = new Rectangle(Position.ToPoint(), new System.Drawing.Size(Position.ToPoint()));
+            Rectangle = new Rectangle(Position.ToPoint(), new System.Drawing.Size(Size.ToPoint()));
             WindowClassName = windowClassName;
 
             fixed (char* lpszClassName = WindowClassName)

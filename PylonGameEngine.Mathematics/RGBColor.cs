@@ -26,6 +26,7 @@ namespace PylonGameEngine.Mathematics
         public static readonly RGBColor Red = new RGBColor(1, 0, 0, 1);
         public static readonly RGBColor Green = new RGBColor(0, 1, 0, 1);
         public static readonly RGBColor Blue = new RGBColor(0, 0, 1, 1);
+        public static readonly RGBColor PylonOrange = new RGBColor(1, 0.537254902f, 0, 1);
 
 
 
@@ -147,6 +148,11 @@ namespace PylonGameEngine.Mathematics
         public Color ToMSColor()
         {
             return System.Drawing.Color.FromArgb((int)(A * 255f), (int)(R * 255f), (int)(G * 255f), (int)(B * 255f));
+        }
+
+        public Vortice.Mathematics.Color ToVorticeColor()
+        {
+            return new Vortice.Mathematics.Color(R, G, B, A);
         }
 
         public static bool operator !=(RGBColor left, RGBColor right)
@@ -307,5 +313,12 @@ namespace PylonGameEngine.Mathematics
             }
             return s;
         }
+
+
+
+
+
+        public static implicit operator Vortice.Mathematics.Color(RGBColor c) => new Vortice.Mathematics.Color(c.R, c.G, c.B, c.A);
+        public static explicit operator RGBColor(Vortice.Mathematics.Color c) => new RGBColor(c.R, c.G, c.B, c.A);
     }
 }

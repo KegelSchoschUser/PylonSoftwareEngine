@@ -14,7 +14,7 @@ namespace PylonGameEngine.GameWorld
         public bool Enabled = true;
 
 
-        public CameraObject(ref RenderTexture renderTarget, bool HasUI = true)
+        public CameraObject(RenderTexture renderTarget, bool HasUI = true)
         {
             CameraRender = new CameraRender(this, ref renderTarget, HasUI);
 

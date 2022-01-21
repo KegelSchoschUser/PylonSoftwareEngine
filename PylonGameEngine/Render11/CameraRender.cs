@@ -46,7 +46,7 @@ namespace PylonGameEngine.Render11
 
                 RenderPhases = new Renderphase[]
                 {
-                 new RenderPhaseSkybox(new Material("SkyBoxMaterial", new TextureShader(@"E:\Downloads\Skybox.png")), OutputSkybox, cameraObject) { UseDepth = false },
+                 new RenderPhaseSkybox(new Material("SkyBoxMaterial", new ColorShader(RGBColor.Red)), OutputSkybox, cameraObject) { UseDepth = false },
                  new RenderPhase3D(Output3D, cameraObject),
                  new RenderPhaseBillboardOnTop(OutputBillboardOnTop, cameraObject) { UseDepth = false },
                  new RenderPhase2D(Output2D, cameraObject) { RenderMode3D = false},

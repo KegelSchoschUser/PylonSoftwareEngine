@@ -70,8 +70,6 @@ namespace PylonGameEngine.Render11
        
             var UIObjects = MyGameWorld.GUI.GetRenderOrder();
             UIObjects.Insert(0, MyGameWorld.DirectController3D);
-            if(GameProperties.GameName != "Music Visualizer")
-                UIObjects.Add(Renderer.Unlicensed);
 
             var RawObjects = new List<(int, Matrix4x4, Texture)>();
             var Triangles = new List<Triangle>();
@@ -87,9 +85,9 @@ namespace PylonGameEngine.Render11
        
             if (RawObjects.Count > 0 && Triangles.Count > 0)
             {
-                var Vertices = Triangle.ArrayToRawVertices(Triangles).ToArray();
+                var Vertices = new Span<RawVertex>(Triangle.ArrayToRawVertices(Triangles).ToArray());
                 ID3D11Buffer VertexBuffer = D3D11GraphicsDevice.Device.CreateBuffer(BindFlags.VertexBuffer, Vertices);
-                var indices = Mesh.CreateOrderedIndicesList(Vertices.Length).ToArray();
+                var indices = new Span<int>(Mesh.CreateOrderedIndicesList(Vertices.Length).ToArray());
                 ID3D11Buffer IndexBuffer = D3D11GraphicsDevice.Device.CreateBuffer(BindFlags.IndexBuffer, indices);
 
                 D3D11GraphicsDevice.DeviceContext.IASetVertexBuffer(0, VertexBuffer, Marshal.SizeOf(new RawVertex()), 0);

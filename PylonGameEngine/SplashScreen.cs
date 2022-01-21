@@ -8,25 +8,31 @@ namespace PylonGameEngine
     public class SplashScreen
     {
         private INTERNALSplashScreen INTERNALSplashScreen;
-            
+        private bool HasImage = false;    
+
         public SplashScreen(Image Image, bool UseProgressbar = false)
         {
             INTERNALSplashScreen = new INTERNALSplashScreen(Image, UseProgressbar);
+            if (Image != null)
+                HasImage = true;
         }
 
         public void SetProgress(float Progress)
         {
-            INTERNALSplashScreen.SetProgress(Progress);
+            if (HasImage)
+                INTERNALSplashScreen.SetProgress(Progress);
         }
 
         public void ShowAsync()
         {
-            INTERNALSplashScreen.ShowAsync();
+            if(HasImage)
+                INTERNALSplashScreen.ShowAsync();
         }
 
         public void Close()
         {
-            INTERNALSplashScreen.Close();
+            if (HasImage)
+                INTERNALSplashScreen.Close();
         }
     }
 

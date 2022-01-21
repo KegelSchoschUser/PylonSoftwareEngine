@@ -508,11 +508,11 @@ namespace PylonGameEngine.GameWorld
 
         internal (GUIObject, GUIObject) CheckChildrenMouseBound()
         {
+
             GUIObject objhover = null;
             GUIObject objFocus = null;
             if (this.MouseInBounds())
             {
-
                 objhover = this;
                 if (OnFocusCheck())
                 {
@@ -521,6 +521,7 @@ namespace PylonGameEngine.GameWorld
             }
             foreach (var item in Children)
             {
+   
                 if (item.MouseInBounds())
                 {
                     objhover = item;

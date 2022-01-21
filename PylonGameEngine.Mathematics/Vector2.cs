@@ -191,13 +191,21 @@ namespace PylonGameEngine.Mathematics
             return new PointF(X, Y);
         }
 
+        public Vortice.Mathematics.Point ToVorticePoint()
+        {
+            return new Vortice.Mathematics.Point(X, Y);
+        }
+
         public System.Numerics.Vector2 ToSystemNumerics()
         {
             return new System.Numerics.Vector2(X, Y);
         }
 
+        public static implicit operator System.Numerics.Vector2(Vector2 v) => new System.Numerics.Vector2(v.X, v.Y);
+        public static explicit operator Vector2(System.Numerics.Vector2 v) => new Vector2(v.X,v.Y);
 
-
+        public static implicit operator Vortice.Mathematics.Point(Vector2 v) => new Vortice.Mathematics.Point(v.X, v.Y);
+        public static explicit operator Vector2(Vortice.Mathematics.Point v) => new Vector2(v.X, v.Y);
 
 
         public override string ToString()

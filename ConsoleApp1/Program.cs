@@ -515,7 +515,7 @@ public static class Program
         MyGame.Materials.Add(Mirror);
 
         var WindowTarget = (RenderTexture)MyGameWorld.WindowRenderTarget;
-        var MAINCAM = new CameraObject(ref WindowTarget, false);
+        var MAINCAM = new CameraObject(WindowTarget, false);
  
         MAINCAM.Activate();
         MyPhysics.Gravity = Vector3.Zero;
@@ -539,7 +539,7 @@ public static class Program
 
         MAINCAM.AddComponent(new speedomeeter(label, rigid));
 
-        CameraObject Camera2 = new CameraObject(ref MirrorTexture, false);
+        CameraObject Camera2 = new CameraObject( MirrorTexture, false);
         Camera2.Enabled = false;
 
         MAINCAM.AddObject(Camera2);

@@ -527,7 +527,7 @@ namespace PylonGameEngine.Render11
                             }
 
                             formatConverter.Initialize(bitmapSource, targetGuid, BitmapDitherType.None, null, 0, BitmapPaletteType.MedianCut);
-                            frame.WriteSource(formatConverter, new System.Drawing.Rectangle(0, 0, textureDesc.Width, textureDesc.Height));
+                            frame.WriteSource(formatConverter, new Vortice.RawRect(0, 0, textureDesc.Width, textureDesc.Height));
                         }
                     }
                 }

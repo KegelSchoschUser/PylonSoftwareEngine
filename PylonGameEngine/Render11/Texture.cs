@@ -24,22 +24,9 @@ namespace PylonGameEngine.Render11
 
         public Texture(int width, int height)
         {
-            Texture2DDescription TextureDescription = new Texture2DDescription
-            {
-                Format = Format.R32G32B32A32_Float,
-                ArraySize = 1,
-                MipLevels = 1,
-                Width = width,
-                Height = height,
-                SampleDescription = new SampleDescription(1, 0),
-                Usage = ResourceUsage.Default,
-                BindFlags = BindFlags.RenderTarget | BindFlags.ShaderResource,
-                CpuAccessFlags = CpuAccessFlags.None,
-                OptionFlags = ResourceOptionFlags.None
-            };
 
 
-            InternalTexture = D3D11GraphicsDevice.Device.CreateTexture2D(TextureDescription);
+            InternalTexture = D3D11GraphicsDevice.Device.CreateTexture2D(width, height, Format.R32G32B32A32_Float, 1, 1, null, BindFlags.RenderTarget | BindFlags.ShaderResource);
         }
 
         public Texture(ID3D11Texture2D texture)

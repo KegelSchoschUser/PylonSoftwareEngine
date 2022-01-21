@@ -23,12 +23,7 @@ namespace PylonGameEngine.Utilities
             RichPresence.Assets = new Assets() {LargeImageKey = "logo", LargeImageText = "Round 1"};
 
             RichPresence.State = "Playing Solo ;(";
-            RichPresence.Timestamps = new Timestamps() { Start = DateTime.Now, End = DateTime.Now.AddMinutes(15)};
-
-            RichPresence.Party = new Party() { ID = "0", Size = -1, Max = 10, Privacy = Party.PrivacySetting.Public};
-            RichPresence.Secrets = new Secrets() { JoinSecret = "0", MatchSecret = Secrets.CreateFriendlySecret(new Random()) , SpectateSecret = "0"};
             
-            DiscordRpcClient.RegisterUriScheme(executable: "editor.exe");
             DiscordRpcClient.SetPresence(RichPresence);
         }
 

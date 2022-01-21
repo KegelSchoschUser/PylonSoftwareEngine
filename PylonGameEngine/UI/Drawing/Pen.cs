@@ -49,7 +49,7 @@ namespace PylonGameEngine.UI.Drawing
         {
             _Color = color;
             Width = width;
-            br = g.RenderTarget.CreateSolidColorBrush(color.ToMSColor());
+            br = g.RenderTarget.CreateSolidColorBrush(color.ToVorticeColor());
 
             var strokestyleproperties = new StrokeStyleProperties();
             strokestyleproperties.StartCap = style.StartCap;

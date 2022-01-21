@@ -29,7 +29,7 @@ namespace PylonGameEngine.UI.Drawing
         public SolidBrush(Graphics g, RGBColor color)
         {
             _Color = color;
-            br = g.RenderTarget.CreateSolidColorBrush(color.ToMSColor());
+            br = g.RenderTarget.CreateSolidColorBrush(color.ToVorticeColor());
         }
     }
 }

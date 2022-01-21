@@ -13,11 +13,11 @@ namespace PylonGameEngine.UI.Drawing
             GradientStop[] gradientStops = new GradientStop[ColorStops.Count];
             for (int i = 0; i < ColorStops.Count; i++)
             {
-                gradientStops[i] = new GradientStop(ColorStops[i].Item1, ColorStops[i].Item2.ToMSColor());
+                gradientStops[i] = new GradientStop(ColorStops[i].Item1, ColorStops[i].Item2.ToVorticeColor());
             }
 
             var collection = g.RenderTarget.CreateGradientStopCollection(gradientStops, Gamma.Linear, ExtendMode.Mirror);
-            br = g.RenderTarget.CreateLinearGradientBrush(new LinearGradientBrushProperties(StartPoint.ToPointF(), EndPoint.ToPointF()), collection);
+            br = g.RenderTarget.CreateLinearGradientBrush(new LinearGradientBrushProperties(StartPoint.ToVorticePoint(), EndPoint.ToVorticePoint()), collection);
         }
     }
 }

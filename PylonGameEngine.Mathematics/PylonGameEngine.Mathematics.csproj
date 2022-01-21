@@ -8,4 +8,8 @@
 
   <ProjectExtensions><VisualStudio><UserProperties BuildVersion_StartDate="2000/1/1" /></VisualStudio></ProjectExtensions>
 
+  <ItemGroup>
+    <PackageReference Include="Vortice.Mathematics" Version="1.3.27" />
+  </ItemGroup>
+
 </Project>

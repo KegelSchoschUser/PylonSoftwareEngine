@@ -1,6 +1,7 @@
 ﻿using PylonGameEngine.GameWorld;
 using PylonGameEngine.Utilities;
 using System;
+using System.Collections.Generic;
 
 namespace PylonGameEngine.UI
 {
@@ -34,6 +35,7 @@ namespace PylonGameEngine.UI
 
             LockedList<GUIObject> Objects = new LockedList<GUIObject>(ref MyGame.RenderLock);
             Objects.AddRange(GUIObjects);
+            Objects.Reverse();
             Objects.Add(PlaceHolder);
 
             foreach (var obj in Objects)
@@ -110,6 +112,14 @@ namespace PylonGameEngine.UI
             else
             {
                 Parent.AddChild(gUIObject);
+            }
+        }
+
+        public void AddRange(GUIObject[] gUIObject, GUIObject Parent = null)
+        {
+            foreach (var obj in gUIObject)
+            {
+                Add(obj, Parent);
             }
         }
 

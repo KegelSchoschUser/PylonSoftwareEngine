@@ -26,7 +26,6 @@ namespace PylonGameEngine
         public static object RenderLock = new object();
         public static LockedList<Material> Materials = new LockedList<Material>(ref RenderLock);
         internal static bool RendererEnabled = true;
-        internal static Unlicensed UnlicensedObject;
         internal static Utilities.DiscordRPC RPC;
 
         public static void Initialize()
@@ -49,8 +48,6 @@ namespace PylonGameEngine
             StandardResources.AddResources();
             D3D11GraphicsDevice.INIT();
 
-            UnlicensedObject = new Unlicensed();
-            UnlicensedObject.Transform.Size = new Mathematics.Vector2(MainWindow.Size.Width, MainWindow.Size.Height);
             MyPhysics.Initialize();
             AudioEngine.Initialize();
 
@@ -84,6 +81,7 @@ namespace PylonGameEngine
 
         private static void GameTickLoop_Tick()
         {
+            Input.Mouse.Cycle();
             //GC.Collect();
         }
 
@@ -91,7 +89,7 @@ namespace PylonGameEngine
         {
             Application.DoEvents();
             Input.Keyboard.Cycle();
-            Input.Mouse.Cycle();
+
             RPC.Update();
         }
 
