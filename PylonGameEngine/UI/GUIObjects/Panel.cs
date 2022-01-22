@@ -20,6 +20,18 @@ namespace PylonGameEngine.GUI.GUIObjects
             }
         }
 
+        public float EdgeSizePixel
+        {
+            get
+            {
+                return EdgeSize * (Transform.Size.Y / 2f);
+            }
+            set
+            {
+                EdgeSize = value / (Transform.Size.Y / 2f);
+            }
+        }
+
         private float _EdgeThickness = 1f;
         public float EdgeThickness
         {

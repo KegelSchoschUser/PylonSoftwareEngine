@@ -29,7 +29,7 @@ namespace PylonGameEngine.GameWorld
 
         public DirectController3D()
         {
-            this.Transform.Size = new Vector2(MyGame.MainWindow.Size.Width, MyGame.MainWindow.Size.Height);
+            this.Transform.Size = new Vector2(MyGame.MainWindow.Size.X, MyGame.MainWindow.Size.Y);
             P = Graphics.CreatePen(RGBColor.White, 5f, new StrokeStyle());
         }
 

@@ -36,16 +36,26 @@ namespace PylonGameEngine.Input
             }
         }
 
+        public static Vector2 GlobalPosition
+        {
+            get
+            {
+                GetCursorPos(out var P);
+                return new Vector2(P.X, P.Y);
+            }
+        }
+
         public static Vector2 Position
         {
             get
             {
                 GetCursorPos(out var P);
-                return new Vector2(Mathf.Clamp(P.X - MyGame.MainWindow.Rectangle.Left, 0, MyGame.MainWindow.Rectangle.Right),
-                                   Mathf.Clamp(P.Y - MyGame.MainWindow.Rectangle.Top, 0, MyGame.MainWindow.Rectangle.Bottom));
+                return new Vector2(Mathf.Clamp(P.X - MyGame.MainWindow.Position.X, 0, MyGame.MainWindow.Size.X),
+                                   Mathf.Clamp(P.Y - MyGame.MainWindow.Position.Y, 0, MyGame.MainWindow.Size.Y) );
 
             }
         }
+
         private static Vector2 DeltaBuffer = new Vector2();
         public static Vector2 Delta;
         private static int ScrollDeltaBuffer = 0;

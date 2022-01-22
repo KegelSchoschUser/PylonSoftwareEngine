@@ -21,7 +21,7 @@ namespace PylonGameEngine.Render11
         internal IDXGISwapChain1 SwapChain;
         internal ID3D11Texture2D BackBufferTexture;
 
-        public WindowRenderTarget(Window window) : base(window.Width, window.Height)
+        public WindowRenderTarget(Window window) : base((int)window.Size.X, (int)window.Size.Y)
         {
             Window = window;
 
@@ -33,8 +33,8 @@ namespace PylonGameEngine.Render11
         {
             SwapChainDescription1 swapChainDescription = new SwapChainDescription1()
             {
-                Width = MyGame.MainWindow.Width,
-                Height = MyGame.MainWindow.Height,
+                Width = (int)MyGame.MainWindow.Size.X,
+                Height = (int)MyGame.MainWindow.Size.Y,
                 Format = Format.R8G8B8A8_UNorm,
                 BufferCount = 2,
                 BufferUsage = Vortice.DXGI.Usage.RenderTargetOutput,

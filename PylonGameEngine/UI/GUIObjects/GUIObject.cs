@@ -1,4 +1,5 @@
 ﻿using PylonGameEngine.General;
+using PylonGameEngine.GUI.GUIObjects;
 using PylonGameEngine.Input;
 using PylonGameEngine.Mathematics;
 using PylonGameEngine.Utilities;
@@ -34,6 +35,7 @@ namespace PylonGameEngine.GameWorld
 
         public PositionLayout PositionLayout = PositionLayout.Pixel;
         public RotationLayout RotationLayout = RotationLayout.TopLeft;
+        public bool Visible = true;
 
         private GUIObject _Parent;
         public GUIObject Parent
@@ -95,25 +97,28 @@ namespace PylonGameEngine.GameWorld
                 return _FocusAble;
             }
 
-            protected set
+            set
             {
                 _FocusAble = value;
             }
         }
 
-        protected bool Focused => this == MyGameWorld.GUI.FocusedObject;
+        public bool Focused => this == MyGameWorld.GUI.FocusedObject;
         protected bool FocusedLost => this == MyGameWorld.GUI.FocusedLostObject;
         protected bool MouseHover => this == MyGameWorld.GUI.MouseHoverObject;
         protected bool MouseEnter => this == MyGameWorld.GUI.MouseEnterObject;
         protected bool MouseLeave => this == MyGameWorld.GUI.MouseLeaveObject;
         protected bool LeftMousePressed = false;
         protected bool LeftMouseClicked = false;
+        protected bool LeftMouseUp = false;
 
         protected bool RightMousePressed = false;
         protected bool RightMouseClicked = false;
+        protected bool RightMouseUp = false;
 
         protected bool MiddleMousePressed = false;
         protected bool MiddleMouseClicked = false;
+        protected bool MiddleMouseUp = false;
 
 
         internal void UpdateTickInternal()
@@ -123,6 +128,12 @@ namespace PylonGameEngine.GameWorld
             if (this.Focused && Mouse.LeftButtonDown())
             {
                 LeftMouseClicked = true;
+            }
+
+            LeftMouseUp = false;
+            if (this.Focused && Mouse.LeftButtonUp())
+            {
+                LeftMouseUp = true;
             }
 
             LeftMousePressed = false;
@@ -139,6 +150,12 @@ namespace PylonGameEngine.GameWorld
                 MiddleMouseClicked = true;
             }
 
+            MiddleMouseUp = false;
+            if (this.Focused && Mouse.MiddleButtonUp())
+            {
+                MiddleMouseUp = true;
+            }
+
             MiddleMousePressed = false;
             if (this.Focused && Mouse.LeftButtonPressed())
             {
@@ -151,6 +168,12 @@ namespace PylonGameEngine.GameWorld
             if (this.Focused && Mouse.LeftButtonDown())
             {
                 RightMouseClicked = true;
+            }
+
+            RightMouseUp = false;
+            if (this.Focused && Mouse.RightButtonUp())
+            {
+                RightMouseUp = true;
             }
 
             RightMousePressed = false;
@@ -177,7 +200,7 @@ namespace PylonGameEngine.GameWorld
                 Vector2 ParentSize;
 
                 if (Parent == null)
-                    ParentSize = new Vector2(MyGame.MainWindow.Width, MyGame.MainWindow.Height);
+                    ParentSize = new Vector2(MyGame.MainWindow.Size.X, MyGame.MainWindow.Size.Y);
                 else
                     ParentSize = Parent.Transform.Size;
 
@@ -380,14 +403,14 @@ namespace PylonGameEngine.GameWorld
                 Graphics.BeginDraw();
 
                 var Clip = GetClip();
-                Graphics.CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
 
                 OnDraw(Graphics);
 
-                Graphics.ApplyClip();
-
                 if (DebugSettings.UISettings.DrawLayoutRectangle)
                     DrawLayoutRectangle(Graphics);
+
+                Graphics.CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
+                Graphics.ApplyClip();
 
                 Graphics.EndDraw();
             }
@@ -449,6 +472,7 @@ namespace PylonGameEngine.GameWorld
             }
 
             gameObject.Parent = this;
+            gameObject.QueueDraw();
             Children.Add(gameObject);
         }
 
@@ -466,7 +490,7 @@ namespace PylonGameEngine.GameWorld
             }
             else
             {
-                MyGameWorld.GUI.Remove(this);
+                MyGameWorld.GUI.Destroy(this);
                 foreach (GUIObject child in Children)
                 {
                     child.Parent = null;
@@ -484,9 +508,9 @@ namespace PylonGameEngine.GameWorld
 
         internal bool OnFocusCheck()
         {
-            if (FocusAble)
+            if (FocusAble && Visible && ExtendedFocusCheck())
             {
-                if (Mouse.LeftButtonPressed())
+                if (Mouse.LeftButtonDown() == true || Mouse.LeftButtonPressed() == true)
                 {
                     return true;
                 }
@@ -495,8 +519,16 @@ namespace PylonGameEngine.GameWorld
             return false;
         }
 
+        protected virtual bool ExtendedFocusCheck()
+        {
+            return true;
+        }
+
         public List<GUIObject> GetChildrenRecursive()
         {
+            if (Visible == false)
+                return new List<GUIObject>();
+
             var objects = new List<GUIObject>();
             foreach (var item in Children)
             {
@@ -508,6 +540,8 @@ namespace PylonGameEngine.GameWorld
 
         internal (GUIObject, GUIObject) CheckChildrenMouseBound()
         {
+            if (Visible == false)
+                return (null, null);
 
             GUIObject objhover = null;
             GUIObject objFocus = null;
@@ -537,6 +571,17 @@ namespace PylonGameEngine.GameWorld
             return (objhover, objFocus);
         }
 
+        public void ToFront()
+        {   
+            PylonGameEngine.UI.GUI.GUIObjects.Remove(this);
+            PylonGameEngine.UI.GUI.GUIObjects.Add(this);
+        }
+
+        public void ToBack()
+        {
+            PylonGameEngine.UI.GUI.GUIObjects.Remove(this);
+            PylonGameEngine.UI.GUI.GUIObjects.Insert(0, this);
+        }
 
         public virtual void OnDestroy()
         {

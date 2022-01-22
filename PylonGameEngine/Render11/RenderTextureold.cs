@@ -17,8 +17,8 @@ namespace PylonGameEngine.Render11
             // Initialize and set up the render target description.
             Texture2DDescription RenderTargetTextureDescription = new Texture2DDescription()
             {
-                Width = MyGame.MainWindow.Width,
-                Height = MyGame.MainWindow.Height,
+                Width = (int)MyGame.MainWindow.Size.X,
+                Height = (int)MyGame.MainWindow.Size.Y,
                 MipLevels = 1,
                 ArraySize = 1,
                 Format = Format.R32G32B32A32_Float,

@@ -23,11 +23,15 @@ namespace PylonGameEngine.Utilities
 
         public delegate void OnStart();
         public event OnStart Starting;
-        public GameLoop(float tickRate, string name = "UNKNOWN")
+
+        public object LockObject;
+
+        public GameLoop(float tickRate, string name = "UNKNOWN", object lockobject = null)
         {
             Frames = 0;
             Tickrate = tickRate;
             Name = name;
+            LockObject = lockobject;
             Tick += GameLoop_Tick;
             TickInfo += GameLoop_TickInfo;
             Starting += GameLoop_Start;
@@ -69,6 +73,7 @@ namespace PylonGameEngine.Utilities
                             DeltaTime = (now - previousStart).Ticks / 10000000f;
                             if (!Paused)
                             {
+    
                                 Tick();
                                 TickInfo(this);
                                 for (int i = 0; i < Invokes.Count; i++)
@@ -110,12 +115,13 @@ namespace PylonGameEngine.Utilities
                         DeltaTime = (now - previousStart).Ticks / 10000000f;
                         if (!Paused)
                         {
-                            Tick();
-                            TickInfo(this);
-                            for (int i = 0; i < Invokes.Count; i++)
-                            {
-                                Invokes.Dequeue().Invoke();
-                            }
+                            
+                                Tick();
+                                TickInfo(this);
+                                for (int i = 0; i < Invokes.Count; i++)
+                                {
+                                    Invokes.Dequeue().Invoke();
+                                }
                         }
 
                         if (Tickrate != -1.0f)

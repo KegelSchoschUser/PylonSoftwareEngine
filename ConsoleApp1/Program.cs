@@ -283,7 +283,6 @@ public class MyScript : GameScript
         }
         if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.G))
         {
-            Mouse.LockCursor(MyGame.MainWindow.Rectangle);
             Console.WriteLine(Mouse.CursorLockState);
         }
         if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.T))
@@ -489,6 +488,7 @@ public static class Program
         GameProperties.SplashScreen = new SplashScreen((Bitmap)Bitmap.FromFile("Splash.png"));
         GameProperties.RenderTickRate = 60;
         MyGame.Initialize();
+        MyGame.Start();
 
         MirrorTexture = new RenderTexture(1920, 1080);
         PylonGameEngine.UI.Drawing.Graphics g = new PylonGameEngine.UI.Drawing.Graphics(MirrorTexture);
@@ -515,7 +515,7 @@ public static class Program
         MyGame.Materials.Add(Mirror);
 
         var WindowTarget = (RenderTexture)MyGameWorld.WindowRenderTarget;
-        var MAINCAM = new CameraObject(WindowTarget, false);
+        var MAINCAM = new CameraObject(WindowTarget, true);
  
         MAINCAM.Activate();
         MyPhysics.Gravity = Vector3.Zero;

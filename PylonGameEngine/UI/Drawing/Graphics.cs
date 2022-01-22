@@ -114,6 +114,7 @@ namespace PylonGameEngine.UI.Drawing
         public void EndDraw()
         {
             RenderTarget.Flush(out var tag1, out var tag2);
+  
             RenderTarget.EndDraw();
         }
 

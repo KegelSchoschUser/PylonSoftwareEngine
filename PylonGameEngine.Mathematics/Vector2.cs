@@ -79,6 +79,11 @@ namespace PylonGameEngine.Mathematics
             return new Vector2(v1.X - v2, v1.Y - v2);
         }
 
+        public static Vector2 operator -(Vector2 v1)
+        {
+            return new Vector2(-v1.X, -v1.Y);
+        }
+
         public static Vector2 operator *(Vector2 v1, float k)
         {
             return new Vector2(v1.X * k, v1.Y * k);

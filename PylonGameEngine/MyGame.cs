@@ -2,6 +2,7 @@
 using PylonGameEngine.Physics;
 using PylonGameEngine.Render11;
 using PylonGameEngine.Utilities;
+using PylonGameEngine.Utilities.Win32;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -39,10 +40,10 @@ namespace PylonGameEngine
             MainWindow = new Window(GameProperties.GameName, GameProperties.StartWindowPosition, GameProperties.StartWindowSize, "PylonGameEngine");
             MainWindow.PlatformConstruct();
 
-            RenderLoop = new GameLoop(GameProperties.RenderTickRate);
+            RenderLoop = new GameLoop(GameProperties.RenderTickRate, "RenderLoop");
             RenderLoop.Tick += RenderLoop_Tick;
 
-            GameTickLoop = new GameLoop(GameProperties.GameTickRate);
+            GameTickLoop = new GameLoop(GameProperties.GameTickRate, "GameTickLoop");
             GameTickLoop.Tick += GameTickLoop_Tick;
 
             StandardResources.AddResources();
@@ -85,9 +86,27 @@ namespace PylonGameEngine
             //GC.Collect();
         }
 
-        private static void RenderLoop_Tick()
+        private unsafe static void RenderLoop_Tick()
         {
-            Application.DoEvents();
+            Utilities.Win32.Message msg;
+            while(User32.PeekMessage(out msg, IntPtr.Zero, 0, 0, 1))
+            {
+                _ = User32.TranslateMessage(&msg);
+                _ = User32.DispatchMessage(&msg);
+            }
+            
+            //if (ret == 0)
+            //{
+            //    MyGame.Stop();
+            //}
+            //else if (ret == -1)
+            //{
+            //    MyGame.Stop();
+            //}
+            //else
+
+
+            //Application.DoEvents();
             Input.Keyboard.Cycle();
 
             RPC.Update();

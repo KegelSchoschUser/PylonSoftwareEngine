@@ -9,7 +9,7 @@ namespace PylonGameEngine.UI
     {
         public static LockedList<GUIObject> GUIObjects { get; private set; }
 
-        internal GUIObject FocusedObject { get; private set; }
+        public GUIObject FocusedObject { get; private set; }
         internal GUIObject FocusedLostObject { get; private set; }
         private GUIObject LastFocusedObject;
 
@@ -24,7 +24,7 @@ namespace PylonGameEngine.UI
         public GUI()
         {
             GUIObjects = new LockedList<GUIObject>(ref MyGame.RenderLock);
-            PlaceHolder = new GUIObject() { Transform = new Mathematics.Transform2D() { Size = new Mathematics.Vector2(MyGame.MainWindow.Size.Width, MyGame.MainWindow.Size.Height) } };
+            PlaceHolder = new GUIObject() { Transform = new Mathematics.Transform2D() { Size = new Mathematics.Vector2(MyGame.MainWindow.Size.X, MyGame.MainWindow.Size.Y) } };
         }
 
 
@@ -40,18 +40,22 @@ namespace PylonGameEngine.UI
 
             foreach (var obj in Objects)
             {
+
                 if (obj.MouseInBounds())
                 {
                     var objs = obj.CheckChildrenMouseBound();
                     MouseHoverObject = objs.Item1;
                     if (objs.Item2 != null)
+                    {
                         FocusedObject = objs.Item2;
-                    break;
+                        break;
+                    }
+                    
                 }
-                else
-                {
-                    MouseHoverObject = null;
-                }
+                //else
+                //{
+                //    MouseHoverObject = null;
+                //}
             }
 
             Objects.Remove(PlaceHolder);
@@ -89,18 +93,25 @@ namespace PylonGameEngine.UI
 
         public LockedList<GUIObject> GetRenderOrder()
         {
-            var Output = new LockedList<GUIObject>(ref MyGame.RenderLock);
-            foreach (var obj in GUIObjects)
+            lock (MyGame.RenderLock)
             {
-                Output.Add(obj);
-                Output.AddRange(obj.GetChildrenRecursive());
+                var Output = new LockedList<GUIObject>(ref MyGame.RenderLock);
+                foreach (var obj in GUIObjects)
+                {
+                    if (obj.Visible == false)
+                        continue;
+
+                    Output.Add(obj);
+                    Output.AddRange(obj.GetChildrenRecursive());
+                }
+                return Output;
             }
-            return Output;
         }
 
-        public void Remove(GUIObject gUIObject)
+        public void Destroy(GUIObject gUIObject)
         {
-            gUIObject.Destroy();
+            lock (MyGame.RenderLock)
+                gUIObject.Destroy();
         }
 
         public void Add(GUIObject gUIObject, GUIObject Parent = null)

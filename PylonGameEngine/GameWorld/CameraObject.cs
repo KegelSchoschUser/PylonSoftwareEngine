@@ -62,8 +62,8 @@ namespace PylonGameEngine.GameWorld
             Vector3 v = new Vector3();
             float x = 0;
             float y = 0;
-            float width = MyGame.MainWindow.Width;
-            float height = MyGame.MainWindow.Height;
+            float width = (int)MyGame.MainWindow.Size.X;
+            float height = (int)MyGame.MainWindow.Size.Y;
             float minZ = Near;
             float maxZ = Far;
             Matrix4x4 worldViewProjection = ViewMatrix3D * ProjectionMatrix;
@@ -78,8 +78,8 @@ namespace PylonGameEngine.GameWorld
             Vector3 v = new Vector3();
             float x = 0;
             float y = 0;
-            float width = MyGame.MainWindow.Width;
-            float height = MyGame.MainWindow.Height;
+            float width = (int)MyGame.MainWindow.Size.X;
+            float height = (int)MyGame.MainWindow.Size.Y;
             Matrix4x4 worldViewProjection = ViewMatrix3D * ProjectionMatrix;
 
             v = Vector3.TransformCoordinate(vector, worldViewProjection);
@@ -92,8 +92,8 @@ namespace PylonGameEngine.GameWorld
             Vector3 v = new Vector3();
             float x = 0;
             float y = 0;
-            float width = MyGame.MainWindow.Width;
-            float height = MyGame.MainWindow.Height;
+            float width = (int)MyGame.MainWindow.Size.X;
+            float height = (int)MyGame.MainWindow.Size.Y;
             float minZ = Near;
             float maxZ = Far;
             Matrix4x4 worldViewProjection = ViewMatrix3D * ProjectionMatrix;
@@ -127,8 +127,8 @@ namespace PylonGameEngine.GameWorld
             Quaternion v = new Quaternion();
             float x = 0;
             float y = 0;
-            float width = MyGame.MainWindow.Width;
-            float height = MyGame.MainWindow.Height;
+            float width = (int)MyGame.MainWindow.Size.X;
+            float height = (int)MyGame.MainWindow.Size.Y;
             float minZ = Near;
             float maxZ = Far;
             Matrix4x4 worldViewProjection = ViewMatrix3D * ProjectionMatrix;
@@ -146,7 +146,7 @@ namespace PylonGameEngine.GameWorld
         {
             get
             {
-                return Matrix4x4.PerspectiveFovLH(FoV * (float)System.Math.PI / 180f, (MyGame.MainWindow.Width / (float)MyGame.MainWindow.Height), Near, Far);
+                return Matrix4x4.PerspectiveFovLH(FoV * (float)System.Math.PI / 180f, (MyGame.MainWindow.Size.X / (float)MyGame.MainWindow.Size.Y), Near, Far);
             }
         }
 
@@ -156,7 +156,7 @@ namespace PylonGameEngine.GameWorld
             get
             {
                 //return Matrix4x4.OrthoLH(GlobalManager.MainWindow.Width / OrthographicFoV, GlobalManager.MainWindow.Height / OrthographicFoV, 0, 1);;
-                return Matrix4x4.OrthoOffCenterLH((-MyGame.MainWindow.Width) / 2f * OrthographicFoV, (MyGame.MainWindow.Width) / 2f, (-MyGame.MainWindow.Height) / 2f * OrthographicFoV, (MyGame.MainWindow.Height) / 2f, 0, 1);
+                return Matrix4x4.OrthoOffCenterLH((-MyGame.MainWindow.Size.X) / 2f * OrthographicFoV, (MyGame.MainWindow.Size.X) / 2f, (-MyGame.MainWindow.Size.Y) / 2f * OrthographicFoV, (MyGame.MainWindow.Size.Y) / 2f, 0, 1);
             }
         }
 

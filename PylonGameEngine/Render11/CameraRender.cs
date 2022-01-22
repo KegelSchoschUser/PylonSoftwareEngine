@@ -33,10 +33,10 @@ namespace PylonGameEngine.Render11
 
             if (HasUI)
             {
-                RenderTexture OutputSkybox = new RenderTexture(MyGame.MainWindow.SizeVec2);
-                RenderTexture Output3D = new RenderTexture(MyGame.MainWindow.SizeVec2);
-                RenderTexture OutputBillboardOnTop = new RenderTexture(MyGame.MainWindow.SizeVec2);
-                RenderTexture Output2D = new RenderTexture(MyGame.MainWindow.SizeVec2);
+                RenderTexture OutputSkybox = new RenderTexture(MyGame.MainWindow.Size);
+                RenderTexture Output3D = new RenderTexture(MyGame.MainWindow.Size);
+                RenderTexture OutputBillboardOnTop = new RenderTexture(MyGame.MainWindow.Size);
+                RenderTexture Output2D = new RenderTexture(MyGame.MainWindow.Size);
 
                 List<Texture> Textures = new List<Texture>();
                 Textures.Add(OutputSkybox);
@@ -55,10 +55,10 @@ namespace PylonGameEngine.Render11
             }
             else
             {
-                RenderTexture OutputSkybox = new RenderTexture(MyGame.MainWindow.SizeVec2);
-                RenderTexture Output3D = new RenderTexture(MyGame.MainWindow.SizeVec2);
-                RenderTexture OutputBillboardOnTop = new RenderTexture(MyGame.MainWindow.SizeVec2);
-                RenderTexture Output2D = new RenderTexture(MyGame.MainWindow.SizeVec2);
+                RenderTexture OutputSkybox = new RenderTexture(MyGame.MainWindow.Size);
+                RenderTexture Output3D = new RenderTexture(MyGame.MainWindow.Size);
+                RenderTexture OutputBillboardOnTop = new RenderTexture(MyGame.MainWindow.Size);
+                RenderTexture Output2D = new RenderTexture(MyGame.MainWindow.Size);
 
                 List<Texture> Textures = new List<Texture>();
                 Textures.Add(OutputSkybox);

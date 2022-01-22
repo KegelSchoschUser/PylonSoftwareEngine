@@ -5,6 +5,9 @@ using System.Runtime.InteropServices;
 namespace PylonGameEngine.Utilities.Win32
 {
     #region Enums
+
+
+
     [Flags]
     public enum WindowStyles
     {
@@ -280,6 +283,16 @@ namespace PylonGameEngine.Utilities.Win32
     #endregion
 
     #region Structures
+
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct RECT
+    {
+        public int Left;        // x position of upper-left corner
+        public int Top;         // y position of upper-left corner
+        public int Right;       // x position of lower-right corner
+        public int Bottom;      // y position of lower-right corner
+    }
     [StructLayout(LayoutKind.Sequential)]
     public struct Message
     {
@@ -644,6 +657,63 @@ namespace PylonGameEngine.Utilities.Win32
         public const int WM_MOUSELEAVE = 675;
         public const int WM_INPUT = 255;
 
+        public const UInt32 MF_INSERT = 0x00000000;
+        public const UInt32 MF_CHANGE = 0x00000080;
+        public const UInt32 MF_APPEND = 0x00000100;
+        public const UInt32 MF_DELETE = 0x00000200;
+        public const UInt32 MF_REMOVE = 0x00001000;
+
+        public const UInt32 MF_BYCOMMAND = 0x00000000;
+        public const UInt32 MF_BYPOSITION = 0x00000400;
+
+        public const UInt32 MF_SEPARATOR = 0x00000800;
+
+        public const UInt32 MF_ENABLED = 0x00000000;
+        public const UInt32 MF_GRAYED = 0x00000001;
+        public const UInt32 MF_DISABLED = 0x00000002;
+
+        public const UInt32 MF_UNCHECKED = 0x00000000;
+        public const UInt32 MF_CHECKED = 0x00000008;
+        public const UInt32 MF_USECHECKBITMAPS = 0x00000200;
+
+        public const UInt32 MF_STRING = 0x00000000;
+        public const UInt32 MF_BITMAP = 0x00000004;
+        public const UInt32 MF_OWNERDRAW = 0x00000100;
+
+        public const UInt32 MF_POPUP = 0x00000010;
+        public const UInt32 MF_MENUBARBREAK = 0x00000020;
+        public const UInt32 MF_MENUBREAK = 0x00000040;
+
+        public const UInt32 MF_UNHILITE = 0x00000000;
+        public const UInt32 MF_HILITE = 0x00000080;
+
+        public const UInt32 MF_DEFAULT = 0x00001000;
+        public const UInt32 MF_SYSMENU = 0x00002000;
+        public const UInt32 MF_HELP = 0x00004000;
+        public const UInt32 MF_RIGHTJUSTIFY = 0x00004000;
+
+        public const UInt32 MF_MOUSESELECT = 0x00008000;
+        public const UInt32 MF_END = 0x00000080;  /* Obsolete -- only used by old RES files */
+
+        public const UInt32 MFT_STRING = MF_STRING;
+        public const UInt32 MFT_BITMAP = MF_BITMAP;
+        public const UInt32 MFT_MENUBARBREAK = MF_MENUBARBREAK;
+        public const UInt32 MFT_MENUBREAK = MF_MENUBREAK;
+        public const UInt32 MFT_OWNERDRAW = MF_OWNERDRAW;
+        public const UInt32 MFT_RADIOCHECK = 0x00000200;
+        public const UInt32 MFT_SEPARATOR = MF_SEPARATOR;
+        public const UInt32 MFT_RIGHTORDER = 0x00002000;
+        public const UInt32 MFT_RIGHTJUSTIFY = MF_RIGHTJUSTIFY;
+
+        public const UInt32 MFS_GRAYED = 0x00000003;
+        public const UInt32 MFS_DISABLED = MFS_GRAYED;
+        public const UInt32 MFS_CHECKED = MF_CHECKED;
+        public const UInt32 MFS_HILITE = MF_HILITE;
+        public const UInt32 MFS_ENABLED = MF_ENABLED;
+        public const UInt32 MFS_UNCHECKED = MF_UNCHECKED;
+        public const UInt32 MFS_UNHILITE = MF_UNHILITE;
+        public const UInt32 MFS_DEFAULT = MF_DEFAULT;
+
         [DllImport("user32", ExactSpelling = true)]
         public static extern unsafe ushort RegisterClassExW(WNDCLASSEX* lpwcx);
 
@@ -653,18 +723,34 @@ namespace PylonGameEngine.Utilities.Win32
         [DllImport("user32", ExactSpelling = true)]
         public static extern IntPtr LoadCursorW(IntPtr hInstance, ushort* lpCursorName);
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+
         [DllImport("user32", ExactSpelling = true, SetLastError = true)]
         public static extern unsafe int GetMessageW(Message* lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
 
         [DllImport("user32", ExactSpelling = true)]
         public static extern unsafe int PeekMessageW(Message* lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax, uint wRemoveMsg);
 
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetActiveWindow();
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool PeekMessage(out Message lpMsg, IntPtr hWnd, uint wMsgFilterMin,
+           uint wMsgFilterMax, uint wRemoveMsg);
+
         [DllImport("user32", ExactSpelling = true)]
         public static extern int TranslateMessage(Message* lpMsg);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr DispatchMessage(Message* lpMsg);
 
         [DllImport("user32", ExactSpelling = true)]
         public static extern unsafe nint DispatchMessageW(Message* lpMsg);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
 
         [DllImport("user32", ExactSpelling = true)]
         public static extern int ShowWindow(IntPtr hWnd, int nCmdShow);
@@ -677,6 +763,10 @@ namespace PylonGameEngine.Utilities.Win32
 
         [DllImport("user32.dll")]
         public static extern int GetMessage(out Message lpMsg, IntPtr hWnd, uint wMsgFilterMin, uint wMsgFilterMax);
+
+        [DllImport("user32.dll")]
+        public static extern bool EnableMenuItem(IntPtr hMenu, uint uIDEnableItem,
+   uint uEnable);
 
         // This static method is required because legacy OSes do not support
         // SetWindowLongPtr

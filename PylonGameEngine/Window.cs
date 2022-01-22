@@ -67,34 +67,30 @@ namespace PylonGameEngine
         public string Title { get; private set; }
         public IntPtr Handle { get; private set; }
         public string WindowClassName { get; private set; }
-        public Rectangle Rectangle { get; private set; }
-        public int Width
+        public Vector2 Size
         {
             get
             {
-                return Rectangle.Width;
+                User32.GetWindowRect(Handle, out var rect);
+                int width = rect.Right - rect.Left;
+                int height = rect.Bottom - rect.Top;
+                return new Vector2(width, height);
+            }
+            set
+            {
+                User32.SetWindowPos(Handle, IntPtr.Zero, 0, 0, (int)value.X, (int)value.Y, SetWindowPosFlags.IgnoreMove);
             }
         }
-        public int Height
+        public Vector2 Position
         {
             get
             {
-                return Rectangle.Height;
+                User32.GetWindowRect(Handle, out var rect);
+                return new Vector2(rect.Left, rect.Top);
             }
-        }
-        public Size Size
-        {
-            get
+            set
             {
-                return Rectangle.Size;
-            }
-        }
-
-        public Vector2 SizeVec2
-        {
-            get
-            {
-                return new Vector2(Rectangle.Size);
+                User32.SetWindowPos(Handle, IntPtr.Zero, (int)value.X, (int)value.Y, 0, 0, SetWindowPosFlags.IgnoreResize);
             }
         }
 
@@ -102,16 +98,18 @@ namespace PylonGameEngine
         {
             get
             {
-                return (float)Width / (float)Height;
+                return (float)Size.X / (float)Size.Y;
             }
         }
 
-
+        Vector2 StartPosition;
+        Vector2 StartSize;
         public Window(string title, Vector2 Position, Vector2 Size, string windowClassName)
         {
             Title = title;
-            Rectangle = new Rectangle(Position.ToPoint(), new System.Drawing.Size(Size.ToPoint()));
             WindowClassName = windowClassName;
+            StartPosition = Position;
+            StartSize = Size;
 
             fixed (char* lpszClassName = WindowClassName)
             {
@@ -145,9 +143,7 @@ namespace PylonGameEngine
             int Height;
             WindowStyles style = WindowStyles.WS_VISIBLE | WindowStyles.WS_POPUP;
             WindowExStyles styleEx = WindowExStyles.WS_EX_APPWINDOW | WindowExStyles.WS_EX_WINDOWEDGE;
-            RECT rect = new RECT(Rectangle.Left, Rectangle.Top, Rectangle.Right, Rectangle.Bottom);
             //AdjustWindowRectEx(ref rect, (uint)style, false, (uint)styleEx);
-            Rectangle = rect.ToRectangle();
 
             fixed (char* lpszClassName = WindowClassName)
             {
@@ -158,10 +154,10 @@ namespace PylonGameEngine
                     (ushort*)lpszClassName,
                     (ushort*)lpWindowName,
                     (uint)style,
-                    Rectangle.X,
-                    Rectangle.Y,
-                    Rectangle.Width,
-                    Rectangle.Height,
+                    (int)StartPosition.X,
+                    (int)StartPosition.Y,
+                    (int)StartSize.X,
+                    (int)StartSize.Y,
                     IntPtr.Zero,
                     IntPtr.Zero,
                     IntPtr.Zero,

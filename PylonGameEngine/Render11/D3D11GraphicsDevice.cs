@@ -166,7 +166,7 @@ namespace PylonGameEngine.Render11
             // Now set the rasterizer state.
             DeviceContext.RSSetState(RasterState);
             // Setup and create the viewport for rendering.
-            DeviceContext.RSSetViewport(new Viewport(0, 0, MyGame.MainWindow.Width, MyGame.MainWindow.Height));
+            DeviceContext.RSSetViewport(new Viewport(0, 0, MyGame.MainWindow.Size.X, MyGame.MainWindow.Size.Y));
 
             BlendDescription blendDescription = new BlendDescription();
             blendDescription.RenderTarget[0].IsBlendEnabled = true;
