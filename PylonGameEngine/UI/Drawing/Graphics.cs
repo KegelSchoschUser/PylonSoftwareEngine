@@ -22,6 +22,7 @@ namespace PylonGameEngine.UI.Drawing
         internal ID2D1RenderTarget RenderTarget;
         internal ID2D1DeviceContext DeviceContext;
         private IDWriteFactory7 WriteFactory;
+        private bool CreatedFromGUIObject = false;
 
         public Graphics(Texture texture)
         {
@@ -36,7 +37,20 @@ namespace PylonGameEngine.UI.Drawing
 
         public Graphics(GUIObject guiobject)
         {
+            CreatedFromGUIObject = true;
             Texture = new Texture((int)guiobject.Transform.Size.X, (int)guiobject.Transform.Size.Y);
+            DXGISurface = Texture.InternalTexture.QueryInterface<IDXGISurface>();
+
+            RenderTargetProperties renderTargetProperties = new RenderTargetProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.R32G32B32A32_Float, Vortice.DCommon.AlphaMode.Premultiplied));
+            RenderTarget = D3D11GraphicsDevice.Factory2D.CreateDxgiSurfaceRenderTarget(DXGISurface, renderTargetProperties);
+            DeviceContext = RenderTarget.QueryInterface<ID2D1DeviceContext>();
+            WriteFactory = DWrite.DWriteCreateFactory<IDWriteFactory7>();
+        }
+
+        public void RecreateTexture(float width, float height)
+        {
+            Texture.Destroy();
+            Texture = new Texture((int)width, (int)height);
             DXGISurface = Texture.InternalTexture.QueryInterface<IDXGISurface>();
 
             RenderTargetProperties renderTargetProperties = new RenderTargetProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.R32G32B32A32_Float, Vortice.DCommon.AlphaMode.Premultiplied));
@@ -65,13 +79,25 @@ namespace PylonGameEngine.UI.Drawing
             }
         }
 
+        
+        public void Destroy()
+        {
+            lock (MyGame.RenderLock)
+            {
+
+            
+            WriteFactory.Release();
+            DXGISurface.Release();
+            //if (CreatedFromGUIObject)
+            //DeviceContext.Release();
+                //    Texture.Destroy();
+                //RenderTarget.Dispose();
+            }
+        }
+
         ~Graphics()
         {
-            RenderTarget = null;
-            DXGISurface = null;
-            Texture = null;
-            //Mesh = null;
-            DeviceContext = null;
+            Destroy();
         }
 
         public SolidBrush CreateSolidBrush(RGBColor color)
@@ -140,7 +166,7 @@ namespace PylonGameEngine.UI.Drawing
 
         public void FillRectangle(LinearGradientBrush brush, Vector2 Position, Vector2 Size)
         {
-            RenderTarget.FillRectangle(new RawRectF(Position.X, Position.Y, Size.X, Size.Y), brush.br);
+            RenderTarget.FillRectangle(new RawRectF(Position.X, Position.Y, Position.X + Size.X, Position.Y + Size.Y), brush.br);
         }
 
         public void FillRectangle(SolidBrush brush)
@@ -155,12 +181,12 @@ namespace PylonGameEngine.UI.Drawing
 
         public void FillRectangle(SolidBrush brush, Vector2 Position, Vector2 Size)
         {
-            RenderTarget.FillRectangle(new RawRectF(Position.X, Position.Y, Size.X, Size.Y), brush.br);
+            RenderTarget.FillRectangle(new RawRectF(Position.X, Position.Y, Position.X + Size.X, Position.Y + Size.Y), brush.br);
         }
 
         public void FillRoundedRectangle(SolidBrush brush, Vector2 Position, Vector2 Size, float radius)
         {
-            RenderTarget.FillRoundedRectangle(new RoundedRectangle(new RawRectF(Position.X, Position.Y, Size.X, Size.Y), radius, radius), brush.br);
+            RenderTarget.FillRoundedRectangle(new RoundedRectangle(new RawRectF(Position.X, Position.Y, Position.X + Size.X, Position.Y + Size.Y), radius, radius), brush.br);
         }
 
 
@@ -190,8 +216,25 @@ namespace PylonGameEngine.UI.Drawing
         }
 
 
+        public void DrawCircle(Pen brush, Vector2 Position, float radius)
+        {
+            RenderTarget.DrawEllipse(new Ellipse(Position, radius, radius), brush.br);
+        }
 
+        public void DrawEllipse(Pen brush, Vector2 Position, Vector2 Size)
+        {
+            RenderTarget.DrawEllipse(new Ellipse(Position, Size.X, Size.Y), brush.br);
+        }
 
+        public void FillCircle(SolidBrush brush, Vector2 Position, float radius)
+        {
+            RenderTarget.FillEllipse(new Ellipse(Position, radius, radius), brush.br);
+        }
+
+        public void FillEllipse(SolidBrush brush, Vector2 Position, Vector2 Size)
+        {
+            RenderTarget.FillEllipse(new Ellipse(Position, Size.X, Size.Y), brush.br);
+        }
 
 
 
@@ -560,11 +603,6 @@ namespace PylonGameEngine.UI.Drawing
             RenderTarget.DrawGeometry(geometry, pen.br, pen.Width);
         }
 
-        public void DrawEllipse(Pen pen, Vector2 Center, Vector2 Size)
-        {
-            RenderTarget.DrawEllipse(new Ellipse(Center.ToVorticePoint(), Size.X, Size.Y), pen.br, pen.Width);
-        }
-
 
         public TextMeasureOutput MeasureText(string Text, Font f, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)
         {
@@ -604,7 +642,7 @@ namespace PylonGameEngine.UI.Drawing
             textFormat.WordWrapping = (WordWrapping)WordWrapping;
             var textLayout = WriteFactory.CreateTextLayout(Text, textFormat, Size.X, Size.Y);
             var brush = CreateSolidBrush(f.Color);
-            RenderTarget.DrawTextLayout(Position, textLayout, brush.br, DrawTextOptions.EnableColorFont);
+            RenderTarget.DrawTextLayout(Position, textLayout, brush.br, f.EnableColorFont == true ? DrawTextOptions.EnableColorFont : DrawTextOptions.None);
             var Metrics = textLayout.Metrics;
             textFormat.Release();
             textLayout.Release();

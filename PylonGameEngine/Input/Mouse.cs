@@ -57,7 +57,15 @@ namespace PylonGameEngine.Input
         }
 
         private static Vector2 DeltaBuffer = new Vector2();
+
         public static Vector2 Delta;
+        public static float DeltaSpeed
+        {
+            get
+            {
+                return Mathf.Abs(Mouse.Delta.X) + Mathf.Abs(Mouse.Delta.Y);
+            }
+        }
         private static int ScrollDeltaBuffer = 0;
         public static int ScrollDelta;
 

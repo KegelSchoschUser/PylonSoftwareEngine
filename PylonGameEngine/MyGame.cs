@@ -83,6 +83,7 @@ namespace PylonGameEngine
         private static void GameTickLoop_Tick()
         {
             Input.Mouse.Cycle();
+            Input.Keyboard.Cycle();
             //GC.Collect();
         }
 
@@ -107,7 +108,7 @@ namespace PylonGameEngine
 
 
             //Application.DoEvents();
-            Input.Keyboard.Cycle();
+     
 
             RPC.Update();
         }

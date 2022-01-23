@@ -82,5 +82,6 @@ namespace PylonGameEngine
         public static float Cos(float value) => (float)System.Math.Cos(value);
         public static float Tan(float value) => (float)System.Math.Tan(value);
         public static float Abs(float value) => (float)System.Math.Abs(value);
+        public static float Floor(float value) => (float)System.Math.Floor(value);
     }
 }

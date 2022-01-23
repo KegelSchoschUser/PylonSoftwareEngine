@@ -152,7 +152,7 @@ namespace PylonGameEngine.Mathematics
 
         public Vortice.Mathematics.Color ToVorticeColor()
         {
-            return new Vortice.Mathematics.Color(R, G, B, A);
+            return new Vortice.Mathematics.Color(((int)R * 255), ((int)G * 255), ((int)B * 255), ((int)A * 255));
         }
 
         public static bool operator !=(RGBColor left, RGBColor right)
@@ -166,159 +166,74 @@ namespace PylonGameEngine.Mathematics
             return "{" + $"{R.ToString("0.000")}, {G.ToString("0.000")}, {B.ToString("0.000")}, {A.ToString("0.000")}" + "}";
         }
 
-        public float GetBrightness()
+        public HSVColor ToHSV()
         {
-            float r = R;
-            float g = G;
-            float b = B;
+            // https://github.com/rivy/OpenPDN
 
-            float max, min;
-
-            max = r; min = r;
-
-            if (g > max)
-            {
-                max = g;
-            }
-
-            if (b > max)
-            {
-                max = b;
-            }
-
-            if (g < min)
-            {
-                min = g;
-            }
-
-            if (b < min)
-            {
-                min = b;
-            }
-
-            return (max + min) / 2;
-        }
-
-        /// <summary>
-        ///       Returns the Hue-Saturation-Lightness (HSL) hue
-        ///       value, in degrees, for this <see cref='System.Drawing.Color'/> .  
-        ///       If R == G == B, the hue is meaningless, and the return value is 0.
-        /// </summary>
-        public float GetHue()
-        {
-            if (R == G && G == B)
-            {
-                return 0; // 0 makes as good an UNDEFINED value as any
-            }
-
-            float r = R;
-            float g = G;
-            float b = B;
-
-            float max, min;
+            float min;
+            float max;
             float delta;
-            float hue = 0.0f;
 
-            max = r; min = r;
+            float r = this.R;
+            float g = this.G;
+            float b = this.B;
 
-            if (g > max)
-            {
-                max = g;
-            }
+            float h;
+            float s;
+            float v;
 
-            if (b > max)
-            {
-                max = b;
-            }
-
-            if (g < min)
-            {
-                min = g;
-            }
-
-            if (b < min)
-            {
-                min = b;
-            }
-
+            min = Mathf.Min(Mathf.Min(r, g), b);
+            max = Mathf.Max(Mathf.Max(r, g), b);
+            v = max;
             delta = max - min;
-
-            if (r == max)
+            if (max == 0 || delta == 0)
             {
-                hue = (g - b) / delta;
+                // R, G, and B must be 0, or all the same.
+                // In this case, S is 0, and H is undefined.
+                // Using H = 0 is as good as any...
+                s = 0;
+                h = 0;
             }
-            else if (g == max)
+            else
             {
-                hue = 2 + (b - r) / delta;
-            }
-            else if (b == max)
-            {
-                hue = 4 + (r - g) / delta;
-            }
-            hue *= 60;
-
-            if (hue < 0.0f)
-            {
-                hue += 360.0f;
-            }
-            return hue;
-        }
-
-        public float GetSaturation()
-        {
-            float r = R;
-            float g = G;
-            float b = B;
-
-            float max, min;
-            float l, s = 0;
-
-            max = r; min = r;
-
-            if (g > max)
-            {
-                max = g;
-            }
-
-            if (b > max)
-            {
-                max = b;
-            }
-
-            if (g < min)
-            {
-                min = g;
-            }
-
-            if (b < min)
-            {
-                min = b;
-            }
-
-            // if max == min, then there is no color and
-            // the saturation is zero.
-            //
-            if (max != min)
-            {
-                l = (max + min) / 2;
-
-                if (l <= .5)
+                s = delta / max;
+                if (r == max)
                 {
-                    s = (max - min) / (max + min);
+                    // Between Yellow and Magenta
+                    h = (g - b) / delta;
+                }
+                else if (g == max)
+                {
+                    // Between Cyan and Yellow
+                    h = 2f + (b - r) / delta;
                 }
                 else
                 {
-                    s = (max - min) / (2 - max - min);
+                    // Between Magenta and Cyan
+                    h = 4f + (r - g) / delta;
                 }
-            }
-            return s;
-        }
 
+            }
+            // Scale h to be between 0 and 360. 
+            // This may require adding 360, if the value
+            // is negative.
+            h *= 60f;
+
+            if (h < 0)
+            {
+                h += 360f;
+            }
+
+            return new HSVColor(h, s * 100f, v * 100f);
+        }
 
 
 
 
         public static implicit operator Vortice.Mathematics.Color(RGBColor c) => new Vortice.Mathematics.Color(c.R, c.G, c.B, c.A);
         public static explicit operator RGBColor(Vortice.Mathematics.Color c) => new RGBColor(c.R, c.G, c.B, c.A);
+
+        public static implicit operator HSVColor(RGBColor v) => v.ToHSV();
+        public static implicit operator RGBColor(HSVColor v) => v.ToRGB();
     }
 }

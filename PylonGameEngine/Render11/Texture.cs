@@ -68,7 +68,8 @@ namespace PylonGameEngine.Render11
 
         public void Destroy()
         {
-            InternalTexture.Dispose();
+            InternalTexture.Release();
+            InternalTexture = null;
         }
 
         private static IWICFormatConverter LoadBitmap(IWICImagingFactory factory, string filename)

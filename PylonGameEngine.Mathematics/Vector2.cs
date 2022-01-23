@@ -10,6 +10,7 @@ namespace PylonGameEngine.Mathematics
         public float Y;
 
         public static readonly Vector2 Zero = new Vector2(0, 0);
+        public static readonly Vector2 One = new Vector2(1, 1);
 
         //public float w;
 
@@ -157,6 +158,15 @@ namespace PylonGameEngine.Mathematics
         public static bool operator <(Vector2 v1, float v2)
         {
             return (v1.X < v2 && v1.Y < v2);
+        }
+
+        public static bool operator ==(Vector2 v1, Vector2 v2)
+        {
+            return v1.X == v2.X && v1.Y == v2.Y;
+        }
+        public static bool operator !=(Vector2 v1, Vector2 v2)
+        {
+            return (v1 == v2) == false;
         }
 
         public static float Vector_DotProduct(Vector2 v1, Vector2 v2)

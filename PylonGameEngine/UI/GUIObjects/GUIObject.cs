@@ -135,7 +135,6 @@ namespace PylonGameEngine.GameWorld
             {
                 LeftMouseUp = true;
             }
-
             LeftMousePressed = false;
             if (this.Focused && Mouse.LeftButtonPressed())
             {
@@ -145,7 +144,7 @@ namespace PylonGameEngine.GameWorld
 
             #region Middle
             MiddleMouseClicked = false;
-            if (this.Focused && Mouse.LeftButtonDown())
+            if (this.Focused && Mouse.MiddleButtonDown())
             {
                 MiddleMouseClicked = true;
             }
@@ -157,7 +156,8 @@ namespace PylonGameEngine.GameWorld
             }
 
             MiddleMousePressed = false;
-            if (this.Focused && Mouse.LeftButtonPressed())
+
+            if (this.Focused && Mouse.MiddleButtonPressed())
             {
                 MiddleMousePressed = true;
             }
@@ -165,7 +165,7 @@ namespace PylonGameEngine.GameWorld
 
             #region Right
             RightMouseClicked = false;
-            if (this.Focused && Mouse.LeftButtonDown())
+            if (this.Focused && Mouse.RightButtonDown())
             {
                 RightMouseClicked = true;
             }
@@ -177,7 +177,7 @@ namespace PylonGameEngine.GameWorld
             }
 
             RightMousePressed = false;
-            if (this.Focused && Mouse.LeftButtonPressed())
+            if (this.Focused && Mouse.RightButtonPressed())
             {
                 RightMousePressed = true;
             }
@@ -382,7 +382,7 @@ namespace PylonGameEngine.GameWorld
             _QueueDraw = true;
         }
 
-        public void OnDrawInternal()
+        internal void OnDrawInternal()
         {
             if (_QueueDraw == true)
             {
@@ -396,7 +396,9 @@ namespace PylonGameEngine.GameWorld
                 if (_RecreateGraphics)
                 {
                     _RecreateGraphics = false;
-                    Graphics = new PylonGameEngine.UI.Drawing.Graphics(this);
+                    //Graphics.Destroy();
+                    //Graphics = new PylonGameEngine.UI.Drawing.Graphics(this);
+                    Graphics.RecreateTexture(this.Transform.Size.X, this.Transform.Size.Y);
                     GraphicsInitialized(Graphics);
                 }
 
@@ -510,7 +512,7 @@ namespace PylonGameEngine.GameWorld
         {
             if (FocusAble && Visible && ExtendedFocusCheck())
             {
-                if (Mouse.LeftButtonDown() == true || Mouse.LeftButtonPressed() == true)
+                if (Mouse.LeftButtonDown() == true /*|| Mouse.LeftButtonPressed() == true*/)
                 {
                     return true;
                 }
@@ -520,6 +522,11 @@ namespace PylonGameEngine.GameWorld
         }
 
         protected virtual bool ExtendedFocusCheck()
+        {
+            return true;
+        }
+
+        protected virtual bool ExtendedHoverCheck()
         {
             return true;
         }
@@ -547,26 +554,29 @@ namespace PylonGameEngine.GameWorld
             GUIObject objFocus = null;
             if (this.MouseInBounds())
             {
-                objhover = this;
+                if(FocusAble && ExtendedHoverCheck())
+                    objhover = this;
                 if (OnFocusCheck())
                 {
                     objFocus = this;
                 }
-            }
-            foreach (var item in Children)
-            {
-   
-                if (item.MouseInBounds())
+
+                foreach (var item in Children)
                 {
-                    objhover = item;
-                    if (OnFocusCheck())
+                    if (item.MouseInBounds())
                     {
-                        objFocus = item;
+                        if (FocusAble && ExtendedHoverCheck())
+                            objhover = item;
+                        if (OnFocusCheck())
+                        {
+                            objFocus = item;
+                        }
+                        item.CheckChildrenMouseBound();
+                        break;
                     }
-                    item.CheckChildrenMouseBound();
-                    break;
                 }
             }
+            
 
             return (objhover, objFocus);
         }

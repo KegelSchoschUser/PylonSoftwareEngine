@@ -27,11 +27,16 @@ namespace PylonGameEngine.UI
             PlaceHolder = new GUIObject() { Transform = new Mathematics.Transform2D() { Size = new Mathematics.Vector2(MyGame.MainWindow.Size.X, MyGame.MainWindow.Size.Y) } };
         }
 
+        public void SetFocus(GUIObject obj)
+        {
+            FocusedObject = obj;
+        }
 
         internal void UpdateTick()
         {
             LastMouseHoverObject = MouseHoverObject;
             LastFocusedObject = FocusedObject;
+   
 
             LockedList<GUIObject> Objects = new LockedList<GUIObject>(ref MyGame.RenderLock);
             Objects.AddRange(GUIObjects);
@@ -44,10 +49,11 @@ namespace PylonGameEngine.UI
                 if (obj.MouseInBounds())
                 {
                     var objs = obj.CheckChildrenMouseBound();
-                    MouseHoverObject = objs.Item1;
-                    if (objs.Item2 != null)
+                    if (objs.Item1 != null || objs.Item2 != null)
                     {
-                        FocusedObject = objs.Item2;
+                        MouseHoverObject = objs.Item1;
+                        if (objs.Item2 != null)
+                            FocusedObject = objs.Item2;
                         break;
                     }
                     
@@ -57,7 +63,6 @@ namespace PylonGameEngine.UI
                 //    MouseHoverObject = null;
                 //}
             }
-
             Objects.Remove(PlaceHolder);
             Objects.Clear();
 
