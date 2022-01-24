@@ -1,10 +1,13 @@
-﻿using System;
+﻿using PylonGameEngine.FileSystem.Filetypes;
+using PylonGameEngine.Mathematics;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PylonGameEngine.FileSystem.Filetypes
+namespace PylonGameEngine.FileSystem
 {
     public class DataReader
     {
@@ -56,6 +59,21 @@ namespace PylonGameEngine.FileSystem.Filetypes
         public float ReadFloat()
         {
             return BitConverter.ToSingle(ReadBytes(4), 0);
+        }
+
+        public Vector2 ReadVector2()
+        {
+            return new Vector2(ReadFloat(), ReadFloat());
+        }
+
+        public Vector3 ReadVector3()
+        {
+            return new Vector3(ReadFloat(), ReadFloat(), ReadFloat());
+        }
+
+        public dynamic ReadObject(IPylonSerializable type)
+        {
+            return type.DeSerialize(this);
         }
 
         public double ReadDouble()

@@ -1,7 +1,9 @@
-﻿using System;
+﻿using PylonGameEngine.FileSystem.Filetypes;
+using PylonGameEngine.Mathematics;
+using System;
 using System.Text;
 
-namespace PylonGameEngine.FileSystem.Filetypes
+namespace PylonGameEngine.FileSystem
 {
     public class DataWriter
     {
@@ -32,6 +34,24 @@ namespace PylonGameEngine.FileSystem.Filetypes
             WriteBytes( BitConverter.GetBytes(value));
         }
 
+        public void WriteVector2(Vector2 value)
+        {
+            WriteFloat(value.X);
+            WriteFloat(value.Y);
+        }
+
+        public void WriteVector3(Vector3 value)
+        {
+            WriteFloat(value.X);
+            WriteFloat(value.Y);
+            WriteFloat(value.Z);
+        }
+
+        public void WriteObject(IPylonSerializable obj)
+        {
+            obj.Serialize(this);
+        }
+
         public void WriteDouble(double value)
         {
             WriteBytes( BitConverter.GetBytes(value));
@@ -48,6 +68,7 @@ namespace PylonGameEngine.FileSystem.Filetypes
 
         public void WriteString(string value)
         {
+            WriteInt(Encoding.ASCII.GetBytes(value).Length);
             WriteBytes( Encoding.ASCII.GetBytes(value));
         }
 
