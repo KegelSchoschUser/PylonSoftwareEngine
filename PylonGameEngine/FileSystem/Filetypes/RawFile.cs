@@ -33,6 +33,7 @@ namespace PylonGameEngine.FileSystem.Filetypes
 
         public void SaveFile(string FileName)
         {
+            Directory.CreateDirectory(Path.GetDirectoryName(FileName));
             File.WriteAllBytes(FileName, Data);
         }
 

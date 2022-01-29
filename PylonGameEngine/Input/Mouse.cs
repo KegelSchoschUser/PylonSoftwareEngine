@@ -15,6 +15,17 @@ namespace PylonGameEngine.Input
         [DllImport("user32.dll")]
         public static extern bool GetCursorPos(out Point lpPoint);
 
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        public static extern int GetSystemMetrics(int nIndex);
+
+        public static bool IsTouchEnabled()
+        {
+            const int MAXTOUCHES_INDEX = 95;
+            int maxTouches = GetSystemMetrics(MAXTOUCHES_INDEX);
+
+            return maxTouches > 0;
+        }
+
         public struct RECT
         {
             public int Left;

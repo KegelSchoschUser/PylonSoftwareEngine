@@ -1,4 +1,5 @@
 ﻿using PylonGameEngine.Audio;
+using PylonGameEngine.Input;
 using PylonGameEngine.Physics;
 using PylonGameEngine.Render11;
 using PylonGameEngine.Utilities;
@@ -7,6 +8,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace PylonGameEngine
 {
@@ -29,6 +31,7 @@ namespace PylonGameEngine
         internal static bool RendererEnabled = true;
         internal static Utilities.DiscordRPC RPC;
 
+        [STAThread]
         public static void Initialize()
         {
             MyLog.Default = new MyLog(GameProperties.Roaming, GameProperties.GameName, GameProperties.Version.ToString());
@@ -51,6 +54,8 @@ namespace PylonGameEngine
 
             MyPhysics.Initialize();
             AudioEngine.Initialize();
+            Touchscreen.DisableWPFTabletSupport();
+            Touchscreen.RegisterTouchEvent(MainWindow.Handle);
 
             Initialized = true;
             MyLog.Default.Write("Game Initialized!");
@@ -68,7 +73,6 @@ namespace PylonGameEngine
             GameTickLoop.Start();
 
             RenderLoop.Starting += () => { MyLog.Default.Write("Game Started!"); };
-
             GameProperties.SplashScreen.Close();
             RenderLoop.Start(false);
         }
@@ -82,8 +86,10 @@ namespace PylonGameEngine
 
         private static void GameTickLoop_Tick()
         {
+            Input.Touchscreen.Cycle();
             Input.Mouse.Cycle();
             Input.Keyboard.Cycle();
+            
             //GC.Collect();
         }
 

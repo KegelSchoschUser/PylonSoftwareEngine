@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using static PylonGameEngine.Utilities.Win32.Kernel32;
 using static PylonGameEngine.Utilities.Win32.User32;
+using System.Windows.Threading;
+using PylonGameEngine.Utilities;
 
 namespace PylonGameEngine
 {
@@ -172,6 +174,7 @@ namespace PylonGameEngine
 
             RawInputDevice.RegisterDevice(HidUsageAndPage.Keyboard, RawInputDeviceFlags.ExInputSink | RawInputDeviceFlags.NoLegacy, Handle);
             RawInputDevice.RegisterDevice(HidUsageAndPage.Mouse, RawInputDeviceFlags.ExInputSink | RawInputDeviceFlags.NoLegacy, Handle);
+            RawInputDevice.RegisterDevice(HidUsageAndPage.TouchScreen, RawInputDeviceFlags.ExInputSink , Handle);
             ShowWindow(Handle, (int)ShowWindowCommand.Normal);
 
             //var icon = LoadImage(IntPtr.Zero, @"CoreContent\Logo.ico", 1, 256, 256, 256);
@@ -184,21 +187,6 @@ namespace PylonGameEngine
         [UnmanagedCallersOnly]
         private static nint WndProc(IntPtr hWnd, uint message, nuint wParam, nint lParam)
         {
-            if (message == WM_LBUTTONDOWN)
-            {
-                
-
-            }
-
-            if (message == WM_NCHITTEST)
-            {
-                IntPtr hit = DefWindowProc(hWnd, message, wParam, lParam);
-                Console.WriteLine(hit);
-                //if (hit == HTCLIENT) hit = HTCAPTION;
-                return hit;
-            }
-
-
             if (message == WM_ACTIVATEAPP)
             {
                 if (wParam == 1)
@@ -215,14 +203,49 @@ namespace PylonGameEngine
 //                    MyGame.GameTickLoop.Pause();
 //#endif
                 }
+                return 0;
+            }
+            else if (message == 576) // WM_TOUCH
+            {
+              //  Console.WriteLine("WM_TOUCH");
+                return ProcessRawTouch(hWnd, wParam, lParam);
             }
             else if (message == WM_INPUT)
             {
                 ProcessRawInput(hWnd, wParam, lParam);
+                return 0;
             }
 
+            else if (message == 281)
+            {
+                Console.WriteLine("WM_GESTURE");
+                return 0;
+            }
             return DefWindowProcW(hWnd, message, wParam, lParam);
         }
+
+        private static nint ProcessRawTouch(IntPtr hWnd, nuint wParam, nint lParam)
+        {
+            var inputCount = LoWord((int)wParam);
+            var inputs = new TOUCHINPUT[inputCount];
+
+            if (!GetTouchInputInfo(lParam, inputCount, inputs, touchInputSize))
+            {
+                MyLog.Default.Write("GetTouchInputInfo failed");
+                return -1;
+            }
+
+            //TouchQueue.Enqueue(inputs);
+            Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
+            {
+                Touchscreen.ProcessTouchs(inputs, inputCount);
+            }));
+
+            CloseTouchInputHandle(lParam);
+
+            return 0;
+        }
+
         private static void ProcessRawInput(IntPtr hWnd, nuint wParam, nint lParam)
         {
             if (GetActiveWindow() != hWnd)
@@ -240,7 +263,7 @@ namespace PylonGameEngine
                         else
                         {
                             Mouse.MouseButtonEvent(mouse.Mouse.Buttons, mouse.Mouse.ButtonData);
-                            Mouse.MouseDeltaEvent(mouse.Mouse.LastX, mouse.Mouse.LastY);
+                                Mouse.MouseDeltaEvent(mouse.Mouse.LastX, mouse.Mouse.LastY);
                         }
                     }
                     break;
@@ -254,6 +277,31 @@ namespace PylonGameEngine
 
                         OnKey(false, keyboard.Keyboard.VirutalKey);
                     }
+                    break;
+                case RawInputHidData hid:
+
+                    //foreach (var item in hid.Hid.ToHidReports())
+                    //{
+                    //    string str = "";
+                    //    for (int i = 0; i < item.Count; i++)
+                    //    {
+                    //        str += item[i] + " ";
+                    //    }
+                    //    str += "\n";
+                    //    Console.WriteLine(str);
+                    //}
+                    //Console.WriteLine();
+                    ////  12 0 2      4         1            0 6     38           195  14          5 2 0 73 12 245 10 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 104 9
+                    ////  ?? ? Anzahl [5 = Down  Ánzahl Up?  ? PosX  MultiplierX  PosY MultiplierY] [Repeats]
+                    ////       Down    4 = Up
+
+                    //var Data = hid.Hid.RawData;
+                    //Vector2 Location = Vector2.Zero;
+                    //bool down = hid.Hid.RawData[1] == 5 ? true : false;
+                    //Location.X = Data[6] + Data[7] * 255f;
+                    //Location.Y = Data[8] + Data[9] * 255f;
+                    //Console.WriteLine(Location +"   " + Data[5] + "   " + Data[6] + "   " + BitConverter.ToInt16(new byte[] { Data[5], Data[6] }));
+                    //Touchscreen.TouchInput(Location, down);
                     break;
             }
         }

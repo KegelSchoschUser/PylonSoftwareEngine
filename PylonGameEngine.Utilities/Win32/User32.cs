@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 //test
 namespace PylonGameEngine.Utilities.Win32
 {
@@ -321,10 +322,72 @@ namespace PylonGameEngine.Utilities.Win32
         public ushort* ClassName;
         public IntPtr SmallIconHandle;
     }
-    #endregion Structures
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct TOUCHINPUT
+    {
+        public Int32 x;
+        public Int32 y;
+        public IntPtr hSource;
+        public Int32 dwID;
+        public Int32 dwFlags;
+        public Int32 dwMask;
+        public Int32 dwTime;
+        public IntPtr dwExtraInfo;
+        public Int32 cxContact;
+        public Int32 cyContact;
+    }
+    #endregion Structures
+    public enum DWFlags
+    {
+        TOUCHEVENTF_MOVE = 0x0001,
+
+        TOUCHEVENTF_DOWN = 0x0002,
+
+        TOUCHEVENTF_UP = 0x0004,
+    }
+
+    [Flags, Serializable]
+    public enum RegisterTouchFlags
+    {
+        TWF_NONE = 0x00000000,
+
+        TWF_FINETOUCH = 0x00000001,
+
+        TWF_WANTPALM = 0x00000002
+    }
+
+    [Flags]
+    public enum SM_DIGITIZER_FLAG
+    {
+        TABLET_CONFIG_NONE = 0x00000000,//	The input digitizer does not have touch capabilities.
+        NID_INTEGRATED_TOUCH = 0x00000001,//	An integrated touch digitizer is used for input.
+        NID_EXTERNAL_TOUCH = 0x00000002,//	An external touch digitizer is used for input.
+        NID_INTEGRATED_PEN = 0x00000004,//	An integrated pen digitizer is used for input.
+        NID_EXTERNAL_PEN = 0x00000008,//	An external pen digitizer is used for input.
+        NID_MULTI_INPUT = 0x00000040,//	An input digitizer with support for multiple inputs is used for input.
+        NID_READY = 0x00000080, //The input digitizer is ready for input. If this value is unset, it may mean that the tablet service is stopped, the digitizer is not supported, or digitizer drivers have not been installed.
+    }
     public static unsafe class User32
     {
+        public class CursorEvent
+        {
+            public Cursor cursor
+            { get; private set; }
+
+            public EventType type
+            { get; private set; }
+
+            public CursorEvent(Cursor c, EventType t)
+            {
+                cursor = c;
+                type = t;
+            }
+
+            public enum EventType
+            { DOWN, MOVE, UP };
+        }
+
         public static readonly unsafe ushort* IDC_ARROW = (ushort*)32512;
         
         public const int WM_NULL = 0x0000;
@@ -713,6 +776,24 @@ namespace PylonGameEngine.Utilities.Win32
         public const UInt32 MFS_UNCHECKED = MF_UNCHECKED;
         public const UInt32 MFS_UNHILITE = MF_UNHILITE;
         public const UInt32 MFS_DEFAULT = MF_DEFAULT;
+        public static readonly Int32 touchInputSize = Marshal.SizeOf(new TOUCHINPUT());
+
+        public static Int32 LoWord(Int32 number)
+        {
+            return number & 0xffff;
+        }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool RegisterTouchWindow(IntPtr hwnd,
+        [MarshalAs(UnmanagedType.U4)] RegisterTouchFlags flags);
+
+        [DllImport("user32")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern void CloseTouchInputHandle(IntPtr lParam);
+
+        [DllImport("user32")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern Boolean GetTouchInputInfo(IntPtr hTouchInput, Int32 cInputs, [In, Out] TOUCHINPUT[] pInputs, Int32 cbSize);
 
         [DllImport("user32", ExactSpelling = true)]
         public static extern unsafe ushort RegisterClassExW(WNDCLASSEX* lpwcx);
@@ -851,6 +932,8 @@ namespace PylonGameEngine.Utilities.Win32
             /// <remarks>SWP_SHOWWINDOW</remarks>
             ShowWindow = 0x0040,
         }
+
+
         [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
         public static extern IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex);
 
