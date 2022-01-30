@@ -103,7 +103,7 @@ namespace PylonGameEngine.GameWorld
             }
         }
 
-        public bool Focused => this == MyGameWorld.GUI.FocusedObject;
+        public bool Focused => this == MyGameWorld.GUI.FocusedObject && FocusedLost == false;
         protected bool FocusedLost => this == MyGameWorld.GUI.FocusedLostObject;
         protected bool MouseHover => this == MyGameWorld.GUI.MouseHoverObject;
         protected bool MouseEnter => this == MyGameWorld.GUI.MouseEnterObject;

@@ -719,6 +719,9 @@ namespace PylonGameEngine.Utilities.Win32
         public const int WM_NCMOUSELEAVE = 674;
         public const int WM_MOUSELEAVE = 675;
         public const int WM_INPUT = 255;
+        public const int WM_MOUSEMOVE = 512;
+        public const int WM_GESTURE = 281;
+        public const int WM_TOUCH = 576;
 
         public const UInt32 MF_INSERT = 0x00000000;
         public const UInt32 MF_CHANGE = 0x00000080;

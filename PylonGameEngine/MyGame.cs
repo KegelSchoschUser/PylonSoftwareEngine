@@ -40,8 +40,9 @@ namespace PylonGameEngine
 
             //"925124183044792341"
             RPC = new Utilities.DiscordRPC("925124183044792341", GameProperties.GameName);
-            MainWindow = new Window(GameProperties.GameName, GameProperties.StartWindowPosition, GameProperties.StartWindowSize, "PylonGameEngine");
-            MainWindow.PlatformConstruct();
+
+            MainWindow = new Window(GameProperties.GameName, GameProperties.StartWindowPosition, GameProperties.StartWindowSize, GameProperties.FullScreen, GameProperties.Titlebar);
+    
 
             RenderLoop = new GameLoop(GameProperties.RenderTickRate, "RenderLoop");
             RenderLoop.Tick += RenderLoop_Tick;
@@ -70,11 +71,13 @@ namespace PylonGameEngine
                 throw new MyExceptions.EngineNotInitializedException();
             }
 
-            GameTickLoop.Start();
 
             RenderLoop.Starting += () => { MyLog.Default.Write("Game Started!"); };
             GameProperties.SplashScreen.Close();
-            RenderLoop.Start(false);
+
+            GameTickLoop.Start();
+            RenderLoop.Start();
+            MainWindow.Start();
         }
 
         public static void Stop()
@@ -95,12 +98,12 @@ namespace PylonGameEngine
 
         private unsafe static void RenderLoop_Tick()
         {
-            Utilities.Win32.Message msg;
-            while(User32.PeekMessage(out msg, IntPtr.Zero, 0, 0, 1))
-            {
-                _ = User32.TranslateMessage(&msg);
-                _ = User32.DispatchMessage(&msg);
-            }
+            //Utilities.Win32.Message msg;
+            //while(User32.PeekMessage(out msg, IntPtr.Zero, 0, 0, 1))
+            //{
+            //    _ = User32.TranslateMessage(&msg);
+            //    _ = User32.DispatchMessage(&msg);
+            //}
             
             //if (ret == 0)
             //{
@@ -113,7 +116,7 @@ namespace PylonGameEngine
             //else
 
 
-            //Application.DoEvents();
+            Application.DoEvents();
      
 
             RPC.Update();

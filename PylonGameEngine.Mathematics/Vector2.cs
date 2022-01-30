@@ -217,10 +217,23 @@ namespace PylonGameEngine.Mathematics
         }
 
         public static implicit operator System.Numerics.Vector2(Vector2 v) => new System.Numerics.Vector2(v.X, v.Y);
-        public static explicit operator Vector2(System.Numerics.Vector2 v) => new Vector2(v.X,v.Y);
+        public static implicit operator Vector2(System.Numerics.Vector2 v) => new Vector2(v.X,v.Y);
 
         public static implicit operator Vortice.Mathematics.Point(Vector2 v) => new Vortice.Mathematics.Point(v.X, v.Y);
-        public static explicit operator Vector2(Vortice.Mathematics.Point v) => new Vector2(v.X, v.Y);
+        public static implicit operator Vector2(Vortice.Mathematics.Point v) => new Vector2(v.X, v.Y);
+
+        public static implicit operator System.Drawing.PointF(Vector2 v) => new System.Drawing.PointF(v.X, v.Y);
+        public static implicit operator Vector2(System.Drawing.PointF v) => new Vector2(v.X, v.Y);
+
+        public static implicit operator System.Drawing.SizeF(Vector2 v) => new System.Drawing.SizeF(v.X, v.Y);
+        public static implicit operator Vector2(System.Drawing.SizeF v) => new Vector2(v.Width, v.Height);
+
+
+        public static implicit operator System.Drawing.Point(Vector2 v) => new System.Drawing.Point((int)v.X, (int)v.Y);
+        public static implicit operator Vector2(System.Drawing.Point v) => new Vector2(v.X, v.Y);
+
+        public static implicit operator System.Drawing.Size(Vector2 v) => new System.Drawing.Size((int)v.X, (int)v.Y);
+        public static implicit operator Vector2(System.Drawing.Size v) => new Vector2(v.Width, v.Height);
 
 
         public override string ToString()

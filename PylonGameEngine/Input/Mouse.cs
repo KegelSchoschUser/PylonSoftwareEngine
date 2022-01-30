@@ -1,5 +1,4 @@
 ﻿using PylonGameEngine.Mathematics;
-using Linearstar.Windows.RawInput.Native;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,42 +10,28 @@ namespace PylonGameEngine.Input
     public static class Mouse
     {
         [DllImport("user32.dll")]
-        static extern bool ClipCursor(ref RECT lpRect);
-        [DllImport("user32.dll")]
         public static extern bool GetCursorPos(out Point lpPoint);
 
-        [System.Runtime.InteropServices.DllImport("user32.dll")]
-        public static extern int GetSystemMetrics(int nIndex);
-
-        public static bool IsTouchEnabled()
+        public enum MouseButton
         {
-            const int MAXTOUCHES_INDEX = 95;
-            int maxTouches = GetSystemMetrics(MAXTOUCHES_INDEX);
-
-            return maxTouches > 0;
+            LeftButton,
+            RightButton,
+            MiddleButton,
+            Button4,
+            Button5,
         }
 
-        public struct RECT
+        private static object LOCK = new object();
+
+        public static Vector2 Delta = Vector2.Zero;
+        public static float DeltaSpeed
         {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
-
-            public RECT(int left, int top, int right, int bottom)
+            get
             {
-                Left = left;
-                Top = top;
-                Right = right;
-                Bottom = bottom;
-            }
-
-            public Rectangle ToRectangle()
-            {
-                return new Rectangle(Left, Top, Right - Left, Bottom - Top);
+                return Mathf.Abs(Mouse.Delta.X) + Mathf.Abs(Mouse.Delta.Y);
             }
         }
-
+        private static Vector2 LastGlobalMouse = Vector2.Zero;
         public static Vector2 GlobalPosition
         {
             get
@@ -55,123 +40,41 @@ namespace PylonGameEngine.Input
                 return new Vector2(P.X, P.Y);
             }
         }
-
         public static Vector2 Position
         {
             get
             {
-                GetCursorPos(out var P);
-                return new Vector2(Mathf.Clamp(P.X - MyGame.MainWindow.Position.X, 0, MyGame.MainWindow.Size.X),
-                                   Mathf.Clamp(P.Y - MyGame.MainWindow.Position.Y, 0, MyGame.MainWindow.Size.Y) );
-
+                if (MyGame.MainWindow.IsDisposed == false)
+                    return (Vector2)MyGame.MainWindow.PointToClient(GlobalPosition) - new Vector2(0, SystemInformation.CaptionHeight);
+                else
+                    return Vector2.Zero;
             }
         }
 
-        private static Vector2 DeltaBuffer = new Vector2();
+        internal static int ScrollDeltaBuffer = 0;
+        public static int ScrollDelta { get;private set; }
 
-        public static Vector2 Delta;
-        public static float DeltaSpeed
+        private static HashSet<MouseButton> DownButtons = new HashSet<MouseButton>();
+        private static HashSet<MouseButton> PressedButtons = new HashSet<MouseButton>();
+        private static HashSet<MouseButton> UpButtons = new HashSet<MouseButton>();
+
+        private static HashSet<MouseButton> DownButtonsBuffer = new HashSet<MouseButton>();
+        private static HashSet<MouseButton> UpButtonsBuffer = new HashSet<MouseButton>();
+
+        public static void MouseButtonEvent(MouseButton Button, bool down)
         {
-            get
+            if (down)
             {
-                return Mathf.Abs(Mouse.Delta.X) + Mathf.Abs(Mouse.Delta.Y);
+                PressedButtons.Add(Button);
+                DownButtonsBuffer.Add(Button);
+
             }
-        }
-        private static int ScrollDeltaBuffer = 0;
-        public static int ScrollDelta;
-
-        private static HashSet<RawMouseButtonFlags> DownButtons = new HashSet<RawMouseButtonFlags>();
-        private static HashSet<RawMouseButtonFlags> PressedButtons = new HashSet<RawMouseButtonFlags>();
-        private static HashSet<RawMouseButtonFlags> UpButtons = new HashSet<RawMouseButtonFlags>();
-
-        private static HashSet<RawMouseButtonFlags> DownButtonsBuffer = new HashSet<RawMouseButtonFlags>();
-        private static HashSet<RawMouseButtonFlags> UpButtonsBuffer = new HashSet<RawMouseButtonFlags>();
-        public static bool CursorLockState { get; private set; }
-
-        public static void LockCursor(Rectangle Rect)
-        {
-            CursorLockState = true;
-            // ClipCursor(ref Rect);
-            var rect = new Rectangle(Rect.X, Rect.Y, Rect.Width, Rect.Height);
-            Cursor.Clip = rect;
-        }
-
-        public static void UnlockCursor()
-        {
-            CursorLockState = false;
-            //RECT nothing = new RECT();
-            //ClipCursor(ref nothing);
-            Cursor.Clip = new Rectangle();
-        }
-
-        [DllImport("user32.dll")]
-        static extern IntPtr LoadCursor(IntPtr hInstance, int lpCursorName);
-
-        private static IntPtr CurrentCursor = IntPtr.Zero;
-        public static void HideCursor()
-        {
-            Cursor.Hide();
-        }
-
-        public static void ShowCursor()
-        {
-            Cursor.Show();
-        }
-
-        public static void MouseButtonEvent(RawMouseButtonFlags Button, int Data)
-        {
-            switch (Button)
+            else
             {
-                case RawMouseButtonFlags.LeftButtonDown:
-                    {
-                        PressedButtons.Add(RawMouseButtonFlags.LeftButtonDown);
-                        DownButtonsBuffer.Add(RawMouseButtonFlags.LeftButtonDown);
-                        break;
-                    }
-                case RawMouseButtonFlags.LeftButtonUp:
-                    {
-                        PressedButtons.Remove(RawMouseButtonFlags.LeftButtonDown);
-                        UpButtonsBuffer.Add(RawMouseButtonFlags.LeftButtonUp);
-                        break;
-                    }
-
-                case RawMouseButtonFlags.RightButtonDown:
-                    {
-                        PressedButtons.Add(RawMouseButtonFlags.RightButtonDown);
-                        DownButtonsBuffer.Add(RawMouseButtonFlags.RightButtonDown);
-                        break;
-                    }
-                case RawMouseButtonFlags.RightButtonUp:
-                    {
-                        PressedButtons.Remove(RawMouseButtonFlags.RightButtonDown);
-                        UpButtonsBuffer.Add(RawMouseButtonFlags.RightButtonUp);
-                        break;
-                    }
-
-
-                case RawMouseButtonFlags.MiddleButtonDown:
-                    {
-                       
-                        PressedButtons.Add(RawMouseButtonFlags.MiddleButtonDown);
-                        DownButtonsBuffer.Add(RawMouseButtonFlags.MiddleButtonDown);
-                        break;
-                    }
-                case RawMouseButtonFlags.MiddleButtonUp:
-                    {
-                        PressedButtons.Remove(RawMouseButtonFlags.MiddleButtonDown);
-                        UpButtonsBuffer.Add(RawMouseButtonFlags.MiddleButtonUp);
-                        break;
-                    }
-
+                PressedButtons.Remove(Button);
+                UpButtonsBuffer.Add(Button);
             }
-        }
-
-        private static object LOCK = new object();
-        public static void MouseDeltaEvent(int X, int Y)
-        {
-            lock (LOCK)
-                DeltaBuffer += new Vector2(X, Y);
-
+           
         }
 
         public static void MouseScrollEvent(int Y)
@@ -179,54 +82,52 @@ namespace PylonGameEngine.Input
             lock (LOCK)
                 ScrollDeltaBuffer += Y;
 
-        }
-
-        
+        }      
 
         public static bool LeftButtonDown()
         {
-            return DownButtons.Contains(RawMouseButtonFlags.LeftButtonDown);
+            return DownButtons.Contains(MouseButton.LeftButton);
         }
         public static bool LeftButtonUp()
         {
-            return UpButtons.Contains(RawMouseButtonFlags.LeftButtonUp);
+            return UpButtons.Contains(MouseButton.LeftButton);
         }
         public static bool LeftButtonPressed()
         {
-            return PressedButtons.Contains(RawMouseButtonFlags.LeftButtonDown);
+            return PressedButtons.Contains(MouseButton.LeftButton);
         }
 
 
         public static bool RightButtonDown()
         {
-            return DownButtons.Contains(RawMouseButtonFlags.RightButtonDown);
+            return DownButtons.Contains(MouseButton.RightButton);
         }
         public static bool RightButtonUp()
         {
-            return UpButtons.Contains(RawMouseButtonFlags.RightButtonUp);
+            return UpButtons.Contains(MouseButton.RightButton);
         }
         public static bool RightButtonPressed()
         {
-            return PressedButtons.Contains(RawMouseButtonFlags.RightButtonDown);
+            return PressedButtons.Contains(MouseButton.RightButton);
         }
 
 
         public static bool MiddleButtonDown()
         {
-            return DownButtons.Contains(RawMouseButtonFlags.MiddleButtonDown);
+            return DownButtons.Contains(MouseButton.MiddleButton);
         }
         public static bool MiddleButtonUp()
         {
-            return DownButtons.Contains(RawMouseButtonFlags.MiddleButtonUp);
+            return DownButtons.Contains(MouseButton.MiddleButton);
         }
         public static bool MiddleButtonPressed()
         {
-            return PressedButtons.Contains(RawMouseButtonFlags.MiddleButtonDown);
+            return PressedButtons.Contains(MouseButton.MiddleButton);
         }
 
         public static bool MouseMoving()
         {
-            return Delta != 0f;
+            return Mathf.Abs(DeltaSpeed) >= 0.00001f;
         }
 
         public static bool MouseDragging()
@@ -246,8 +147,8 @@ namespace PylonGameEngine.Input
     
             lock (LOCK)
             {
-                Delta = DeltaBuffer;
-                DeltaBuffer = new Vector2();
+                Delta = GlobalPosition - LastGlobalMouse;
+                LastGlobalMouse = GlobalPosition;
 
                 ScrollDelta = ScrollDeltaBuffer;
                 ScrollDeltaBuffer = 0;     

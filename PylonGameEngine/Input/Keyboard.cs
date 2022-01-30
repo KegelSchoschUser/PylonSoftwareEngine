@@ -9,9 +9,12 @@ namespace PylonGameEngine.Input
         public static HashSet<KeyboardKey> PressedKeys = new HashSet<KeyboardKey>();
         public static HashSet<KeyboardKey> UpKeys = new HashSet<KeyboardKey>();
         private static HashSet<KeyboardKey> UpKeysBuffer = new HashSet<KeyboardKey>();
+        public static HashSet<char> CharacterKeys = new HashSet<char>();
+        private static HashSet<char> CharacterKeysBuffer = new HashSet<char>();
+
 
         #region Core
-        public static void AddKey(KeyboardKey key)
+        internal static void AddKey(KeyboardKey key)
         {
             if (!PressedKeys.Contains(key))
             {
@@ -21,15 +24,19 @@ namespace PylonGameEngine.Input
             PressedKeys.Add(key);
         }
 
-        public static void RemoveKey(KeyboardKey key)
+        internal static void AddCharKey(char c)
+        {
+            CharacterKeysBuffer.Add(c);
+        }
+
+        internal static void RemoveKey(KeyboardKey key)
         {
             UpKeysBuffer.Add(key);
             PressedKeys.Remove(key);
         }
 
-        public static void Cycle()
+        internal static void Cycle()
         {
-
             DownKeys.Clear();
             DownKeys.UnionWith(DownKeysBuffer);
             DownKeysBuffer.Clear();
@@ -37,6 +44,10 @@ namespace PylonGameEngine.Input
             UpKeys.Clear();
             UpKeys.UnionWith(UpKeysBuffer);
             UpKeysBuffer.Clear();
+
+            CharacterKeys.Clear();
+            CharacterKeys.UnionWith(CharacterKeysBuffer);
+            CharacterKeysBuffer.Clear();
         }
         #endregion Core
 

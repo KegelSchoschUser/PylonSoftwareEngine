@@ -16,6 +16,9 @@ namespace PylonGameEngine
         public static int RenderTickRate = -1;
         public static SplashScreen SplashScreen = new SplashScreen(null, false);
 
+        public static bool FullScreen = false;
+        public static bool Titlebar = true;
+
         public static string Roaming => MyFileSystem.ROAMING + @"\" + GameName;
     }
 }

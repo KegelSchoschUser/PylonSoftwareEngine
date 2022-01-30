@@ -281,27 +281,7 @@ public class MyScript : GameScript
 
 
         }
-        if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.G))
-        {
-            Console.WriteLine(Mouse.CursorLockState);
-        }
-        if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.T))
-        {
-            Mouse.UnlockCursor();
-            Console.WriteLine(Mouse.CursorLockState);
-
-        }
-        if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.H))
-        {
-            Mouse.HideCursor();
-        }
-        if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.J))
-        {
-
-            Mouse.ShowCursor();
-
-        }
-
+       
         if (PylonGameEngine.Input.Mouse.MiddleButtonDown())
         {
             MyPhysics.Paused = !MyPhysics.Paused;
@@ -480,15 +460,18 @@ public static class Program
     public static MeshObject Cube = new MeshObject();
     public static GUIObject RotObject;
     public static RenderTexture MirrorTexture;
+
+    [STAThread]
     public static void Main()
     {
         GameProperties.GameName = "GIW TEST";
         GameProperties.Version = new MyVersion(1, 0, 0);
         GameProperties.StartWindowSize = new Vector2(1920, 1080);
+        GameProperties.FullScreen = true;
         GameProperties.SplashScreen = new SplashScreen((Bitmap)Bitmap.FromFile("Splash.png"));
         GameProperties.RenderTickRate = 60;
         MyGame.Initialize();
-        MyGame.Start();
+
 
         MirrorTexture = new RenderTexture(1920, 1080);
         PylonGameEngine.UI.Drawing.Graphics g = new PylonGameEngine.UI.Drawing.Graphics(MirrorTexture);

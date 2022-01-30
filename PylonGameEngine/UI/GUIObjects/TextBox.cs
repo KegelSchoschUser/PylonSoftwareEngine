@@ -71,10 +71,10 @@ namespace PylonGameEngine.GUI.GUIObjects
             if (!Focused)
                 return;
 
-            foreach (var item in Keyboard.DownKeys)
+            foreach (var character in Keyboard.CharacterKeys)
             {
-                char character = KeyCodes.ToChar(item, Keyboard.KeyPressed(KeyboardKey.Shift), false, false);
-
+                //char character = KeyCodes.ToChar(item, Keyboard.KeyPressed(KeyboardKey.Shift), false, false);
+                System.Console.WriteLine(character);
                 if (character == '\b')
                 {
                     if (Text.Length > 0)
