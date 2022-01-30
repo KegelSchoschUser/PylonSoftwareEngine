@@ -42,7 +42,7 @@ namespace PylonGameEngine
             RPC = new Utilities.DiscordRPC("925124183044792341", GameProperties.GameName);
 
             MainWindow = new Window(GameProperties.GameName, GameProperties.StartWindowPosition, GameProperties.StartWindowSize, GameProperties.FullScreen, GameProperties.Titlebar);
-    
+   
 
             RenderLoop = new GameLoop(GameProperties.RenderTickRate, "RenderLoop");
             RenderLoop.Tick += RenderLoop_Tick;
