@@ -310,9 +310,18 @@ namespace PylonGameEngine.Mathematics
                 return new Vector3(originalVector.X * mul, originalVector.Y * mul, originalVector.Z * mul);
             }
         }
-
-
-
+        public static Vector3 Lerp(Vector3 firstFloat, Vector3 secondFloat, float by)
+        {
+            return new Vector3(Mathf.Lerp(firstFloat.X, secondFloat.X, by),
+                               Mathf.Lerp(firstFloat.Y, secondFloat.Y, by),
+                               Mathf.Lerp(firstFloat.Z, secondFloat.Z, by));
+        }
+        public static Vector3 Lerp(Vector3 firstFloat, Vector3 secondFloat, Vector3 by)
+        {
+            return new Vector3(Mathf.Lerp(firstFloat.X, secondFloat.X, by.X),
+                               Mathf.Lerp(firstFloat.Y, secondFloat.Y, by.Y),
+                               Mathf.Lerp(firstFloat.Z, secondFloat.Z, by.Z));
+        }
 
         /// <summary>
         /// Performs a coordinate transformation using the given <see cref="Matrix"/>.

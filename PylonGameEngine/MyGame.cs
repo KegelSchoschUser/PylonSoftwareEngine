@@ -10,16 +10,12 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Input;
+ using static PylonGameEngine.Utilities.Win32.User32;
 
 namespace PylonGameEngine
 {
     public static class MyGame
     {
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetConsoleWindow();
-
-        [DllImport("user32.dll")]
-        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
         public static bool Initialized { get; private set; }
 
@@ -37,6 +33,7 @@ namespace PylonGameEngine
         {
             MyLog.Default = new MyLog(GameProperties.Roaming, GameProperties.GameName, GameProperties.Version.ToString());
 
+            SetProcessDPIAware();
             GameProperties.SplashScreen.ShowAsync();
 
             //"925124183044792341"

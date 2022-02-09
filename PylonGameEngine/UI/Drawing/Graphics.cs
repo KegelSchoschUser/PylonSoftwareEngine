@@ -558,8 +558,8 @@ namespace PylonGameEngine.UI.Drawing
 
             RenderTarget.DrawGeometry(geometry, pen.br, pen.Width);
         }
-
-        public void DrawBezierCurve(Pen pen, BezierCurve2D Curve)
+        /*
+        public void DrawBezierCurve(Pen pen, QuadraticBezierCurve Curve)
         {
             if (Curve.Points.Count < 3)
                 throw new Exception("Must be more than 2 points!");
@@ -567,7 +567,7 @@ namespace PylonGameEngine.UI.Drawing
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
 
             var sink = geometry.Open();
-            sink.BeginFigure(Curve.Points[0].ToVorticePoint(), FigureBegin.Filled);
+            sink.BeginFigure(Curve.Points[0], FigureBegin.Filled);
 
             var CurveSegments = Curve.ToIndividualSegments();
             List<BezierSegment> segments = new List<BezierSegment>();
@@ -586,7 +586,7 @@ namespace PylonGameEngine.UI.Drawing
 
             RenderTarget.DrawGeometry(geometry, pen.br, pen.Width);
         }
-
+        */
         public void DrawArc(Pen pen, Vector2 StartPoint, Vector2 EndPoint, Vector2 Size, bool Closed = false)
         {
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
