@@ -9,11 +9,11 @@ namespace PylonGameEngine.FileSystem.Filetypes
 {
     public class RawFile : IDisposable
     {
-        internal byte[] Data;
+        internal List<byte> Data;
 
         public RawFile()
         {
-            Data = new byte[0];
+            Data = new List<byte>();
         }
 
         public RawFile(string FileName)
@@ -34,12 +34,12 @@ namespace PylonGameEngine.FileSystem.Filetypes
         public void SaveFile(string FileName)
         {
             Directory.CreateDirectory(Path.GetDirectoryName(FileName));
-            File.WriteAllBytes(FileName, Data);
+            File.WriteAllBytes(FileName, Data.ToArray());
         }
 
         public void ReadFile(string FileName)
         {
-            Data = File.ReadAllBytes(FileName);
+            Data = File.ReadAllBytes(FileName).ToList();
         }
 
         public void Dispose()

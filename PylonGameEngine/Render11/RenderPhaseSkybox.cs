@@ -184,11 +184,12 @@ namespace PylonGameEngine.Render11
             D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(2, ObjectMatrixBuffer);
 
             D3D11GraphicsDevice.DeviceContext.Draw(Triangles.Count * 3, 0);
-            MatrixBuffer.Dispose();
-            ObjectMatrixBuffer.Dispose();
-            VertexBuffer.Dispose();
-            IndexBuffer.Dispose();
+            MatrixBuffer.Release();
+            ObjectMatrixBuffer.Release();
+            VertexBuffer.Release();
+            IndexBuffer.Release();
             Triangles.Clear();
+            CameraPositionBuffer.Release();
         }
     }
 }

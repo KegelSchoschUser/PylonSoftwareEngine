@@ -165,14 +165,12 @@ namespace PylonGameEngine.Render11
                         D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(2, ObjectMatrixBuffer);
                         D3D11GraphicsDevice.DeviceContext.Draw(RawObjects[i].Item1, VertexOffset);
                         VertexOffset += RawObjects[i].Item1;
-                        MatrixBuffer.Dispose();
-                        ObjectMatrixBuffer.Dispose();
-                        VertexBuffer.Dispose();
-                        IndexBuffer.Dispose();
                     }
-                    RawObjects.Clear();
+                    VertexBuffer.Release();
+                    IndexBuffer.Release();
                     Triangles.Clear();
                 }
+
             }
         }
     }

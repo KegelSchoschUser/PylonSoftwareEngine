@@ -119,7 +119,6 @@ namespace PylonGameEngine.Render11
                 OptionFlags = ResourceOptionFlags.None,
                 StructureByteStride = 0
             };
-
             MatrixBuffer = CreateStructBuffer(Matrix);
         }
 

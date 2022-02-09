@@ -1,6 +1,7 @@
 ﻿using PylonGameEngine.FileSystem.Filetypes;
 using PylonGameEngine.Mathematics;
 using System;
+using System.Diagnostics;
 using System.Text;
 
 namespace PylonGameEngine.FileSystem
@@ -14,9 +15,41 @@ namespace PylonGameEngine.FileSystem
             File = file;
         }
 
+        public void WriteBool(bool value)
+        {
+            WriteBytes(BitConverter.GetBytes(value));
+        }
+        public void WriteBoolArray(bool[] value)
+        {
+            WriteInt(value.Length);
+            for (int i = 0; i < value.Length; i++)
+            {
+                WriteBytes(BitConverter.GetBytes(value[i]));
+            }
+        }
         public void WriteShort(short value)
         {
             WriteBytes( BitConverter.GetBytes(value));
+        }
+        public void WriteShortArray(short[] value)
+        {
+            WriteInt(value.Length);
+            for (int i = 0; i < value.Length; i++)
+            {
+                WriteBytes(BitConverter.GetBytes(value[i]));
+            }
+        }
+        public void WriteUShort(ushort value)
+        {
+            WriteBytes(BitConverter.GetBytes(value));
+        }
+        public void WriteUShortArray(ushort[] value)
+        {
+            WriteInt(value.Length);
+            for (int i = 0; i < value.Length; i++)
+            {
+                WriteBytes(BitConverter.GetBytes(value[i]));
+            }
         }
 
         public void WriteInt(int value)
@@ -24,14 +57,67 @@ namespace PylonGameEngine.FileSystem
             WriteBytes( BitConverter.GetBytes(value));
         }
 
+        public void WriteIntArray(int[] value)
+        {
+            WriteInt(value.Length);
+            for (int i = 0; i < value.Length; i++)
+            {
+                WriteBytes(BitConverter.GetBytes(value[i]));
+            }
+        }
+
         public void WriteLong(long value)
         {
             WriteBytes( BitConverter.GetBytes(value));
         }
 
+        public void WriteLongArray(long[] value)
+        {
+            WriteInt(value.Length);
+            for (int i = 0; i < value.Length; i++)
+            {
+                WriteBytes(BitConverter.GetBytes(value[i]));
+            }
+        }
+
         public void WriteFloat(float value)
         {
             WriteBytes( BitConverter.GetBytes(value));
+        }
+
+        public void WriteFloatArray(float[] value)
+        {
+            WriteInt(value.Length);
+            var bytes = new byte[value.Length * 4];
+            Buffer.BlockCopy(value, 0, bytes, 0, bytes.Length);
+            WriteBytes(bytes);
+        }
+
+        public void WriteDouble(double value)
+        {
+            WriteBytes(BitConverter.GetBytes(value));
+        }
+
+        public void WriteDoubleArray(double[] value)
+        {
+            WriteInt(value.Length);
+            for (int i = 0; i < value.Length; i++)
+            {
+                WriteBytes(BitConverter.GetBytes(value[i]));
+            }
+        }
+        public void WriteChar(char value)
+        {
+            WriteBytes(BitConverter.GetBytes(value));
+        }
+
+        public void WriteCharArray(char[] value)
+        {
+            WriteInt(value.Length);
+            for (int i = 0; i < value.Length; i++)
+            {
+                WriteBytes(BitConverter.GetBytes(value[i]));
+            }
         }
 
         public void WriteVector2(Vector2 value)
@@ -40,6 +126,14 @@ namespace PylonGameEngine.FileSystem
             WriteFloat(value.Y);
         }
 
+        public void WriteVector2Array(Vector2[] value)
+        {
+            WriteInt(value.Length);
+            for (int i = 0; i < value.Length; i++)
+            {
+                WriteVector2(value[i]);
+            }
+        }
         public void WriteVector3(Vector3 value)
         {
             WriteFloat(value.X);
@@ -47,50 +141,39 @@ namespace PylonGameEngine.FileSystem
             WriteFloat(value.Z);
         }
 
+        public void WriteVector3Array(Vector3[] value)
+        {
+            WriteInt(value.Length);
+            for (int i = 0; i < value.Length; i++)
+            {
+                WriteVector3(value[i]);
+            }
+        }
+
         public void WriteObject(IPylonSerializable obj)
         {
             obj.Serialize(this);
         }
-
-        public void WriteDouble(double value)
-        {
-            WriteBytes( BitConverter.GetBytes(value));
-        }
-
-        /// <summary>
-        /// 2 Bytes Unicode
-        /// </summary>
-        /// <WriteBytes(s></WriteBytes(s>
-        public void WriteChar(char value)
-        {
-            WriteBytes( BitConverter.GetBytes(value));
-        }
-
         public void WriteString(string value)
         {
             WriteInt(Encoding.ASCII.GetBytes(value).Length);
             WriteBytes( Encoding.ASCII.GetBytes(value));
         }
-
-        public void WriteBool(bool value)
+        public void WriteByte(byte Byte)
         {
-            WriteBytes( BitConverter.GetBytes(value));
+            File.Data.Add(Byte);
+        }
+
+        public void WriteByteArray(byte[] value)
+        {
+            WriteInt(value.Length);
+            File.Data.AddRange(value);
         }
 
         public void WriteBytes(byte[] bytes)
         {
-            Array.Resize(ref File.Data, File.Data.Length + bytes.Length);
-
-            for (int i = 0; i < bytes.Length; i++)
-            {
-                File.Data[File.Data.Length - (bytes.Length - i)] = bytes[i];
-            }
+            File.Data.AddRange(bytes);
         }
 
-        public void WriteByte(byte Byte)
-        {
-            Array.Resize(ref File.Data, File.Data.Length + 1);
-            File.Data[File.Data.Length - 1] = Byte;
-        }
     }
 }

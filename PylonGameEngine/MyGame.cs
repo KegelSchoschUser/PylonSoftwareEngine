@@ -1,5 +1,6 @@
 ﻿using PylonGameEngine.Audio;
 using PylonGameEngine.Input;
+using PylonGameEngine.Interpolation;
 using PylonGameEngine.Physics;
 using PylonGameEngine.Render11;
 using PylonGameEngine.Utilities;
@@ -92,34 +93,26 @@ namespace PylonGameEngine
             Input.Touchscreen.Cycle();
             Input.Mouse.Cycle();
             Input.Keyboard.Cycle();
-            
+
+            for (int i = 0; i < Interpolator.Interpolators.Count; i++)
+            {
+                Interpolator.Interpolators[i].UpdateTick();
+            }
+
+
             //GC.Collect();
         }
 
         private unsafe static void RenderLoop_Tick()
         {
-            //Utilities.Win32.Message msg;
-            //while(User32.PeekMessage(out msg, IntPtr.Zero, 0, 0, 1))
-            //{
-            //    _ = User32.TranslateMessage(&msg);
-            //    _ = User32.DispatchMessage(&msg);
-            //}
-            
-            //if (ret == 0)
-            //{
-            //    MyGame.Stop();
-            //}
-            //else if (ret == -1)
-            //{
-            //    MyGame.Stop();
-            //}
-            //else
-
-
             Application.DoEvents();
-     
 
-            RPC.Update();
+            for (int i = 0; i < Interpolator.Interpolators.Count; i++)
+            {
+                Interpolator.Interpolators[i].UpdateFrame();
+            }
+
+            //RPC.Update();
         }
 
         public static void ShowConsole()

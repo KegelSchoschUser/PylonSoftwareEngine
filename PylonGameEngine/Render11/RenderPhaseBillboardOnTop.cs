@@ -135,8 +135,9 @@ namespace PylonGameEngine.Render11
                         VertexOffset += RawObjects[i].Item1;
                         MatrixBuffer.Dispose();
                         ObjectMatrixBuffer.Dispose();
-                        VertexBuffer.Dispose();
-                        IndexBuffer.Dispose();
+                        VertexBuffer.Release();
+                        IndexBuffer.Release();
+                        Triangles.Clear();
                     }
                     RawObjects.Clear();
                     Triangles.Clear();

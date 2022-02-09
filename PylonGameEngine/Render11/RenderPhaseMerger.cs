@@ -115,6 +115,7 @@ namespace PylonGameEngine.Render11
                     ObjectMatrixBuffer.Dispose();
                     VertexBuffer.Dispose();
                     IndexBuffer.Dispose();
+
                 }
                 RawObjects.Clear();
                 Triangles.Clear();

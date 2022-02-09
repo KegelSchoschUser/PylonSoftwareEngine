@@ -1,13 +1,15 @@
 ﻿using PylonGameEngine;
 using PylonGameEngine.Audio;
 using PylonGameEngine.Billboarding;
+using PylonGameEngine.FileSystem;
 using PylonGameEngine.FileSystem.Filetypes;
-using PylonGameEngine.FileSystem.Filetypes.GIW;
+using PylonGameEngine.FileSystem.Filetypes.Pylon;
 using PylonGameEngine.FileSystem.Filetypes.WAVE;
 using PylonGameEngine.GameWorld;
 using PylonGameEngine.GameWorld3D;
 using PylonGameEngine.GUI.GUIObjects;
 using PylonGameEngine.Input;
+using PylonGameEngine.Interpolation;
 using PylonGameEngine.Mathematics;
 using PylonGameEngine.Physics;
 using PylonGameEngine.Render11;
@@ -240,6 +242,14 @@ public class MyScript : GameScript
             MyGame.Stop();
         }
 
+        if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.P))
+        {
+            LinearInterpolator i = new LinearInterpolator(0, 500, 100, 60, true);
+            //i.Frame += I_Frame;
+            i.Tick += I_Frame;
+        }
+
+
         Program.Cube.Transform.Scale = new Vector3(1, 10, 1);
 
         var Matrix = Program.Cube.Transform.GlobalMatrix;
@@ -315,6 +325,12 @@ public class MyScript : GameScript
         //Bitmap bmp = new Bitmap(D3D11GraphicsDevice.ConvertToImage(Program.MirrorTexture.InternalTexture));
         //bmp.Save(@"Temp\" + DateTime.Now.Ticks + ".bmp");
 
+    }
+
+    private void I_Frame(Interpolator i)
+    {
+        var interpolator = i as LinearInterpolator;
+        Program.slx.Transform.Position = new Vector2(interpolator.YTick, Program.slx.Transform.Position.Y);
     }
 
     public override void UpdateTick()
@@ -531,6 +547,17 @@ public static class Program
         Camera2.Far *= 100;
         Camera2.Transform.Rotation = Quaternion.FromEuler(0, 180, 0);
 
+        //PylonAudioFile audiofile = new WaveFile(@"Z:\Visualizer\Mario oder wat.wav").ConvertToPylonFormat();
+
+        //var file = new RawFile();
+        //DataWriter writer = new DataWriter(file);
+        //audiofile.Serialize(writer);
+        //file.SaveFile(@"Z:\Visualizer\test.audio");
+        //DataReader reader = new DataReader(new RawFile(@"Z:\Visualizer\test.audio"));
+        //PylonAudioFile audiofile = reader.ReadObject(new PylonAudioFile(1, 1, 1));
+
+        //Audio player = new Audio(audiofile);
+        //player.Play();
         /*
         {
             RawFile file = new RawFile();
@@ -814,7 +841,7 @@ public static class Program
         cubetest.PositionLayout = PositionLayout.Center;
         //MyGameWorld.GUI.Add(cubetest);
 
-        GIWAudioFile File = new WaveFile(@"E:\Downloads\SoundEffect.wav").ConvertToGIWFormat();
+        PylonAudioFile File = new WaveFile(@"E:\Downloads\SoundEffect.wav").ConvertToPylonFormat();
         audio = new Audio(File);
 
 
@@ -848,7 +875,7 @@ public static class Program
         {
             WaveFile waveFile = new WaveFile(@"E:\Downloads\Track 5.wav"); //new WaveFile(@"E:\Downloads\yt5s.com - Jerobeam Fenderson - Shrooms (128 kbps).wav");
             
-            var giwFile = waveFile.ConvertToGIWFormat();
+            var giwFile = waveFile.ConvertToPylonFormat();
             SamplesLeft = Enumerable.Range(0, giwFile.Samples.GetLength(0)).Select(x => giwFile.Samples[x, 0]).ToArray();
             SamplesRight = Enumerable.Range(0, giwFile.Samples.GetLength(0)).Select(x => giwFile.Samples[x, 1]).ToArray();
             AudioPlayer = new Audio(giwFile.SampleRate, giwFile.ChannelCount);

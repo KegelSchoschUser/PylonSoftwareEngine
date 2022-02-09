@@ -115,7 +115,7 @@ namespace PylonGameEngine.Render11
 
                     MatrixBuffer.Dispose();
                    // imageTexture.Destroy();
-                    ObjectMatrixBuffer.Dispose();
+                    ObjectMatrixBuffer.Release();
                     VertexBuffer.Dispose();
                     IndexBuffer.Dispose();
                 }

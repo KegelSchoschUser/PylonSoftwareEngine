@@ -21,6 +21,7 @@ namespace PylonGameEngine.Render11
 {
     public class CameraRender
     {
+
         public Renderphase[] RenderPhases;
         private CameraObject Camera;
 
@@ -46,11 +47,11 @@ namespace PylonGameEngine.Render11
 
                 RenderPhases = new Renderphase[]
                 {
-                 new RenderPhaseSkybox(new Material("SkyBoxMaterial", new ColorShader(RGBColor.Red)), OutputSkybox, cameraObject) { UseDepth = false },
-                 new RenderPhase3D(Output3D, cameraObject),
-                 new RenderPhaseBillboardOnTop(OutputBillboardOnTop, cameraObject) { UseDepth = false },
-                 new RenderPhase2D(Output2D, cameraObject) { RenderMode3D = false},
-                 new RenderPhaseMerger(ref Rendertarget, cameraObject, Textures){ RenderMode3D = false}
+                    new RenderPhaseSkybox(new Material("SkyBoxMaterial", new ColorShader(MyGameWorld.SkyboxColor)), OutputSkybox, cameraObject) { UseDepth = false },
+                    new RenderPhase3D(Output3D, cameraObject),
+                    new RenderPhaseBillboardOnTop(OutputBillboardOnTop, cameraObject) { UseDepth = false },
+                    new RenderPhase2D(Output2D, cameraObject) { RenderMode3D = false},
+                    new RenderPhaseMerger(ref Rendertarget, cameraObject, Textures){ RenderMode3D = false}
                 };
             }
             else
@@ -88,17 +89,6 @@ namespace PylonGameEngine.Render11
             for (int i = 0; i < RenderPhases.Length; i++)
             {
                 RenderPhases[i].Render(Camera);
-                if (i == RenderPhases.Length - 1)
-                {
-
-                    //Console.WriteLine(RenderPhases[i].RenderTexture.InternalTexture.GetHashCode());
-                    //Console.WriteLine(MyGame.Materials.Get("Mirror").Shader.Textures[0].InternalTexture.GetHashCode());
-                    //MyGame.Materials.Get("Mirror").Shader.Textures[0].InternalTexture = RenderPhases[i].RenderTexture.InternalTexture;
-                    //RenderPhases[i].RenderTexture.InternalTexture
-                    //Bitmap bmp = new Bitmap(D3D11GraphicsDevice.ConvertToImage(MyGame.Materials.Get("Mirror").Shader.Textures[0].InternalTexture));
-                    //bmp.Save(@"Temp\" + DateTime.Now.Ticks + ".bmp");
-
-                }
 
             }
         }

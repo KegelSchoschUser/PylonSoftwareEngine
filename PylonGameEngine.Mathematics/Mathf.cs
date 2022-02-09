@@ -13,6 +13,21 @@ namespace PylonGameEngine
             return firstFloat * (1 - by) + secondFloat * by;
         }
 
+        public static float LerpArray(float[] values, int index, float by)
+        {
+            if (values.Length < 2)
+                throw new ArgumentOutOfRangeException("values");
+
+            float first = values[index];
+            float second;
+            if(index + 1 == values.Length)
+                second = values[0];
+            else
+                second = values[index + 1];
+
+            return Mathf.Lerp(first, second, by);
+        }
+
         public static float Clamp(float Value, float Minumum, float Maximum)
         {
             if (Value <= Minumum)

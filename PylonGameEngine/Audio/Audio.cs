@@ -1,4 +1,4 @@
-﻿using PylonGameEngine.FileSystem.Filetypes.GIW;
+﻿using PylonGameEngine.FileSystem.Filetypes.Pylon;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,7 +43,13 @@ namespace PylonGameEngine.Audio
                 return Voice.VoiceDetails.InputSampleRate;
             }
         }
-
+        public ulong Length
+        {
+            get
+            {
+                return (ulong)Buffer.Length;
+            }
+        }
 
 
         IXAudio2SourceVoice Voice;
@@ -54,7 +60,7 @@ namespace PylonGameEngine.Audio
             CreateVoice(SampleRate, Channels);
         }
 
-        public Audio(GIWAudioFile file)
+        public Audio(PylonAudioFile file)
         {
             CreateVoice(file.SampleRate, file.ChannelCount);
             SubmitBuffer(file.Samples);
@@ -74,7 +80,7 @@ namespace PylonGameEngine.Audio
             }
         }
 
-        public void SubmitBuffer(GIWAudioFile File)
+        public void SubmitBuffer(PylonAudioFile File)
         {
             SubmitBuffer(File.Samples);
         }

@@ -1,4 +1,4 @@
-﻿using PylonGameEngine.FileSystem.Filetypes.GIW;
+﻿using PylonGameEngine.FileSystem.Filetypes.Pylon;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +27,7 @@ namespace PylonGameEngine.FileSystem.Filetypes.WAVE
 
         private bool Initialize()
         {
-            if (RAWFile.Data.Length == 0)
+            if (RAWFile.Data.Count == 0)
                 throw new IndexOutOfRangeException();
 
             DataReader Reader = RAWFile.ReadData();
@@ -112,9 +112,9 @@ namespace PylonGameEngine.FileSystem.Filetypes.WAVE
             return false;
         }
 
-        public GIWAudioFile ConvertToGIWFormat()
+        public PylonAudioFile ConvertToPylonFormat()
         {
-            GIWAudioFile File = new GIWAudioFile(Channels, Samples.Length / Channels, (int)SampleRate);
+            PylonAudioFile File = new PylonAudioFile(Channels, Samples.Length / Channels, (int)SampleRate);
 
             for (int i = 0; i < Samples.Length; i++)
             {
