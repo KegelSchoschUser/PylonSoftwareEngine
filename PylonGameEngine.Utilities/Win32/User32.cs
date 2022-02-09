@@ -786,6 +786,12 @@ namespace PylonGameEngine.Utilities.Win32
             return number & 0xffff;
         }
 
+        [DllImport("kernel32.dll")]
+        public  static extern IntPtr GetConsoleWindow();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern bool SetProcessDPIAware();
+
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool RegisterTouchWindow(IntPtr hwnd,
         [MarshalAs(UnmanagedType.U4)] RegisterTouchFlags flags);

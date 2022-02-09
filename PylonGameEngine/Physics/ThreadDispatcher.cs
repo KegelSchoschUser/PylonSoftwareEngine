@@ -42,7 +42,15 @@ namespace PylonGameEngine.Physics
         void DispatchThread(int workerIndex)
         {
             Debug.Assert(workerBody != null);
-            workerBody(workerIndex);
+            try
+            {
+                workerBody(workerIndex);
+            }
+            catch (Exception)
+            {
+
+               
+            }
 
             if (Interlocked.Increment(ref completedWorkerCounter) == threadCount)
             {

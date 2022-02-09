@@ -157,8 +157,8 @@ public class MyScript : GameScript
         //Program.sly.QueueDraw();
         //Program.gUIObject.QueueDraw();
 
-        Program.RotObject.Transform.Rotation = Program.sly.Value * 360f;
-        Program.RotObject.Transform.UnsafeSetSize(new Vector2(Program.slx.Value));
+        //Program.RotObject.Transform.Rotation = Program.sly.Value * 360f;
+        //Program.RotObject.Transform.UnsafeSetSize(new Vector2(Program.slx.Value));
         float multiplier = 2f;
 
         //if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.LeftShift))
@@ -288,10 +288,10 @@ public class MyScript : GameScript
             Program.Planerigid.Body.Velocity = new BepuPhysics.BodyVelocity();
         }
 
-        if (PylonGameEngine.Input.Mouse.LeftButtonDown())
-        {
-            Program.audio.Play();
-        }
+        //if (PylonGameEngine.Input.Mouse.LeftButtonDown())
+        //{
+        //    Program.audio.Play();
+        //}
 
         if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.R))
         {
@@ -448,6 +448,45 @@ public class GenerationScript : GameScript
 //}
 
 
+public class Beziertest : RenderCanvas
+{
+    QuadraticBezierCurve c = new QuadraticBezierCurve();
+    public Beziertest()
+    {
+
+    }
+
+    public override void UpdateTick()
+    {
+        if (LeftMouseClicked)
+        {
+            c.Points.Add(new Vector3(MouseLocal));
+        }
+    }
+    public override void OnDraw(PylonGameEngine.UI.Drawing.Graphics g)
+    {
+        g.Clear(RGBColor.Black);
+        if (c.Points.Count >= 3)
+            for (float i = 0; i <= (c.Points.Count - 2); i += 0.01f)
+            {
+                if (Mathf.Truncate(i) % 2 == 0)
+                    g.FillCircle(g.CreateSolidBrush(RGBColor.Red), (Vector2)c.GetValue(i), 5f);
+
+                if (Mathf.Truncate(i) % 2 == 0)
+                {
+
+                    g.FillCircle(g.CreateSolidBrush(RGBColor.Green), (Vector2)c.Points[Mathf.Truncate(i)], 5f);
+                    g.FillCircle(g.CreateSolidBrush(RGBColor.Blue), (Vector2)c.Points[Mathf.Truncate(i + 1)], 5f);
+
+                    g.FillCircle(g.CreateSolidBrush(RGBColor.Green), (Vector2)c.Points[Mathf.Truncate(i + 2)], 5f);
+                }
+
+
+            }
+
+        QueueDraw();
+    }
+}
 
 public static class Program
 {
@@ -472,6 +511,10 @@ public static class Program
         GameProperties.RenderTickRate = 60;
         MyGame.Initialize();
 
+        var btest = new Beziertest();
+        btest.Transform.Size = new Vector2(500, 500);
+        btest.PositionLayout = PositionLayout.Center;
+        MyGameWorld.GUI.Add(btest);
 
         MirrorTexture = new RenderTexture(1920, 1080);
         PylonGameEngine.UI.Drawing.Graphics g = new PylonGameEngine.UI.Drawing.Graphics(MirrorTexture);
@@ -678,16 +721,16 @@ public static class Program
 
 
         //var GrassShader = new TextureShader("Grass.png");
-        var GrassShader = new SpecularShader("Grass.png");
-        GrassShader.Input.ambientColor = new RGBColor(0.15f, 0.15f, 0.15f, 1.0f);
-        GrassShader.Input.diffuseColor = new RGBColor(1, 1, 1);
-        GrassShader.Input.lightDirection = new Vector3(0.5f, -0.5f, 0.5f);
-        GrassShader.Input.specularColor = new RGBColor(1, 1, 1, 1);
-        GrassShader.Input.specularPower = 15f;
+        //var GrassShader = new SpecularShader("Grass.png");
+        //GrassShader.Input.ambientColor = new RGBColor(0.15f, 0.15f, 0.15f, 1.0f);
+        //GrassShader.Input.diffuseColor = new RGBColor(1, 1, 1);
+        //GrassShader.Input.lightDirection = new Vector3(0.5f, -0.5f, 0.5f);
+        //GrassShader.Input.specularColor = new RGBColor(1, 1, 1, 1);
+        //GrassShader.Input.specularPower = 15f;
 
 
-        //Material Grass = new Material("Grass", new ColorShader(RGBColor.Red) );
-        Material Grass = new Material("Grass", GrassShader);
+        Material Grass = new Material("Grass", new ColorShader(RGBColor.Red) );
+        //Material Grass = new Material("Grass", GrassShader);
 
 
         MyGame.Materials.Add(Grass);
@@ -696,7 +739,7 @@ public static class Program
 
 
 
-
+        MyGame.Start();
 
         var BBPLogo = new MeshObject();
         BBPLogo.SetName("BBPLogo");

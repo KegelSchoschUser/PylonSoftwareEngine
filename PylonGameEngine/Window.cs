@@ -41,11 +41,16 @@ namespace PylonGameEngine
             }
         }
 
+      
+
         public Window(string title, Vector2 position, Vector2 size, bool FullScreen = false, bool Titlebar = false)
         {
+            
+            AutoScaleMode = AutoScaleMode.Dpi;
             Text = title;
-            Location = GameProperties.StartWindowPosition;
-            Size = GameProperties.StartWindowSize;
+            Position = position;
+            Size = size;
+            
 
             if (FullScreen)
             {
