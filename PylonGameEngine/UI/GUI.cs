@@ -36,7 +36,7 @@ namespace PylonGameEngine.UI
         {
             LastMouseHoverObject = MouseHoverObject;
             LastFocusedObject = FocusedObject;
-   
+
 
             LockedList<GUIObject> Objects = new LockedList<GUIObject>(ref MyGame.RenderLock);
             Objects.AddRange(GUIObjects);

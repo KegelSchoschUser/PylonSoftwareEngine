@@ -50,6 +50,13 @@
             Far = 1,
             Center = 2
         }
+        public enum ReadingDirection
+        {
+            LeftToRight,
+            RightToLeft,
+            TopToBottom,
+            BottomToTop
+        }
 
         public enum WordWrapping
         {
@@ -85,5 +92,7 @@
             DashDotDot = 4,
             Custom = 5
         }
+
+
     }
 }

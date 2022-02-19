@@ -343,5 +343,33 @@ namespace PylonGameEngine
 
             return indices;
         }
+
+        public void Merge(Mesh m)
+        {
+            int PointOffset = this.Points.Count;
+            int UVOffset = this.UVs.Count;
+            int NormalOffset = this.Normals.Count;
+
+            for (int i = 0; i < m.Points.Count; i++)
+            {
+                this.Points.Add(m.Points[i]);
+            }
+            this.UVs.AddRange(m.UVs);
+            this.Normals.AddRange(m.Normals);
+
+            for (int i = 0; i < m.Triangles.Count; i++)
+            {
+                TrianglePointer otherTriangle = m.Triangles[i];
+
+                this.Triangles.Add(new TrianglePointer(otherTriangle.Material,
+                                                       otherTriangle.P1Index + PointOffset,
+                                                       otherTriangle.P2Index + PointOffset,
+                                                       otherTriangle.P3Index + PointOffset,
+                                                       otherTriangle.UV1Index + UVOffset,
+                                                       otherTriangle.UV2Index + UVOffset,
+                                                       otherTriangle.UV3Index + UVOffset,
+                                                       otherTriangle.NormalIndex + NormalOffset));
+            }
+        }
     }
 }

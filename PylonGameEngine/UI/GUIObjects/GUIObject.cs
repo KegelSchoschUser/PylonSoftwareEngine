@@ -125,7 +125,7 @@ namespace PylonGameEngine.GameWorld
         {
             #region Left
             LeftMouseClicked = false;
-            if (this.Focused && Mouse.LeftButtonDown())
+            if (this.Focused && Mouse.LeftButtonDown() && MouseInBounds())
             {
                 LeftMouseClicked = true;
             }
@@ -136,7 +136,7 @@ namespace PylonGameEngine.GameWorld
                 LeftMouseUp = true;
             }
             LeftMousePressed = false;
-            if (this.Focused && Mouse.LeftButtonPressed())
+            if (this.Focused && Mouse.LeftButtonPressed() && MouseInBounds())
             {
                 LeftMousePressed = true;
             }
@@ -144,7 +144,7 @@ namespace PylonGameEngine.GameWorld
 
             #region Middle
             MiddleMouseClicked = false;
-            if (this.Focused && Mouse.MiddleButtonDown())
+            if (this.Focused && Mouse.MiddleButtonDown() && MouseInBounds())
             {
                 MiddleMouseClicked = true;
             }
@@ -157,7 +157,7 @@ namespace PylonGameEngine.GameWorld
 
             MiddleMousePressed = false;
 
-            if (this.Focused && Mouse.MiddleButtonPressed())
+            if (this.Focused && Mouse.MiddleButtonPressed() && MouseInBounds())
             {
                 MiddleMousePressed = true;
             }
@@ -165,7 +165,7 @@ namespace PylonGameEngine.GameWorld
 
             #region Right
             RightMouseClicked = false;
-            if (this.Focused && Mouse.RightButtonDown())
+            if (this.Focused && Mouse.RightButtonDown() && MouseInBounds())
             {
                 RightMouseClicked = true;
             }
@@ -177,7 +177,7 @@ namespace PylonGameEngine.GameWorld
             }
 
             RightMousePressed = false;
-            if (this.Focused && Mouse.RightButtonPressed())
+            if (this.Focused && Mouse.RightButtonPressed() && MouseInBounds())
             {
                 RightMousePressed = true;
             }
@@ -420,7 +420,7 @@ namespace PylonGameEngine.GameWorld
 
         public (float, float, float, float) GetClip()
         {
-            Vector2 ParentSize = Parent != null ? Parent.Transform.Size : MyGameWorld.WindowRenderTarget.Size;
+            Vector2 ParentSize = Parent != null ? Parent.Transform.Size : MyGameWorld.RenderTarget.Size;
 
             float ClipX = Mathf.Clamp(Transform.Position.X, 0f, ParentSize.X) - Transform.Position.X;
             float ClipY = Mathf.Clamp(Transform.Position.Y, 0f, ParentSize.Y) - Transform.Position.Y;

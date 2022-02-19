@@ -28,7 +28,7 @@ namespace PylonGameEngine.Render11
         };
 
         public static IDXGIFactory2 Factory;
-        public static Vortice.Direct2D1.ID2D1Factory1 Factory2D;
+        public static Vortice.Direct2D1.ID2D1Factory7 Factory2D;
         public static ID3D11Device1 Device;
 
         public static FeatureLevel FeatureLevel;
@@ -51,49 +51,7 @@ namespace PylonGameEngine.Render11
             // GlobalManager.RenderLoop.Starting += () => { INIT(); };
         }
 
-        [Flags]
-        public enum SendMessageTimeoutFlags : uint
-        {
-            SMTO_NORMAL = 0x0,
-            SMTO_BLOCK = 0x1,
-            SMTO_ABORTIFHUNG = 0x2,
-            SMTO_NOTIMEOUTIFNOTHUNG = 0x8,
-            SMTO_ERRORONEXIT = 0x20
-        }
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessageTimeout(
-            IntPtr hWnd,
-            uint Msg,
-            UIntPtr wParam,
-            IntPtr lParam,
-            SendMessageTimeoutFlags fuFlags,
-            uint uTimeout,
-            out UIntPtr lpdwResult);
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        public static extern IntPtr SendMessageTimeout(
-            IntPtr windowHandle,
-            uint Msg,
-            IntPtr wParam,
-            IntPtr lParam,
-            SendMessageTimeoutFlags flags,
-            uint timeout,
-            out IntPtr result);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
-        private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr hWndChildAfter, string className, string windowTitle);
-
-        [DllImport("user32.dll", SetLastError = true)]
-        static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+        
 
         public static void INIT()
         {
@@ -102,8 +60,8 @@ namespace PylonGameEngine.Render11
                 throw new InvalidOperationException("Cannot create IDXGIFactory1");
             }
 
-            Factory2D = Vortice.Direct2D1.D2D1.D2D1CreateFactory<Vortice.Direct2D1.ID2D1Factory1>();
-
+            Factory2D = Vortice.Direct2D1.D2D1.D2D1CreateFactory<Vortice.Direct2D1.ID2D1Factory7>();
+            
             using (IDXGIAdapter1 adapter = GetHardwareAdapter())
             {
                 DeviceCreationFlags creationFlags = DeviceCreationFlags.BgraSupport;
@@ -313,7 +271,10 @@ namespace PylonGameEngine.Render11
             if (MyGameWorld.ActiveCamera != null)
                 Renderer.Render();
 
-            MyGameWorld.WindowRenderTarget.Present();
+            if(MyGameWorld.RenderTarget is WindowRenderTarget)
+                ((WindowRenderTarget)MyGameWorld.RenderTarget).Present();
+            else if (MyGameWorld.RenderTarget is DesktopRenderTarget)
+                ((DesktopRenderTarget)MyGameWorld.RenderTarget).Present();
         }
 
 
@@ -398,7 +359,7 @@ namespace PylonGameEngine.Render11
                 bool sRGB = false;
                 switch (textureDesc.Format)
                 {
-                    case Vortice.DXGI.Format.R32G32B32A32_Float:
+                    case Vortice.DXGI.Format.R8G8B8A8_UNorm_SRgb:
                         pfGuid = PixelFormat.Format128bppRGBAFloat;
                         break;
 
@@ -418,7 +379,7 @@ namespace PylonGameEngine.Render11
                         pfGuid = PixelFormat.Format32bppRGBA;
                         break;
 
-                    case Vortice.DXGI.Format.R8G8B8A8_UNorm_SRgb:
+                    case Vortice.DXGI.Format.R32G32B32_Float:
                         pfGuid = PixelFormat.Format32bppRGBA;
                         sRGB = true;
                         break;
@@ -450,7 +411,7 @@ namespace PylonGameEngine.Render11
                 Guid targetGuid = default;
                 switch (textureDesc.Format)
                 {
-                    case Vortice.DXGI.Format.R32G32B32A32_Float:
+                    case Vortice.DXGI.Format.R8G8B8A8_UNorm_SRgb:
                     case Vortice.DXGI.Format.R16G16B16A16_Float:
                         //if (_IsWIC2())
                         {
@@ -507,7 +468,7 @@ namespace PylonGameEngine.Render11
                 Span<Vortice.Mathematics.Color> colors = DeviceContext.Map<Vortice.Mathematics.Color>(staging, 0, 0, MapMode.Read, Vortice.Direct3D11.MapFlags.None);
 
                 // Check conversion
-                //R32G32B32A32_Float
+                //R8G8B8A8_UNorm_SRgb
                 pfGuid = PixelFormat.Format32bppRGBA;
                 if (targetGuid != pfGuid)
                 {

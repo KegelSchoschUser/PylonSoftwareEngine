@@ -14,11 +14,10 @@ namespace PylonGameEngine.GameWorld
         public static CameraObject ActiveCamera;
         public static DirectController3D DirectController3D { get; private set; }
         public static RGBColor SkyboxColor = new RGBColor(0, 0, 0);
-        public static WindowRenderTarget WindowRenderTarget;
+        public static RenderTexture RenderTarget;
 
         static MyGameWorld()
         {
-            WindowRenderTarget = new WindowRenderTarget(MyGame.MainWindow);
             DirectController3D = new DirectController3D();
             Objects = new LockedList<GameObject3D>(ref MyGame.RenderLock);
             GUI = new UI.GUI();
@@ -30,17 +29,11 @@ namespace PylonGameEngine.GameWorld
                     item.UpdateTick();
                 }
 
-                GUI.UpdateTick();
-               // Input.Keyboard.Cycle();
+;
 
                 lock (MyGame.RenderLock)
                     MyPhysics.Update(60f);
             });
-
-            //MyGame.RenderLoop.Tick += (delegate ()
-            //{
-
-            //});
         }
 
         internal static List<GameObject3D> GetRenderOrder()

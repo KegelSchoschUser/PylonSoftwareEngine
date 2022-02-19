@@ -21,6 +21,7 @@ namespace PylonGameEngine.FileSystem.Filetypes.Pylon
         {
             get { return Samples.GetLength(0); }
         }
+        
 
         public PylonAudioFile(int channels, int Length, int sampleRate)
         {

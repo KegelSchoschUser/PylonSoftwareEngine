@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
 using System.Runtime.InteropServices;
@@ -227,7 +228,25 @@ namespace PylonGameEngine.Mathematics
             return new HSVColor(h, s * 100f, v * 100f);
         }
 
+        public static List<RGBColor> ColorPalette = new List<RGBColor>()
+        {
+            new RGBColor(1f, 1f, 1f, 1f)          ,
+            new RGBColor(0.99f, 0.96f, 0.02f, 1f) ,
+            new RGBColor(1f, 0.39f, 0.02f, 1f)    ,
+            new RGBColor(0.86f, 0.03f, 0.03f, 1f) ,
+            new RGBColor(0.94f, 0.03f, 0.52f, 1f) ,
+            new RGBColor(0.28f, 0f, 0.64f, 1f)    ,
+            new RGBColor(0f, 0f, 0.83f, 1f)       ,
+            new RGBColor(0f, 0.67f, 0.91f, 1f)    ,
+            new RGBColor(0.13f, 0.72f, 0.08f, 1f) ,
+            new RGBColor(0f, 0.39f, 0.06f, 1f)    ,
+            new RGBColor(0.75f, 0.75f, 0.75f, 1f)
+        };
 
+        public static RGBColor GetColorFromPalette(int index)
+        {
+            return ColorPalette[index % ColorPalette.Count];
+        }
 
 
         public static implicit operator Vortice.Mathematics.Color(RGBColor c) => new Vortice.Mathematics.Color(c.R, c.G, c.B, c.A);

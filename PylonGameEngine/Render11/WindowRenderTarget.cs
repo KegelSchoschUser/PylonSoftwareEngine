@@ -74,7 +74,7 @@ namespace PylonGameEngine.Render11
 }
 
 //Create Window for Desktop Background
-/*IntPtr result = IntPtr.Zero;
+/*          IntPtr result = IntPtr.Zero;
 
             IntPtr progman = FindWindow("Progman", null);
             // Send 0x052C to Progman. This message directs Progman to spawn a 

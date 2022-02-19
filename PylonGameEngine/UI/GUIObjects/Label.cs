@@ -18,7 +18,7 @@ namespace PylonGameEngine.GUI.GUIObjects
             {
                 _Text = value;
                 if (AutoSize)
-                    this.Transform.Size = Graphics.MeasureText(value, _Font, _XAlign, _YAlign, Enums.WordWrapping.Wrap).LayoutSize;
+                    this.Transform.Size = Graphics.MeasureText(value, _Font, _XAlign, _YAlign, Enums.ReadingDirection.LeftToRight, Enums.WordWrapping.Wrap).LayoutSize;
                 QueueDraw();
             }
         }
@@ -34,7 +34,7 @@ namespace PylonGameEngine.GUI.GUIObjects
             {
                 _Font = value;
                 if (AutoSize)
-                    this.Transform.Size = Graphics.MeasureText(_Text, _Font, _XAlign, _YAlign, Enums.WordWrapping.Wrap).LayoutSize;
+                    this.Transform.Size = Graphics.MeasureText(_Text, _Font, _XAlign, _YAlign, Enums.ReadingDirection.LeftToRight, Enums.WordWrapping.Wrap).LayoutSize;
                 QueueDraw();
             }
         }
@@ -50,7 +50,7 @@ namespace PylonGameEngine.GUI.GUIObjects
             {
                 _XAlign = value;
                 if (AutoSize)
-                    this.Transform.Size = Graphics.MeasureText(_Text, _Font, _XAlign, _YAlign, Enums.WordWrapping.Wrap).LayoutSize;
+                    this.Transform.Size = Graphics.MeasureText(_Text, _Font, _XAlign, _YAlign, Enums.ReadingDirection.LeftToRight, Enums.WordWrapping.Wrap).LayoutSize;
                 QueueDraw();
             }
         }
@@ -66,7 +66,7 @@ namespace PylonGameEngine.GUI.GUIObjects
             {
                 _YAlign = value;
                 if (AutoSize)
-                    this.Transform.Size = Graphics.MeasureText(_Text, _Font, _XAlign, _YAlign, Enums.WordWrapping.Wrap).LayoutSize;
+                    this.Transform.Size = Graphics.MeasureText(_Text, _Font, _XAlign, _YAlign, Enums.ReadingDirection.LeftToRight, Enums.WordWrapping.Wrap).LayoutSize;
                 QueueDraw();
             }
         }
@@ -107,7 +107,7 @@ namespace PylonGameEngine.GUI.GUIObjects
         {
             g.Clear(RGBColor.Transparent);
 
-            g.DrawText(Text, Font, XAlign, YAlign, Enums.WordWrapping.Wrap);
+            g.DrawText(Text, Font, XAlign, YAlign, Enums.ReadingDirection.LeftToRight, Enums.WordWrapping.Wrap);
         }
     }
 }

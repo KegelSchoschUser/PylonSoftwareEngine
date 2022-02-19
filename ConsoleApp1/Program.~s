@@ -450,7 +450,7 @@
                 //bool sRGB = false;
                 switch (textureDesc.Format)
                 {
-                    case Vortice.DXGI.Format.R32G32B32A32_Float:
+                    case Vortice.DXGI.Format.R8G8B8A8_UNorm_SRgb:
                         pfGuid = WICPixelFormat.Format128bppRGBAFloat;
                         break;
 
@@ -506,7 +506,7 @@
                 Guid targetGuid = default;
                 switch (textureDesc.Format)
                 {
-                    case Vortice.DXGI.Format.R32G32B32A32_Float:
+                    case Vortice.DXGI.Format.R8G8B8A8_UNorm_SRgb:
                     case Vortice.DXGI.Format.R16G16B16A16_Float:
                         //if (_IsWIC2())
                         {

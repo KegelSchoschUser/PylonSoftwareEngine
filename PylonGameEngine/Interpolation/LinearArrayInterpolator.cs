@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PylonGameEngine.Mathematics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,14 +9,19 @@ namespace PylonGameEngine.Interpolation
 {
     public sealed class LinearArrayInterpolator : Interpolator
     {
-        public float[] Values { get; private set; }
+        private List<float> _Values;
+        public List<float> Values
+        {
+            get { return _Values; }
+            set { lock(MyGame.RenderLock) _Values = value; }
+        }
         public float YFrame { get; private set; }
         public float YTick { get; private set; }
 
 
-        public LinearArrayInterpolator(float[] values, int lengthTicks, int lengthFrames, bool loop = false) : base(lengthTicks, lengthFrames, loop)
+        public LinearArrayInterpolator(List<float> values, int lengthTicks, int lengthFrames, bool loop = false) : base(lengthTicks, lengthFrames, loop)
         {
-            if (values.Length < 2)
+            if (values.Count < 2)
                 throw new ArgumentOutOfRangeException("values");
 
             Values = values;
@@ -26,13 +32,14 @@ namespace PylonGameEngine.Interpolation
 
         protected override void OnUpdateTick()
         {
-            
-            YTick = Mathf.LerpArray(Values, Mathf.trun, XTick);
+            float k = (float)XTick * (float)Values.Count;
+            YTick = Mathf.LerpArray(Values.ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
         }
 
         protected override void OnUpdateFrame()
         {
-            YFrame = Mathf.LerpArray(Values, , XFrame);
+            float k = (float)XFrame * (float)Values.Count;
+            YFrame = Mathf.LerpArray(Values.ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
         }
     }
 }

@@ -27,6 +27,87 @@ using Vortice.XAudio2;
 //Simple flying "Game"
 
 
+public class Graph : RenderCanvas
+{
+    float x = 0;
+    float y = 0;
+
+    float lastx = 0;
+    float lasty = 0;
+
+    bool redraw = false;
+
+    List<Vector2> LastPoints = new List<Vector2>();
+    public void refresh()
+    {
+        x = 0;
+        y = 0;
+
+        lastx = 0;
+        lasty = 0;
+
+        redraw = true;
+    }
+
+    public void Updatelast(float X, float Y)
+    {
+        x = X;
+        y = Y;
+    }
+
+    float f = 0f;
+    PylonGameEngine.UI.Drawing.Pen p;
+    public override void OnDraw(PylonGameEngine.UI.Drawing.Graphics g)
+    {
+
+        if (redraw)
+        {
+            redraw = false;
+            g.Clear();
+        }
+        f += 1f;
+        if (f >= 360f)
+            f = 0;
+
+        if (p == null)
+            p = g.CreatePen(new HSVColor(0, 100, 100), 3f);
+        p.Color = new HSVColor(f, 100, 100);
+
+        if(LastPoints.Count >= 2)
+        {
+            for (int i = 0; i < (LastPoints.Count - 1); i++)
+            {
+                var p1 = LastPoints[i];
+                var p2 = LastPoints[i+1];
+                g.DrawLine(p, new Vector2(p1.X * g.Size.X, g.Size.Y - p1.Y), new Vector2(p2.X * g.Size.X, g.Size.Y - p2.Y));
+            }
+        }
+
+        g.ApplyGaussianBlur(2, true);
+        g.ApplyGaussianBlur(2, true);
+
+        if (LastPoints.Count >= 2)
+        {
+            for (int i = 0; i < (LastPoints.Count - 1); i++)
+            {
+                var p1 = LastPoints[i];
+                var p2 = LastPoints[i + 1];
+                g.DrawLine(p, new Vector2(p1.X * g.Size.X, g.Size.Y - p1.Y), new Vector2(p2.X * g.Size.X, g.Size.Y - p2.Y));
+            }
+        }
+
+        lastx = x;
+        lasty = y;
+
+        LastPoints.Add(new Vector2(lastx,lasty));
+        if (LastPoints.Count >= 20)
+        {
+            LastPoints.Clear();
+            //LastPoints.RemoveAt(0);
+        }
+    }
+}
+
 public class EnableMirrorCam : GameScript
 {
     CameraObject camera;
@@ -142,9 +223,12 @@ public class CameraScript3 : GameScript
 public class MyScript : GameScript
 {
     bool Trackmouse = true;
-
+    LinearArrayAdvancedInterpolator i = new LinearArrayAdvancedInterpolator(new List<Vector2> { new Vector2(0, 0), new Vector2(0.3333f, 200), new Vector2(0.5f, 500), new Vector2(0.9f, 200), new Vector2(1f, 0) }, 100, 60, true);
     public override void UpdateFrame()
     {
+        i.LengthFrames = (int)(Program.sly.Value * 60);
+
+
         //Program.Cube.Mesh = Primitves3D.CreateCube(MyGame.Materials.Get("DEBUG_Red"), new Vector3(Mathf.Sin(MyGame.RenderLoop.Frames / 60f / Mathf.PI) * 10, 0, 0), new Vector3(10), Quaternion.FromEuler(45, 45, 0), true);
         //Program.Cube.Mesh.EnableBoundingBox = false;
 
@@ -244,9 +328,12 @@ public class MyScript : GameScript
 
         if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.P))
         {
-            LinearInterpolator i = new LinearInterpolator(0, 500, 100, 60, true);
+            //LinearArrayInterpolator i = new LinearArrayInterpolator(new float[] { 0, 200, 500, 200, 0 }, 100, 60 * 2, true);
+         
+
             //i.Frame += I_Frame;
-            i.Tick += I_Frame;
+            i.Frame += I_Frame;
+            i.End += I_End;
         }
 
 
@@ -327,10 +414,18 @@ public class MyScript : GameScript
 
     }
 
+    private void I_End(Interpolator interpolator)
+    {
+        Program.graph.refresh();
+    }
+
     private void I_Frame(Interpolator i)
     {
-        var interpolator = i as LinearInterpolator;
-        Program.slx.Transform.Position = new Vector2(interpolator.YTick, Program.slx.Transform.Position.Y);
+        var interpolator = i as LinearArrayAdvancedInterpolator;
+        Program.slx.Transform.Position = new Vector2(interpolator.YFrame, Program.slx.Transform.Position.Y);
+
+        Program.graph.Updatelast(interpolator.XFrame, interpolator.YFrame);
+        Program.graph.QueueDraw();
     }
 
     public override void UpdateTick()
@@ -515,22 +610,21 @@ public static class Program
     public static MeshObject Cube = new MeshObject();
     public static GUIObject RotObject;
     public static RenderTexture MirrorTexture;
+    public static Graph graph;
 
     [STAThread]
     public static void Main()
     {
         GameProperties.GameName = "GIW TEST";
         GameProperties.Version = new MyVersion(1, 0, 0);
-        GameProperties.StartWindowSize = new Vector2(1920, 1080);
-        GameProperties.FullScreen = true;
+        GameProperties.StartWindowSize = new Vector2(1600, 900);
+        GameProperties.FullScreen = false;
+        GameProperties.Titlebar = false;
         GameProperties.SplashScreen = new SplashScreen((Bitmap)Bitmap.FromFile("Splash.png"));
         GameProperties.RenderTickRate = 60;
         MyGame.Initialize();
 
-        var btest = new Beziertest();
-        btest.Transform.Size = new Vector2(500, 500);
-        btest.PositionLayout = PositionLayout.Center;
-        MyGameWorld.GUI.Add(btest);
+        MyGameWorld.RenderTarget = new DesktopRenderTarget(MyGame.MainWindow);
 
         MirrorTexture = new RenderTexture(1920, 1080);
         PylonGameEngine.UI.Drawing.Graphics g = new PylonGameEngine.UI.Drawing.Graphics(MirrorTexture);
@@ -539,7 +633,7 @@ public static class Program
         g.FillRectangle(g.CreateSolidBrush(RGBColor.Black));
 
         var pen = g.CreatePen(RGBColor.White, 1);
-        for (int i = 0; i < MirrorTexture.Size.X; i+= 15)
+        for (int i = 0; i < MirrorTexture.Size.X; i += 15)
         {
             g.DrawLine(pen, i, 0, i, MirrorTexture.Size.Y);
         }
@@ -551,14 +645,17 @@ public static class Program
 
         g.EndDraw();
 
+        graph = new Graph();
+        graph.Transform.Size = new Vector2(1920, 1000);
+        MyGameWorld.GUI.Add(graph);
 
         var MirrorShader = new TextureShader(MirrorTexture);
         Material Mirror = new Material("Mirror", MirrorShader);
         MyGame.Materials.Add(Mirror);
 
-        var WindowTarget = (RenderTexture)MyGameWorld.WindowRenderTarget;
+        var WindowTarget = (RenderTexture)MyGameWorld.RenderTarget;
         var MAINCAM = new CameraObject(WindowTarget, true);
- 
+
         MAINCAM.Activate();
         MyPhysics.Gravity = Vector3.Zero;
         MeshObject Plane = new MeshObject();
@@ -577,11 +674,11 @@ public static class Program
         Label label = new Label("");
         label.Transform.Position = new Vector2(0, 200);
         label.Font.FontSize += 10f;
-        MyGameWorld.GUI.Add(label);
+        //MyGameWorld.GUI.Add(label);
 
         MAINCAM.AddComponent(new speedomeeter(label, rigid));
 
-        CameraObject Camera2 = new CameraObject( MirrorTexture, false);
+        CameraObject Camera2 = new CameraObject(MirrorTexture, false);
         Camera2.Enabled = false;
 
         MAINCAM.AddObject(Camera2);
@@ -590,7 +687,7 @@ public static class Program
         Camera2.Far *= 100;
         Camera2.Transform.Rotation = Quaternion.FromEuler(0, 180, 0);
 
-        //PylonAudioFile audiofile = new WaveFile(@"Z:\Visualizer\Mario oder wat.wav").ConvertToPylonFormat();
+        PylonAudioFile audiofile = new WaveFile(@"Z:\Output\TEST.wav").ConvertToPylonFormat();
 
         //var file = new RawFile();
         //DataWriter writer = new DataWriter(file);
@@ -748,16 +845,16 @@ public static class Program
 
 
         //var GrassShader = new TextureShader("Grass.png");
-        //var GrassShader = new SpecularShader("Grass.png");
-        //GrassShader.Input.ambientColor = new RGBColor(0.15f, 0.15f, 0.15f, 1.0f);
-        //GrassShader.Input.diffuseColor = new RGBColor(1, 1, 1);
-        //GrassShader.Input.lightDirection = new Vector3(0.5f, -0.5f, 0.5f);
-        //GrassShader.Input.specularColor = new RGBColor(1, 1, 1, 1);
-        //GrassShader.Input.specularPower = 15f;
+        var GrassShader = new SpecularShader("Grass.png");
+        GrassShader.Input.ambientColor = new RGBColor(0.15f, 0.15f, 0.15f, 1.0f);
+        GrassShader.Input.diffuseColor = new RGBColor(1, 1, 1);
+        GrassShader.Input.lightDirection = new Vector3(0.5f, -0.5f, 0.5f);
+        GrassShader.Input.specularColor = new RGBColor(1, 1, 1, 1);
+        GrassShader.Input.specularPower = 15f;
 
 
-        Material Grass = new Material("Grass", new ColorShader(RGBColor.Red) );
-        //Material Grass = new Material("Grass", GrassShader);
+        //Material Grass = new Material("Grass", new ColorShader(RGBColor.Red) );
+        Material Grass = new Material("Grass", GrassShader);
 
 
         MyGame.Materials.Add(Grass);
@@ -766,16 +863,15 @@ public static class Program
 
 
 
-        MyGame.Start();
 
         var BBPLogo = new MeshObject();
         BBPLogo.SetName("BBPLogo");
-       // BBPLogo.ExcludedCameras.Add(MAINCAM);
+        // BBPLogo.ExcludedCameras.Add(MAINCAM);
         MyGameWorld.Objects.Add(BBPLogo);
         BBPLogo.Mesh = Mesh.LoadFromObjectFile(@"Z:\Logo.obj", true);
         BBPLogo.Mesh.FlipNormals();
         BBPLogo.Transform.Scale = new Vector3(10f);
-        BBPLogo.Transform.Position = new Vector3(0,0, 50);
+        BBPLogo.Transform.Position = new Vector3(0, 0, 50);
         BBPLogo.Transform.Rotation = Quaternion.FromEuler(90, 0, 0);
         Camera2.AddObject(BBPLogo);
 
@@ -847,7 +943,7 @@ public static class Program
         button.Transform.Size = new Vector2(200, 100);
         button.PositionLayout = PositionLayout.BottomMiddle;
         button.Text = "TEST123\n Zeile2\nZeile3 ist mega geil komm in die Whatsapp Gruppe";
-        MyGameWorld.GUI.Add(button);
+        //MyGameWorld.GUI.Add(button);
 
         Button button2 = new Button();
         button2.SetName("btn2");
@@ -863,18 +959,19 @@ public static class Program
         sly = new Slider();
         slx.SetName("slX");
         sly.SetName("slY");
+        sly.Maximum = 3;
         slx.Transform.Size = new Vector2(200, 50);
         sly.Transform.Position = new Vector2(0, 100);
         sly.Transform.Size = new Vector2(200, 50);
 
-        MyGameWorld.GUI.Add(slx);
+        //MyGameWorld.GUI.Add(slx);
         MyGameWorld.GUI.Add(sly);
 
         TextBox txt = new TextBox();
         txt.Transform.Position += new Vector2(100, 0);
         txt.Transform.Size = new Vector2(100, 100);
         txt.PositionLayout = PositionLayout.Center;
-        MyGameWorld.GUI.Add(txt);
+        //MyGameWorld.GUI.Add(txt);
 
 
 
@@ -896,9 +993,9 @@ public static class Program
 
         RotObject = new GUIObject();
         RotObject.Transform.Size = new Vector2(300, 100);
-        RotObject.Transform.Position = new Vector2(500,500);
+        RotObject.Transform.Position = new Vector2(500, 500);
         RotObject.RotationLayout = RotationLayout.Center;
-        MyGameWorld.GUI.Add(RotObject);
+        //MyGameWorld.GUI.Add(RotObject);
 
         MyGame.Start();
 
@@ -917,7 +1014,7 @@ public static class Program
         public Oscilliscope()
         {
             WaveFile waveFile = new WaveFile(@"E:\Downloads\Track 5.wav"); //new WaveFile(@"E:\Downloads\yt5s.com - Jerobeam Fenderson - Shrooms (128 kbps).wav");
-            
+
             var giwFile = waveFile.ConvertToPylonFormat();
             SamplesLeft = Enumerable.Range(0, giwFile.Samples.GetLength(0)).Select(x => giwFile.Samples[x, 0]).ToArray();
             SamplesRight = Enumerable.Range(0, giwFile.Samples.GetLength(0)).Select(x => giwFile.Samples[x, 1]).ToArray();
@@ -947,14 +1044,14 @@ public static class Program
 
                 for (int i = 0; i < readlength; i++)
                 {
-                    if(i + Offset < SamplesLeft.Length)
+                    if (i + Offset < SamplesLeft.Length)
                     {
                         Vector2 P = new Vector2(SamplesLeft[i + Offset], -SamplesRight[i + Offset]) * 500f;
                         P += new Vector2(1920 / 2, 1080 / 2);
                         Points.Add(P);
                     }
                 }
-                if(Points.Count > 2)
+                if (Points.Count > 2)
                 {
                     for (int i = 0; i < Points.Count - 1; i++)
                     {
@@ -974,9 +1071,9 @@ public static class Program
                     }
                     //g.DrawGeometry(p, Points.ToArray());
                 }
-                 
 
-                if(OldFrames.Count > 10)
+
+                if (OldFrames.Count > 10)
                 {
                     OldFrames.RemoveAt(0);
                 }
@@ -1160,8 +1257,8 @@ public static class Program
         {
             string ms = Vector3.FromSystemNumerics(RigidBody.Body.Velocity.Linear).Abs().ToString("0.00");
             string kmh = (Vector3.FromSystemNumerics(RigidBody.Body.Velocity.Linear).Abs() * 3.6f).ToString("0.00");
-            
-            if(MyGame.GameTickLoop.Frames % 60 == 0)
+
+            if (MyGame.GameTickLoop.Frames % 60 == 0)
             {
                 fps = (1f / MyGame.RenderLoop.DeltaTime).ToString("0");
             }

@@ -1,4 +1,6 @@
-﻿namespace PylonGameEngine.Utilities
+﻿using System;
+
+namespace PylonGameEngine.Utilities
 {
     public static class StringUtilities
     {
@@ -35,6 +37,27 @@
             }
 
             return Output;
+        }
+
+        public static string GetTimeSpanFormatedText(float inputseconds, bool ShowMilliseconds = true, string specificFormat = null)
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds(inputseconds);
+
+            if (specificFormat != null)
+                return timeSpan.ToString(specificFormat);
+            string Format = "";
+            if (timeSpan.TotalDays > 1)
+                Format += @"dd\:";
+            if (timeSpan.TotalHours > 1)
+                Format += @"hh\:";
+            if (timeSpan.TotalMinutes > 1)
+                Format += @"mm\:";
+            if (timeSpan.TotalSeconds > 1)
+                Format += @"ss";
+
+            if (ShowMilliseconds)
+                Format += @"\.ffffff";
+            return timeSpan.ToString(Format);
         }
     }
 }

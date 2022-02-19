@@ -163,11 +163,10 @@ namespace PylonGameEngine.Utilities
         /// </summary>
         /// <param name="Name">The Name of the item</param>
         /// <returns></returns>
-        public T Get(string Name)
+        public T? Get(string Name)
         {
             lock (LOCK)
             {
-
                 return this.Find(x => x.Name == Name);
             }
         }

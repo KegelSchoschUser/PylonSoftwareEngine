@@ -27,12 +27,12 @@ namespace PylonGameEngine.Audio
             }
         }
 
-        private ulong SamplesPlayedLastStop = 0;
-        public ulong SamplesPlayed
+        private int SamplesPlayedLastStop = 0;
+        public int SamplesPlayed
         {
             get
             {
-                return Voice.State.SamplesPlayed - SamplesPlayedLastStop;
+                return (int)Voice.State.SamplesPlayed - SamplesPlayedLastStop;
             }
         }
 
@@ -43,17 +43,17 @@ namespace PylonGameEngine.Audio
                 return Voice.VoiceDetails.InputSampleRate;
             }
         }
-        public ulong Length
+        public int Length
         {
             get
             {
-                return (ulong)Buffer.Length;
+                return Buffer.Length / 4 / Voice.VoiceDetails.InputChannelCount;
             }
         }
 
 
         IXAudio2SourceVoice Voice;
-        private byte[] Buffer;
+        public byte[] Buffer { get; private set; }
 
         public Audio(int SampleRate = 48000, int Channels = 2)
         {
@@ -147,10 +147,13 @@ namespace PylonGameEngine.Audio
             {
                 Buffer = Bytes;
             }
+
+            SubmitBuffer();
         }
 
         private void SubmitBuffer()
         {
+            Stop();
             Voice.FlushSourceBuffers();
 
             var Audiobuffer = new AudioBuffer(Buffer, BufferFlags.EndOfStream);
@@ -160,6 +163,8 @@ namespace PylonGameEngine.Audio
         public bool Play()
         {
             Stop();
+            SamplesPlayedLastStop = (int)Voice.State.SamplesPlayed;
+
             if (Buffer == null || Buffer.Length == 0)
                 return false;
             SubmitBuffer();
@@ -171,7 +176,6 @@ namespace PylonGameEngine.Audio
         public void Stop()
         {
             Voice.Stop();
-            SamplesPlayedLastStop = Voice.State.SamplesPlayed;
         }
 
         ~Audio()

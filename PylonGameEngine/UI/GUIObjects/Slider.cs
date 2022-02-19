@@ -71,7 +71,7 @@ namespace PylonGameEngine.GUI.GUIObjects
             if (MouseEnter || MouseLeave || Focused || FocusedLost)
                 QueueDraw();
 
-            if (Focused && LeftMousePressed)
+            if (LeftMousePressed)
             {
                 Value = Mathf.Lerp(Minimum, Maximum, MouseLocal.X / Transform.Size.X);
                 Mathf.Clamp(Value, Minimum, Maximum);

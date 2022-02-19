@@ -90,17 +90,17 @@ namespace PylonGameEngine.Render11
 
             var GameObjects = MyGameWorld.GetRenderOrder();
 
-
             foreach (var CurrentMaterial in MyGame.Materials)
             {
                 var RawObjects = new List<(int, Matrix4x4)>();
                 var Triangles = new List<Triangle>();
                 foreach (var obj in GameObjects)
                 {
-                    if (((MeshObject)obj).ExcludedCameras.Contains(RenderCamera))
-                        continue;
                     if (obj is MeshObject)
                     {
+
+                    if (((MeshObject)obj).ExcludedCameras.Contains(RenderCamera))
+                        continue;
                         Mesh mesh = ((MeshObject)obj).Mesh;
                         
                         if (mesh == null)
@@ -170,7 +170,6 @@ namespace PylonGameEngine.Render11
                     IndexBuffer.Release();
                     Triangles.Clear();
                 }
-
             }
         }
     }

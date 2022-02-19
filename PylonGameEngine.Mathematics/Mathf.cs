@@ -10,6 +10,7 @@ namespace PylonGameEngine
 
         public static float Lerp(float firstFloat, float secondFloat, float by)
         {
+            by = Mathf.Clamp(by, 0, 1);
             return firstFloat * (1 - by) + secondFloat * by;
         }
 
@@ -21,7 +22,7 @@ namespace PylonGameEngine
             float first = values[index];
             float second;
             if(index + 1 == values.Length)
-                second = values[0];
+                second = values[index];
             else
                 second = values[index + 1];
 
@@ -97,7 +98,7 @@ namespace PylonGameEngine
         public static float Cos(float value) => (float)System.Math.Cos(value);
         public static float Tan(float value) => (float)System.Math.Tan(value);
         public static float Abs(float value) => (float)System.Math.Abs(value);
-        public static float Floor(float value) => (float)System.Math.Floor(value);
+        public static int Floor(float value) => (int)System.Math.Floor(value);
         public static float Pow(float x, float y) => (float)System.Math.Pow(x, y);
         public static int Truncate(float value) => (int)System.Math.Truncate(value);
     }

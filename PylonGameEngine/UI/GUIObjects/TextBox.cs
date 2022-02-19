@@ -56,8 +56,8 @@ namespace PylonGameEngine.GUI.GUIObjects
 
             g.DrawRectangle(p);
 
-            var measure = g.MeasureText(Text, Font, Transform.Size - new Vector2(4), Enums.TextAlignment.Leading, Enums.ParagraphAlignment.Near, Enums.WordWrapping.Wrap);
-            g.DrawText(Text, Font, new Vector2(4), Transform.Size - new Vector2(8), Enums.TextAlignment.Leading, Enums.ParagraphAlignment.Near, Enums.WordWrapping.Wrap);
+            var measure = g.MeasureText(Text, Font, Transform.Size - new Vector2(4), Enums.TextAlignment.Leading, Enums.ParagraphAlignment.Near, Enums.ReadingDirection.LeftToRight, Enums.WordWrapping.Wrap);
+            g.DrawText(Text, Font, new Vector2(4), Transform.Size - new Vector2(8), Enums.TextAlignment.Leading, Enums.ParagraphAlignment.Near, Enums.ReadingDirection.LeftToRight, Enums.WordWrapping.Wrap);
 
             p.Color = Font.Color;
             g.FillRectangle(p.ToSolidBrush(), measure.CursorPosition, new Vector2(3, measure.CursorSizeY));

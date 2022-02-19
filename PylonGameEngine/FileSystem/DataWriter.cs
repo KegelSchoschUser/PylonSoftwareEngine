@@ -156,8 +156,10 @@ namespace PylonGameEngine.FileSystem
         }
         public void WriteString(string value)
         {
-            WriteInt(Encoding.ASCII.GetBytes(value).Length);
-            WriteBytes( Encoding.ASCII.GetBytes(value));
+            var length = Encoding.ASCII.GetBytes(value).Length;
+            WriteInt(length);
+            if(length != 0)
+                WriteBytes(Encoding.ASCII.GetBytes(value));
         }
         public void WriteByte(byte Byte)
         {

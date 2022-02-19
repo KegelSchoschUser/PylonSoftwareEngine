@@ -50,7 +50,7 @@ namespace PylonGameEngine
             Text = title;
             Position = position;
             Size = size;
-            
+
 
             if (FullScreen)
             {
@@ -65,6 +65,7 @@ namespace PylonGameEngine
                     this.FormBorderStyle = FormBorderStyle.None;
             }
 
+            SetWindowPos(Handle, new IntPtr(1), (int)position.X, (int)position.Y, (int)size.X, (int)size.Y, SetWindowPosFlags.DoNotActivate);
         }
 
         internal unsafe void Start()
@@ -74,8 +75,7 @@ namespace PylonGameEngine
 
         protected override void OnShown(EventArgs e)
         {
-            Location = GameProperties.StartWindowPosition;
-            Size = GameProperties.StartWindowSize;
+
         }
 
         protected override void WndProc(ref System.Windows.Forms.Message m)

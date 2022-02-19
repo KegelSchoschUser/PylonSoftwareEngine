@@ -28,8 +28,8 @@ namespace PylonGameEngine.UI.Drawing
         {
             Texture = texture;
             DXGISurface = Texture.InternalTexture.QueryInterface<IDXGISurface>();
-
-            RenderTargetProperties renderTargetProperties = new RenderTargetProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.R32G32B32A32_Float, Vortice.DCommon.AlphaMode.Premultiplied));
+            
+            RenderTargetProperties renderTargetProperties = new RenderTargetProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.R8G8B8A8_UNorm_SRgb, Vortice.DCommon.AlphaMode.Premultiplied));
             RenderTarget = D3D11GraphicsDevice.Factory2D.CreateDxgiSurfaceRenderTarget(DXGISurface, renderTargetProperties);
             DeviceContext = RenderTarget.QueryInterface<ID2D1DeviceContext>();
             WriteFactory = DWrite.DWriteCreateFactory<IDWriteFactory7>();
@@ -41,7 +41,7 @@ namespace PylonGameEngine.UI.Drawing
             Texture = new Texture((int)guiobject.Transform.Size.X, (int)guiobject.Transform.Size.Y);
             DXGISurface = Texture.InternalTexture.QueryInterface<IDXGISurface>();
 
-            RenderTargetProperties renderTargetProperties = new RenderTargetProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.R32G32B32A32_Float, Vortice.DCommon.AlphaMode.Premultiplied));
+            RenderTargetProperties renderTargetProperties = new RenderTargetProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.R8G8B8A8_UNorm_SRgb, Vortice.DCommon.AlphaMode.Premultiplied));
             RenderTarget = D3D11GraphicsDevice.Factory2D.CreateDxgiSurfaceRenderTarget(DXGISurface, renderTargetProperties);
             DeviceContext = RenderTarget.QueryInterface<ID2D1DeviceContext>();
             WriteFactory = DWrite.DWriteCreateFactory<IDWriteFactory7>();
@@ -53,7 +53,7 @@ namespace PylonGameEngine.UI.Drawing
             Texture = new Texture((int)width, (int)height);
             DXGISurface = Texture.InternalTexture.QueryInterface<IDXGISurface>();
 
-            RenderTargetProperties renderTargetProperties = new RenderTargetProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.R32G32B32A32_Float, Vortice.DCommon.AlphaMode.Premultiplied));
+            RenderTargetProperties renderTargetProperties = new RenderTargetProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.R8G8B8A8_UNorm_SRgb, Vortice.DCommon.AlphaMode.Premultiplied));
             RenderTarget = D3D11GraphicsDevice.Factory2D.CreateDxgiSurfaceRenderTarget(DXGISurface, renderTargetProperties);
             DeviceContext = RenderTarget.QueryInterface<ID2D1DeviceContext>();
             WriteFactory = DWrite.DWriteCreateFactory<IDWriteFactory7>();
@@ -290,6 +290,11 @@ namespace PylonGameEngine.UI.Drawing
             RenderTarget.DrawRoundedRectangle(new RoundedRectangle(new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom), radius.X, radius.Y), pen.br, pen.Width, pen.StrokeStyle);
         }
 
+        public void DrawRoundedRectangle(Pen pen, Vector2 Position, Vector2 Size, float radius)
+        {
+            RenderTarget.DrawRoundedRectangle(new RoundedRectangle(new RawRectF(Position.X, Position.Y, Position.X + Size.X, Position.Y + Size.Y), radius, radius), pen.br);
+        }
+
         public void DrawLine(Pen pen, Vector2 p1, Vector2 p2)
         {
             RenderTarget.DrawLine(p1.ToVorticePoint(), p2.ToVorticePoint(), pen.br, pen.Width, pen.StrokeStyle);
@@ -377,11 +382,11 @@ namespace PylonGameEngine.UI.Drawing
 
 
 
-        public class GIWBitmap
+        public class PylonBitmap
         {
             public ID2D1Bitmap InternalBitmap;
 
-            public GIWBitmap(ID2D1Bitmap bitmap)
+            public PylonBitmap(ID2D1Bitmap bitmap)
             {
                 InternalBitmap = bitmap;
             }
@@ -392,7 +397,7 @@ namespace PylonGameEngine.UI.Drawing
             }
         }
 
-        public GIWBitmap GetBitmapFromFile(string FileName)
+        public PylonBitmap GetBitmapFromFile(string FileName)
         {
             var WICImagingFactory = new Vortice.WIC.IWICImagingFactory();
             IWICBitmapDecoder bitmapDecoder = WICImagingFactory.CreateDecoderFromFileName(
@@ -419,19 +424,41 @@ namespace PylonGameEngine.UI.Drawing
             bitmapDecoder.Release();
             result.Release();
 
-            GIWBitmap bitmap = new GIWBitmap(internbitmap);
+            PylonBitmap bitmap = new PylonBitmap(internbitmap);
             return bitmap;
         }
 
-        public void DrawBitmap(GIWBitmap bitmap, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
+        public void DrawTexture(Texture texture, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
+        {
+            BitmapProperties1 bitmapProperties = new BitmapProperties1(this.RenderTarget.PixelFormat);
+            IDXGISurface texturedxgisurface = texture.InternalTexture.QueryInterface<IDXGISurface>();
+            ID2D1Bitmap1 bitmap = this.DeviceContext.CreateBitmapFromDxgiSurface(texturedxgisurface, new BitmapProperties1?(bitmapProperties));
+            this.DrawBitmap(bitmap, new System.Drawing.Rectangle(System.Drawing.Point.Empty, new System.Drawing.Size((int)this.RenderTarget.Size.Width, (int)this.RenderTarget.Size.Height)), opacity, interpolationMode);
+        }
+
+        public void DrawBitmap(WicBitmap wicbitmap, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
+        {
+            var bitmapProperties = new BitmapProperties1(RenderTarget.PixelFormat);
+            var bitmap = DeviceContext.CreateBitmapFromWicBitmap(wicbitmap.InternalBitmap, bitmapProperties);
+            DrawBitmap(bitmap, new Rectangle(Point.Empty, new System.Drawing.Size((int)RenderTarget.Size.Width, (int)RenderTarget.Size.Height)), opacity, interpolationMode);
+        }
+
+        public void DrawBitmap(WicBitmap wicbitmap, RectangleF rectangle, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
+        {
+            var bitmapProperties = new BitmapProperties1(RenderTarget.PixelFormat);
+            var bitmap = DeviceContext.CreateBitmapFromWicBitmap(wicbitmap.InternalBitmap, bitmapProperties);
+            RawRectF rect = new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom);
+            RenderTarget.DrawBitmap(bitmap, rect, opacity, (Vortice.Direct2D1.BitmapInterpolationMode)interpolationMode, new RawRectF(0, 0, bitmap.Size.Width, bitmap.Size.Height));
+        }
+        public void DrawBitmap(PylonBitmap bitmap, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
         {
             DrawBitmap(bitmap, new Rectangle(Point.Empty, new System.Drawing.Size((int)RenderTarget.Size.Width, (int)RenderTarget.Size.Height)), opacity, interpolationMode);
         }
 
-        public void DrawBitmap(GIWBitmap bitmap, RectangleF rectangle, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
+        public void DrawBitmap(PylonBitmap bitmap, RectangleF rectangle, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
         {
             RawRectF rect = new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom);
-            RenderTarget.DrawBitmap(bitmap.InternalBitmap, rect, opacity, (Vortice.Direct2D1.BitmapInterpolationMode)interpolationMode, new RawRectF(0, 0, bitmap.InternalBitmap.Size.Width, bitmap.InternalBitmap.Size.Height));
+            RenderTarget.DrawBitmap(bitmap.InternalBitmap, rect, opacity, (Vortice.Direct2D1.BitmapInterpolationMode)interpolationMode, new RawRectF(0, 0, bitmap.InternalBitmap.Size.Width, bitmap.InternalBitmap.Size.Height));       
         }
 
         public void DrawBitmap(string FileName, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
@@ -604,18 +631,19 @@ namespace PylonGameEngine.UI.Drawing
         }
 
 
-        public TextMeasureOutput MeasureText(string Text, Font f, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)
+        public TextMeasureOutput MeasureText(string Text, Font f, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.ReadingDirection ReadingDirection = Enums.ReadingDirection.LeftToRight, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)
         {
-            return MeasureText(Text, f, new Vector2(float.MaxValue), XAlign, YAlign, WordWrapping);
+            return MeasureText(Text, f, new Vector2(float.MaxValue), XAlign, YAlign, ReadingDirection, WordWrapping);
         }
 
-        public TextMeasureOutput MeasureText(string Text, Font f, Vector2 Size, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)
+        public TextMeasureOutput MeasureText(string Text, Font f, Vector2 Size, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.ReadingDirection ReadingDirection = Enums.ReadingDirection.LeftToRight, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)
         {
             Text = Text.Replace("\n", "#\n");
             var textFormat = WriteFactory.CreateTextFormat(f.FontFamilyName, (FontWeight)f.FontWeight, (Vortice.DirectWrite.FontStyle)f.FontStyle, f.FontSize);
             textFormat.TextAlignment = (TextAlignment)XAlign;
             textFormat.ParagraphAlignment = (ParagraphAlignment)YAlign;
             textFormat.WordWrapping = (WordWrapping)WordWrapping;
+            textFormat.ReadingDirection = (ReadingDirection)ReadingDirection;
             var textLayout = WriteFactory.CreateTextLayout(Text, textFormat, Size.X, Size.Y);
             var Metrics = textLayout.Metrics;
             textLayout.HitTestTextPosition(Text.Length - 1, false, out float CaretX, out float CaretY, out HitTestMetrics hitTestMetrics);
@@ -624,26 +652,26 @@ namespace PylonGameEngine.UI.Drawing
             return new TextMeasureOutput(new Vector2(Metrics.Width, Metrics.Height), new Vector2(CaretX + hitTestMetrics.Width, CaretY), hitTestMetrics.Height);
         }
 
-        public void DrawText(string Text, Font f, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)
+        public void DrawText(string Text, Font f, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.ReadingDirection ReadingDirection = Enums.ReadingDirection.LeftToRight, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)
         {
-            DrawText(Text, f, Vector2.Zero, new Vector2(RenderTarget.Size.Width, RenderTarget.Size.Height), XAlign, YAlign, WordWrapping);
+            DrawText(Text, f, Vector2.Zero, new Vector2(RenderTarget.Size.Width, RenderTarget.Size.Height), XAlign, YAlign, ReadingDirection, WordWrapping);
         }
 
-        public void DrawText(string Text, Font f, Vector2 Position, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)
+        public void DrawText(string Text, Font f, Vector2 Position, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.ReadingDirection ReadingDirection = Enums.ReadingDirection.LeftToRight, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)
         {
-            DrawText(Text, f, Position, new Vector2(RenderTarget.Size.Width, RenderTarget.Size.Height), XAlign, YAlign, WordWrapping);
+            DrawText(Text, f, Position, new Vector2(RenderTarget.Size.Width, RenderTarget.Size.Height), XAlign, YAlign, ReadingDirection, WordWrapping);
         }
 
-        public void DrawText(string Text, Font f, Vector2 Position, Vector2 Size, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)
+        public void DrawText(string Text, Font f, Vector2 Position, Vector2 Size, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.ReadingDirection ReadingDirection = Enums.ReadingDirection.LeftToRight, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)
         {
             var textFormat = WriteFactory.CreateTextFormat(f.FontFamilyName, (FontWeight)f.FontWeight, (Vortice.DirectWrite.FontStyle)f.FontStyle, f.FontSize);
             textFormat.TextAlignment = (TextAlignment)XAlign;
             textFormat.ParagraphAlignment = (ParagraphAlignment)YAlign;
             textFormat.WordWrapping = (WordWrapping)WordWrapping;
+            textFormat.ReadingDirection = (ReadingDirection)ReadingDirection;
             var textLayout = WriteFactory.CreateTextLayout(Text, textFormat, Size.X, Size.Y);
             var brush = CreateSolidBrush(f.Color);
             RenderTarget.DrawTextLayout(Position, textLayout, brush.br, f.EnableColorFont == true ? DrawTextOptions.EnableColorFont : DrawTextOptions.None);
-            var Metrics = textLayout.Metrics;
             textFormat.Release();
             textLayout.Release();
             brush.br.Release();
@@ -657,12 +685,13 @@ namespace PylonGameEngine.UI.Drawing
             return bitmap;
         }
 
-        public GIWBitmap GetAsBitmap()
+        public PylonBitmap GetAsBitmap()
         {
             var bitmapProperties = new BitmapProperties1(RenderTarget.PixelFormat);
             var bitmap = DeviceContext.CreateBitmap(new Vortice.Mathematics.SizeI((int)RenderTarget.Size.Width, (int)RenderTarget.Size.Height), IntPtr.Zero, 0, ref bitmapProperties);
             bitmap.CopyFromRenderTarget(RenderTarget);
-            return new GIWBitmap(bitmap);
+            return new PylonBitmap(bitmap);
+            
         }
 
 

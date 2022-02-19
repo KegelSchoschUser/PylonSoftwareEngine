@@ -45,7 +45,12 @@ namespace PylonGameEngine.Input
             get
             {
                 if (MyGame.MainWindow.IsDisposed == false)
-                    return (Vector2)MyGame.MainWindow.PointToClient(GlobalPosition) - new Vector2(0, SystemInformation.CaptionHeight);
+                {
+                    if (MyGame.MainWindow.FormBorderStyle == FormBorderStyle.None)
+                        return (Vector2)MyGame.MainWindow.PointToClient(GlobalPosition);
+                    else
+                        return (Vector2)MyGame.MainWindow.PointToClient(GlobalPosition) - new Vector2(0, SystemInformation.CaptionHeight);
+                }     
                 else
                     return Vector2.Zero;
             }

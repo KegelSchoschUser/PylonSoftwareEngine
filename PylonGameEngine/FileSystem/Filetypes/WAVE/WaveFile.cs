@@ -57,6 +57,15 @@ namespace PylonGameEngine.FileSystem.Filetypes.WAVE
                 Reader.ReadUInt(); //Size ?!
                 if (Reader.CheckString("WAVE"))
                 {
+                    if (Reader.CheckString("JUNK"))
+                    {
+                        var junksize = Reader.ReadUInt();
+                        Reader.ReadBytes((int)junksize);
+                    }
+                    else
+                    {
+                        Reader.ReadOffset -= 4;
+                    }
                     return true;
                 }
             }

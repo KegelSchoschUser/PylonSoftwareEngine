@@ -1,4 +1,5 @@
 ﻿using PylonGameEngine.Audio;
+using PylonGameEngine.GameWorld;
 using PylonGameEngine.Input;
 using PylonGameEngine.Interpolation;
 using PylonGameEngine.Physics;
@@ -91,22 +92,28 @@ namespace PylonGameEngine
             Input.Mouse.Cycle();
             Input.Keyboard.Cycle();
 
-            for (int i = 0; i < Interpolator.Interpolators.Count; i++)
+            lock (MyGame.RenderLock)
             {
-                Interpolator.Interpolators[i].UpdateTick();
+                for (int i = 0; i < Interpolator.Interpolators.Count; i++)
+                {
+                    Interpolator.Interpolators[i].UpdateTick();
+                }
+
             }
 
-
+            MyGameWorld.GUI.UpdateTick();
             //GC.Collect();
         }
 
         private unsafe static void RenderLoop_Tick()
         {
             Application.DoEvents();
-
-            for (int i = 0; i < Interpolator.Interpolators.Count; i++)
+            lock (MyGame.RenderLock)
             {
-                Interpolator.Interpolators[i].UpdateFrame();
+                for (int i = 0; i < Interpolator.Interpolators.Count; i++)
+                {
+                    Interpolator.Interpolators[i].UpdateFrame();
+                }
             }
 
             //RPC.Update();

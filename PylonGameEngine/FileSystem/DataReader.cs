@@ -11,7 +11,7 @@ namespace PylonGameEngine.FileSystem
 {
     public class DataReader
     {
-        private int ReadOffset;
+        public int ReadOffset;
         private List<byte> Data;
 
         public DataReader(RawFile file)
@@ -224,19 +224,22 @@ namespace PylonGameEngine.FileSystem
             return array;
         }
 
+        public T ReadObject<T>() where T : IPylonSerializable, new()
+        {
+            T type = new T();
+            return type.DeSerialize(this);
+        }
+
         public dynamic ReadObject(IPylonSerializable type)
         {
             return type.DeSerialize(this);
         }
 
-        public string ReadString(int length)
-        {
-            return Encoding.ASCII.GetString(ReadBytes(length), 0, length);
-        }
-
         public string ReadString()
         {
             int length = ReadInt();
+            if (length == 0)
+                return "";
             return Encoding.ASCII.GetString(ReadBytes(length), 0, length);
         }
 

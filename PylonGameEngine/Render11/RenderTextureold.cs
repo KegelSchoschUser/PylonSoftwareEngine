@@ -21,7 +21,7 @@ namespace PylonGameEngine.Render11
                 Height = (int)MyGame.MainWindow.Size.Y,
                 MipLevels = 1,
                 ArraySize = 1,
-                Format = Format.R32G32B32A32_Float,
+                Format = Format.R8G8B8A8_UNorm_SRgb,
                 SampleDescription = new SampleDescription(1, 0),
                 Usage = ResourceUsage.Default,
                 BindFlags = BindFlags.RenderTarget | BindFlags.ShaderResource,

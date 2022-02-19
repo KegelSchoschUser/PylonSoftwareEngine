@@ -178,7 +178,7 @@ namespace PylonGameEngine.GUI.GUIObjects
             }
 
             g.DrawRoundedRectangle(p, new Vector2(EdgeX, EdgeY));
-            g.DrawText(Text, Font, Enums.TextAlignment.Center, Enums.ParagraphAlignment.Center, Enums.WordWrapping.Wrap);
+            g.DrawText(Text, Font, Enums.TextAlignment.Center, Enums.ParagraphAlignment.Center, Enums.ReadingDirection.LeftToRight, Enums.WordWrapping.Wrap);
         }
 
         public override void UpdateTick()

@@ -9,10 +9,30 @@ namespace PylonGameEngine.Interpolation
     public class Interpolator
     {
         internal static List<Interpolator> Interpolators = new List<Interpolator>();
+        public List<object> AdditionalObjects = new List<object>();
 
-        public int LengthTicks { get; protected set; }
+        private int _LengthTicks;
+        public int LengthTicks
+        {
+            get { return _LengthTicks; }
+            set
+            {
+                lock (MyGame.RenderLock)
+                    _LengthTicks = Math.Clamp(value, 1, int.MaxValue);
+            }
+        }
         public int TicksPassed { get; protected set; }
-        public int LengthFrames { get; protected set; }
+
+        private int _LengthFrames;
+        public int LengthFrames
+        {
+            get { return _LengthFrames; }
+            set
+            {
+                lock(MyGame.RenderLock)
+                    _LengthFrames = Math.Clamp(value, 1, int.MaxValue);
+            }
+        }
         public int FramesPassed { get; protected set; }
 
         public float XTick
@@ -34,11 +54,28 @@ namespace PylonGameEngine.Interpolation
         private bool TickDeactivated = false;
         private bool FrameDeactivated = false;
 
+        public bool Ended
+        {
+            get
+            {
+                return TickDeactivated && FrameDeactivated;
+            }
+        }
+
         public delegate void OnFrame(Interpolator interpolator);
         public event OnFrame Frame;
 
         public delegate void OnTick(Interpolator interpolator);
         public event OnFrame Tick;
+
+        public delegate void OnEnd(Interpolator interpolator);
+        public event OnEnd End;
+
+        public delegate void OnLoopTick(Interpolator interpolator);
+        public event OnLoopTick LoopedTick;
+
+        public delegate void OnLoopFrame(Interpolator interpolator);
+        public event OnLoopFrame LoopedFrame;
 
         protected Interpolator(int lengthTicks, int lengthFrames, bool loop = false)
         {
@@ -52,6 +89,9 @@ namespace PylonGameEngine.Interpolation
 
             Frame += (interpolator) => { };
             Tick += (interpolator) => { };
+            End += (interpolator) => { };
+            LoopedTick += (interpolator) => { };
+            LoopedFrame += (interpolator) => { };
 
             Interpolators.Add(this);
         }
@@ -59,7 +99,10 @@ namespace PylonGameEngine.Interpolation
         internal void UpdateTick()
         {
             if(TickDeactivated && FrameDeactivated)
+            {
                 Interpolators.Remove(this);
+                End(this);
+            }
 
             if (TickDeactivated)
                 return;
@@ -67,7 +110,10 @@ namespace PylonGameEngine.Interpolation
             if (TicksPassed >= LengthTicks)
             {
                 if (Loop == true)
+                {
                     TicksPassed = 0;
+                    LoopedTick(this);
+                }
                 else
                 {
                     TickDeactivated = true;
@@ -85,7 +131,10 @@ namespace PylonGameEngine.Interpolation
         internal void UpdateFrame()
         {
             if (TickDeactivated && FrameDeactivated)
+            {
                 Interpolators.Remove(this);
+                End(this);
+            }
 
             if (FrameDeactivated)
                 return;
@@ -93,7 +142,10 @@ namespace PylonGameEngine.Interpolation
             if (FramesPassed >= LengthFrames)
             {
                 if (Loop == true)
+                {
                     FramesPassed = 0;
+                    LoopedFrame(this);
+                }
                 else
                 {
                     FrameDeactivated = true;
