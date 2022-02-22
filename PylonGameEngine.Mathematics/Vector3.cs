@@ -238,6 +238,24 @@ namespace PylonGameEngine.Mathematics
             return (v1 == v2) == false;
         }
 
+        public static bool operator <(Vector3 v1, Vector3 v2)
+        {
+            return (v1.X < v2.X && v1.Y < v2.Y && v1.Z < v2.Z);
+        }
+
+        public static bool operator >(Vector3 v1, Vector3 v2)
+        {
+            return (v1.X < v2.X && v1.Y < v2.Y && v1.Z > v2.Z);
+        }
+        public static bool operator <=(Vector3 v1, Vector3 v2)
+        {
+            return (v1.X <= v2.X && v1.Y <= v2.Y && v1.Z <= v2.Z);
+        }
+
+        public static bool operator >=(Vector3 v1, Vector3 v2)
+        {
+            return (v1.X <= v2.X && v1.Y <= v2.Y && v1.Z >= v2.Z);
+        }
         public static float Vector_DotProduct(Vector3 v1, Vector3 v2)
         {
             return (v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z);

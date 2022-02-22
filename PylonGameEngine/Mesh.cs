@@ -11,26 +11,17 @@ namespace PylonGameEngine
 {
     public class Mesh
     {
-        public ObservableCollection<Vector3> Points = new ObservableCollection<Vector3>();
+        public List<Vector3> Points = new List<Vector3>();
         public List<Vector2> UVs = new List<Vector2>();
         public List<Vector3> Normals = new List<Vector3>();
         public List<TrianglePointer> Triangles = new List<TrianglePointer>();
-        private BoundingBox BoundingBox = new BoundingBox();
-        public bool EnableBoundingBox = false;
 
 
         public Mesh()
         {
-            Points.CollectionChanged += Points_CollectionChanged;
+            
         }
 
-        private void Points_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            if (EnableBoundingBox)
-            {
-                BoundingBox = BoundingBox.FromPoints(Points.ToArray());
-            }
-        }
 
         public List<Triangle> TriangleData
         {
@@ -324,12 +315,12 @@ namespace PylonGameEngine
 
         public BoundingBox GetBoundingBox()
         {
-            return BoundingBox;
+            return BoundingBox.FromPoints(this.Points.ToArray());
         }
 
         public BoundingBox GetBoundingBox(Matrix4x4 Matrix)
         {
-            return Matrix * BoundingBox;
+            return Matrix * GetBoundingBox();
         }
 
         public static List<int> CreateOrderedIndicesList(int n)

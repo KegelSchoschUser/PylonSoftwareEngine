@@ -490,7 +490,7 @@ public class GenerationScript : GameScript
                     if (!chunks.ContainsKey(cp))
                     {
                         MeshObject chunkobject = new MeshObject();
-                        chunkobject.Mesh.EnableBoundingBox = false;
+                        //chunkobject.Mesh.EnableBoundingBox = false;
 
                         //chunkobject.Mesh.AddTriangle(new Triangle( new Vector3(0, 0, 0 + size), new Vector3(0 + size, 0, 0 + size),            new Vector3(0 + size, 0, 0),  new Vector2(0, 0), new Vector2(1, 0), new Vector2(1, 1)), matindex);
                         //chunkobject.Mesh.AddTriangle(new Triangle( new Vector3(0, 0, 0 + size), new Vector3(0 + size, 0, 0),     new Vector3(0, 0, 0),         new Vector2(0, 0), new Vector2(1, 1), new Vector2(0, 1)), matindex);

@@ -15,7 +15,7 @@ namespace PylonGameEngine.GameWorld
         public GameObject3D Parent { get; private set; }
         public List<GameObject3D> Children { get; private set; }
 
-
+        public List<string> Tags = new List<string>();
 
 
 

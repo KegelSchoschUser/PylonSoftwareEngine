@@ -2,7 +2,7 @@
 
 namespace PylonGameEngine.GameWorld
 {
-    public class GameScript : IComponent
+    public class GameScript : Component3D
     {
         public GameScript()
         {

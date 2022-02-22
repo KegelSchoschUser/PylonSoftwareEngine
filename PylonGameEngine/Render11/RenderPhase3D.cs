@@ -108,18 +108,18 @@ namespace PylonGameEngine.Render11
                         var triangles = mesh.GetTriangles(CurrentMaterial);
                         if (triangles.Count == 0)
                             continue;
-                        if (mesh.EnableBoundingBox == true)
-                        {
-                            BoundingBox boundingBox = mesh.GetBoundingBox(obj.Transform.GlobalMatrix.Transposed);
+                        //if (mesh.EnableBoundingBox == true)
+                        //{
+                        //    BoundingBox boundingBox = mesh.GetBoundingBox(obj.Transform.GlobalMatrix.Transposed);
 
-                            bool FirstinView = MyGameWorld.ActiveCamera.PointInView(boundingBox.Min);
-                            bool SecondinView = MyGameWorld.ActiveCamera.PointInView(boundingBox.Max);
+                        //    bool FirstinView = MyGameWorld.ActiveCamera.PointInView(boundingBox.Min);
+                        //    bool SecondinView = MyGameWorld.ActiveCamera.PointInView(boundingBox.Max);
 
-                            if (FirstinView == false && SecondinView == false)
-                            {
-                               // continue;
-                            }
-                        }
+                        //    if (FirstinView == false && SecondinView == false)
+                        //    {
+                        //       // continue;
+                        //    }
+                        //}
                         RawObjects.Add((triangles.Count * 3, obj.Transform.GlobalMatrix));
                         Triangles.AddRange(triangles);
                     }
