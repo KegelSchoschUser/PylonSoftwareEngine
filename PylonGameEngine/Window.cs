@@ -16,6 +16,26 @@ namespace PylonGameEngine
 {
     public class Window : Form
     {
+        private bool _CursorLocked = false;
+        public bool CursorLocked
+        {
+            get { return _CursorLocked; }
+            set
+            {
+                _CursorLocked = value;
+                if (value == true)
+                {
+                    Rectangle screenRectangle = this.RectangleToScreen(this.ClientRectangle);
+                    Cursor.Clip = screenRectangle;
+                    Cursor.Hide(); //TODO: BUG NOT WORKING
+                }
+                else
+                {
+                    Cursor.Clip = new Rectangle();
+                    Cursor.Show();//TODO: BUG NOT WORKING
+                }
+            }
+        }
 
         public new Vector2 Size
         {
@@ -42,7 +62,7 @@ namespace PylonGameEngine
         }
 
       
-
+        
         public Window(string title, Vector2 position, Vector2 size, bool FullScreen = false, bool Titlebar = false)
         {
             
@@ -129,6 +149,13 @@ namespace PylonGameEngine
                         Input.Keyboard.RemoveKey(KeyCodes.ConvertToKey((int)wParam));
                     }
                     break;
+                //case WM_INPUT:
+                //    {
+                //        Vector2 delta = new Vector2();
+                //        .
+                //        Input.Mouse.MouseDeltaEvent(delta);
+                //    }
+                //    break;
                 default:
                     break;
             }

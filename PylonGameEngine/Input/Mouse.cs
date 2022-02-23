@@ -140,6 +140,11 @@ namespace PylonGameEngine.Input
             return MouseMoving() && LeftButtonPressed();
         }
 
+        public static void MouseDeltaEvent(Vector2 Delta)
+        {
+
+        }
+
         public static void Cycle()
         {
             DownButtons.Clear();
@@ -152,7 +157,13 @@ namespace PylonGameEngine.Input
     
             lock (LOCK)
             {
-                Delta = GlobalPosition - LastGlobalMouse;
+                if (MyGame.MainWindow.CursorLocked)
+                {
+                    Delta = GlobalPosition - (MyGame.MainWindow.Position + MyGame.MainWindow.Size / 2f);
+                    System.Windows.Forms.Cursor.Position = MyGame.MainWindow.Position + MyGame.MainWindow.Size / 2f;
+                }
+                else
+                    Delta = GlobalPosition - LastGlobalMouse;
                 LastGlobalMouse = GlobalPosition;
 
                 ScrollDelta = ScrollDeltaBuffer;
