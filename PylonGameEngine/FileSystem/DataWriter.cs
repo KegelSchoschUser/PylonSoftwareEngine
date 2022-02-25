@@ -152,7 +152,10 @@ namespace PylonGameEngine.FileSystem
 
         public void WriteObject(IPylonSerializable obj)
         {
-            obj.Serialize(this);
+            bool success = obj.Serialize(this);
+
+            if (success == false)
+                throw new Exception("Couldn't write Object of Type " + obj.GetType().FullName);
         }
         public void WriteString(string value)
         {

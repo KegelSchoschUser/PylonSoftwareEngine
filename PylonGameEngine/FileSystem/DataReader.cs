@@ -224,15 +224,14 @@ namespace PylonGameEngine.FileSystem
             return array;
         }
 
-        public T ReadObject<T>() where T : IPylonSerializable, new()
+        public Object ReadObject<Object>() where Object : IPylonSerializable, new()
         {
-            T type = new T();
-            return type.DeSerialize(this);
-        }
+            Object obj = new Object();
+            bool success = obj.DeSerialize(this);
 
-        public dynamic ReadObject(IPylonSerializable type)
-        {
-            return type.DeSerialize(this);
+            if (success == false)
+                throw new Exception("Couldn't read Object of Type " + obj.GetType().FullName);
+            return obj;
         }
 
         public string ReadString()

@@ -33,7 +33,7 @@ namespace PylonGameEngine.FileSystem.Filetypes.Pylon
             return Enumerable.Range(0, Samples.GetLength(0)).Select(x => Samples[x, index]).ToArray();
         }
 
-        public void Serialize(DataWriter writer)
+        public bool Serialize(DataWriter writer)
         {
             writer.WriteInt(SampleRate);
             writer.WriteInt(Length);
@@ -43,26 +43,39 @@ namespace PylonGameEngine.FileSystem.Filetypes.Pylon
             {
                 writer.WriteFloatArray(GetChannel(i));
             }
+
+            return true;
         }
 
-        public dynamic DeSerialize(DataReader reader)
+        public bool DeSerialize(DataReader reader)
         {
-            var SampleRate = reader.ReadInt();
-            var length = reader.ReadInt();
-            var channelcount = reader.ReadInt();
-            var AudioFile = new PylonAudioFile(channelcount, length, SampleRate);
-
-
-            for (int c = 0; c < channelcount; c++)
+            try
             {
-                var channel = reader.ReadFloatArray();
-                for (int l = 0; l < length; l++)
+                var sampleRate = reader.ReadInt();
+                var length = reader.ReadInt();
+                var channelcount = reader.ReadInt();
+
+                Samples = new float[Length, channelcount];
+                SampleRate = sampleRate;
+
+
+
+                for (int c = 0; c < channelcount; c++)
                 {
-                    AudioFile.Samples[l, c] = channel[l];
+                    var channel = reader.ReadFloatArray();
+                    for (int l = 0; l < length; l++)
+                    {
+                        Samples[l, c] = channel[l];
+                    }
                 }
             }
+            catch (Exception)
+            {
+                return false;
+            }
 
-            return AudioFile;
+
+            return true;
         }
 
         public float GetLengthSeconds()
