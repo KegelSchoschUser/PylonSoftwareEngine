@@ -6,27 +6,34 @@ using System.Collections.Generic;
 
 namespace PylonGameEngine.Physics
 {
-    public class StaticBody : Component3D, IBody
+    public class TriggerBody : Component3D
     {
         public StaticReference Body;
         public int Index { get; private set; }
         public bool UseCollisions = true;
         private InitializationDescription InitDesc = new InitializationDescription();
 
-        public BepuPhysics.Collidables.Mesh CollisionMesh;
+        public delegate void OnContact(TriggerBody Trigger, IBody ContactBody);
+        public event OnContact Contact;
 
-        public StaticBody(List<PylonGameEngine.Mathematics.Triangle> Triangles, float mass = 1f)
+        internal void InvokeEvent(IBody ContactBody)
+        {
+            Contact(this, ContactBody);
+        }
+        public TriggerBody(List<PylonGameEngine.Mathematics.Triangle> Triangles, float mass = 1f)
         {
             InitDesc.Mass = mass;
             InitDesc.Shape = InitializationDescription._Shape.Mesh;
             InitDesc.Triangles = Triangles;
+            Contact += (a, b) => { };
         }
 
-        public StaticBody(Vector3 BoxSize, float mass = 1f)
+        public TriggerBody(Vector3 BoxSize, float mass = 1f)
         {
             InitDesc.Mass = mass;
             InitDesc.Shape = InitializationDescription._Shape.Box;
             InitDesc.BoxSize = BoxSize;
+            Contact += (a, b) => { };
         }
 
         public override void Initialize()
@@ -43,7 +50,6 @@ namespace PylonGameEngine.Physics
                         }
                         //Parent.Transform.GlobalMatrix.TranslationVector
                         BepuPhysics.Collidables.Mesh collisionShape = new BepuPhysics.Collidables.Mesh(triangles, Parent.Transform.Scale.ToSystemNumerics(), MyPhysics.BufferPool);
-                        CollisionMesh = collisionShape;
                         meshIndex = MyPhysics.Simulation.Shapes.Add(collisionShape);
                     }
                     break;
@@ -61,17 +67,17 @@ namespace PylonGameEngine.Physics
 
 
             StaticHandle Handle = MyPhysics.Simulation.Statics.Add(new StaticDescription(Parent.Transform.GlobalMatrix.TranslationVector.ToSystemNumerics(), Matrix4x4.RotationQuaternion(Parent.Transform.GlobalMatrix).ToSystemNumerics(), new CollidableDescription(meshIndex, 0.1f)));
-            
+
             Index = Handle.Value;
             Body = new StaticReference(Handle, MyPhysics.Simulation.Statics);
             Body.Pose.Position = -Parent.Transform.Position.ToSystemNumerics();
-            MyPhysics.StaticBodies.Add(this);
+            MyPhysics.TriggerBodies.Add(this);
         }
 
         public override void OnDestroy()
         {
             MyPhysics.Simulation.Statics.Remove(Body.Handle);
-            MyPhysics.StaticBodies.Remove(this);
+            MyPhysics.TriggerBodies.Remove(this);
         }
 
         public void Update()

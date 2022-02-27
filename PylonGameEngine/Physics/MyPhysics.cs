@@ -9,12 +9,15 @@ namespace PylonGameEngine.Physics
     public static class MyPhysics
     {
         public static Simulation Simulation { get; internal set; }
-        internal static BufferPool BufferPool;
+        public static BufferPool BufferPool;
         internal static ThreadDispatcher ThreadDispatcher { get; private set; }
         private static object RigidLock = new object();
         private static object StaticLock = new object();
+        private static object TriggerLock = new object();
         public static LockedList<RigidBody> RigidBodies { get; internal set; }
         public static LockedList<StaticBody> StaticBodies { get; internal set; }
+
+        public static LockedList<TriggerBody> TriggerBodies { get; internal set; }
         public static bool Paused = false;
         public static Vector3 Gravity = new Vector3(0f, -9.81f, 0f);
 
@@ -26,12 +29,13 @@ namespace PylonGameEngine.Physics
 
             RigidBodies = new LockedList<RigidBody>(ref RigidLock);
             StaticBodies = new LockedList<StaticBody>(ref StaticLock);
+            TriggerBodies = new LockedList<TriggerBody>(ref TriggerLock);
             BufferPool = new BufferPool();
 
             var ThreadCount = Environment.ProcessorCount > 4 ? Environment.ProcessorCount - 2 : Environment.ProcessorCount - 1;
             ThreadDispatcher = new ThreadDispatcher(ThreadCount);
 
-            Simulation = Simulation.Create(BufferPool, new DemoNarrowPhaseCallbacks(), new DemoPoseIntegratorCallbacks(),new SolveDescription(1, 4));
+            Simulation = Simulation.Create(BufferPool, new DemoNarrowPhaseCallbacks(), new DemoPoseIntegratorCallbacks(), new SolveDescription(1, 4));
             Initialized = true;
         }
 
