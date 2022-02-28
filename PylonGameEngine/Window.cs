@@ -98,6 +98,11 @@ namespace PylonGameEngine
 
         }
 
+        protected override void OnClosed(EventArgs e)
+        {
+            MyGame.Stop();
+        }
+
         protected override void WndProc(ref System.Windows.Forms.Message m)
         {
             nint message = m.Msg;
@@ -266,6 +271,7 @@ namespace PylonGameEngine
 
         internal void Destroy()
         {
+            if(Visible == false)
             Close();
         }
     }

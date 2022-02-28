@@ -6,10 +6,16 @@ using System.Collections.Generic;
 
 namespace PylonGameEngine.Physics
 {
-    public class RigidBody : Component3D
+    public class RigidBody : Component3D, IBody
     {
         public BodyReference Body;
+        public bool UseGravity = true;
+        public bool UsePhysics = true;
+        public bool UseCollisions = true;
         private InitializationDescription InitDesc = new InitializationDescription();
+
+        public BepuPhysics.Collidables.Mesh? CollisionMesh;
+        public int Index { get; private set; }
 
         private void BeforeConstructor(float mass)
         {
@@ -102,6 +108,7 @@ namespace PylonGameEngine.Physics
                             triangles[i] = new BepuPhysics.Collidables.Triangle(InitDesc.Triangles[i].P3.ToSystemNumerics(), InitDesc.Triangles[i].P2.ToSystemNumerics(), InitDesc.Triangles[i].P1.ToSystemNumerics());
                         }
                         BepuPhysics.Collidables.Mesh collisionShape = new BepuPhysics.Collidables.Mesh(triangles, Parent.Transform.Scale.ToSystemNumerics(), MyPhysics.BufferPool);
+                        CollisionMesh = collisionShape;
                         collisionShape.ComputeOpenInertia(InitDesc.Mass, out Inertia);
                         meshIndex = MyPhysics.Simulation.Shapes.Add(collisionShape);
                     }
@@ -156,6 +163,7 @@ namespace PylonGameEngine.Physics
                             Inertia,
                             new CollidableDescription(meshIndex, 0.1f),
                             new BodyActivityDescription(0.01f)));
+            Index = Handle.Value;
             Body = new BodyReference(Handle, MyPhysics.Simulation.Bodies);
             MyPhysics.RigidBodies.Add(this);
         }

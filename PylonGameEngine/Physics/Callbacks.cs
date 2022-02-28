@@ -4,6 +4,7 @@ using BepuPhysics.CollisionDetection;
 using BepuPhysics.Constraints;
 using BepuUtilities;
 using PylonGameEngine.Mathematics;
+using PylonGameEngine.Utilities;
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -100,8 +101,34 @@ namespace PylonGameEngine.Physics
             //Note that these are SIMD operations and "Wide" types. There are Vector<float>.Count lanes of execution being evaluated simultaneously.
             //The types are laid out in array-of-structures-of-arrays (AOSOA) format. That's because this function is frequently called from vectorized contexts within the solver.
             //Transforming to "array of structures" (AOS) format for the callback and then back to AOSOA would involve a lot of overhead, so instead the callback works on the AOSOA representation directly.
-            velocity.Linear = (velocity.Linear + gravityWideDt) * linearDampingDt;
-            velocity.Angular = velocity.Angular * angularDampingDt;
+
+            var RigidBody = MyPhysics.RigidBodies.Find(x => x.Index == bodyIndices[0]);
+            if(RigidBody != null)
+            {
+                if (RigidBody.UseGravity && RigidBody.UsePhysics)
+                {
+                    velocity.Linear = (velocity.Linear + gravityWideDt) * linearDampingDt;
+                    velocity.Angular = velocity.Angular * angularDampingDt;
+                }
+                else
+                {
+                    if (RigidBody.UsePhysics)
+                    {
+                        velocity.Linear = (velocity.Linear) * linearDampingDt;
+                        velocity.Angular = velocity.Angular * angularDampingDt;
+                    }
+                    else
+                    {
+                        velocity.Linear = new Vector3Wide();
+                        velocity.Angular = new Vector3Wide();
+                    }
+                }
+            }
+            else
+            {
+                MyLog.Default.Write("Couldn't find RigidBody", LogSeverity.Error);
+            }
+           
         }
     }
     public unsafe struct DemoNarrowPhaseCallbacks : INarrowPhaseCallbacks
@@ -121,12 +148,66 @@ namespace PylonGameEngine.Physics
             //While the engine won't even try creating pairs between statics at all, it will ask about kinematic-kinematic pairs.
             //Those pairs cannot emit constraints since both involved bodies have infinite inertia. Since most of the demos don't need
             //to collect information about kinematic-kinematic pairs, we'll require that at least one of the bodies needs to be dynamic.
-            return a.Mobility == CollidableMobility.Dynamic || b.Mobility == CollidableMobility.Dynamic;
+            if (a.Mobility == b.Mobility)
+                return false;
+
+            TriggerBody A_Trigger = null;
+            TriggerBody B_Trigger = null;
+
+            RigidBody A_Rigid = null;
+            RigidBody B_Rigid = null;
+
+            StaticBody A_Static = null;
+            StaticBody B_Static = null;
+
+            if (a.Mobility == CollidableMobility.Dynamic)
+            {
+                A_Rigid = MyPhysics.RigidBodies.Find(x => x.Index == a.BodyHandle.Value);
+            }
+            else if (a.Mobility == CollidableMobility.Static)
+            {
+                A_Trigger = MyPhysics.TriggerBodies.Find(x => x.Index == a.BodyHandle.Value);
+                A_Static = MyPhysics.StaticBodies.Find(x => x.Index == a.BodyHandle.Value);
+            }
+
+            if (b.Mobility == CollidableMobility.Dynamic)
+            {
+                B_Rigid = MyPhysics.RigidBodies.Find(x => x.Index == b.BodyHandle.Value);
+            }
+            else if (b.Mobility == CollidableMobility.Static)
+            {
+                B_Trigger = MyPhysics.TriggerBodies.Find(x => x.Index == b.BodyHandle.Value);
+                B_Static = MyPhysics.StaticBodies.Find(x => x.Index == b.BodyHandle.Value);
+            }
+
+            bool MobilityCheck = a.Mobility == CollidableMobility.Dynamic || b.Mobility == CollidableMobility.Dynamic;
+
+            if (A_Trigger == null && B_Trigger == null
+                && A_Rigid == null && B_Rigid == null
+                && A_Static == null && B_Static == null || MobilityCheck == false)
+                return false;
+
+            if (A_Trigger != null || B_Trigger != null)
+            {
+                if(  (A_Trigger != null && B_Trigger != null) == false)
+                {
+                    if (A_Trigger != null)
+                        A_Trigger.InvokeEvent(B_Rigid != null ? B_Rigid : B_Static);
+
+                    if (B_Trigger != null)
+                        B_Trigger.InvokeEvent(A_Rigid != null ? A_Rigid : A_Static);
+                }
+                return false;
+            }
+            bool CollisionEnabledCheck = (A_Rigid != null ? A_Rigid.UseCollisions : A_Static.UseCollisions) && (B_Rigid != null ? B_Rigid.UseCollisions : B_Static.UseCollisions);
+
+            return CollisionEnabledCheck;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool AllowContactGeneration(int workerIndex, CollidablePair pair, int childIndexA, int childIndexB)
         {
+            //return AllowContactGeneration(workerIndex, pair.A, pair.B, )
             return true;
         }
 
