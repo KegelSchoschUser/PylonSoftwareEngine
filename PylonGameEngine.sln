@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PylonGameEngine", "PylonGam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PylonGameEngine.Resources", "PylonGameEngine.Resources\PylonGameEngine.Resources.csproj", "{FE657B5B-7282-4461-A62D-E73450229FD4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PylonGameEngine.Extensions", "PylonGameEngine.Extensions\PylonGameEngine.Extensions.csproj", "{C6F12158-7E1C-4474-9D1A-985B1F355EC9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -123,6 +125,26 @@ Global
 		{FE657B5B-7282-4461-A62D-E73450229FD4}.Release|x64.Build.0 = Release|x64
 		{FE657B5B-7282-4461-A62D-E73450229FD4}.Release|x86.ActiveCfg = Release|x86
 		{FE657B5B-7282-4461-A62D-E73450229FD4}.Release|x86.Build.0 = Release|x86
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Debug|x64.Build.0 = Debug|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Debug|x86.Build.0 = Debug|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Release|ARM32.Build.0 = Release|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Release|ARM64.Build.0 = Release|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Release|x64.ActiveCfg = Release|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Release|x64.Build.0 = Release|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Release|x86.ActiveCfg = Release|Any CPU
+		{C6F12158-7E1C-4474-9D1A-985B1F355EC9}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
