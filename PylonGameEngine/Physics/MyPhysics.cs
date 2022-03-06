@@ -23,6 +23,8 @@ namespace PylonGameEngine.Physics
         public static Vector3 Gravity = new Vector3(0f, -9.81f, 0f);
 
         private static bool Initialized = false;
+
+        public static DemoPoseIntegratorCallbacks demoPoseIntegratorCallbacks = new DemoPoseIntegratorCallbacks();
         public static void Initialize()
         {
             if (Initialized)
@@ -36,7 +38,7 @@ namespace PylonGameEngine.Physics
             var ThreadCount = Environment.ProcessorCount > 4 ? Environment.ProcessorCount - 2 : Environment.ProcessorCount - 1;
             ThreadDispatcher = new ThreadDispatcher(ThreadCount);
 
-            Simulation = Simulation.Create(BufferPool, new DemoNarrowPhaseCallbacks(), new DemoPoseIntegratorCallbacks(), new SolveDescription(1, 4));
+            Simulation = Simulation.Create(BufferPool, new DemoNarrowPhaseCallbacks(), demoPoseIntegratorCallbacks, new SolveDescription(1, 4));
             Initialized = true;
         }
 

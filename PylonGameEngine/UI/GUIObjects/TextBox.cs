@@ -73,8 +73,6 @@ namespace PylonGameEngine.GUI.GUIObjects
 
             foreach (var character in Keyboard.CharacterKeys)
             {
-                //char character = KeyCodes.ToChar(item, Keyboard.KeyPressed(KeyboardKey.Shift), false, false);
-                System.Console.WriteLine(character);
                 if (character == '\b')
                 {
                     if (Text.Length > 0)

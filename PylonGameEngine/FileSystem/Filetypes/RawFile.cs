@@ -33,7 +33,16 @@ namespace PylonGameEngine.FileSystem.Filetypes
 
         public void SaveFile(string FileName)
         {
+            try
+            {
             Directory.CreateDirectory(Path.GetDirectoryName(FileName));
+
+            }
+            catch (Exception)
+            {
+
+
+            }
             File.WriteAllBytes(FileName, Data.ToArray());
         }
 
