@@ -30,7 +30,7 @@ namespace PylonGameEngine.Render11
             Compiler.Compile(PylonGameEngine.Resources.Shaders.VertexShader2D, "EntryPoint2D", this.GetType().Name, "vs_4_0", out Blob ShaderByteCode, out Blob ErrorBlob);
             if (ErrorBlob != null)
             {
-                Console.Write("ShaderCompileError (2D): " + Encoding.Default.GetString(ErrorBlob.GetBytes()));
+                Console.Write("ShaderCompileError (2D): " + Encoding.Default.GetString(ErrorBlob.AsBytes()));
             }
 
             return ShaderByteCode;
@@ -59,7 +59,18 @@ namespace PylonGameEngine.Render11
                         AlignedByteOffset = InputElementDescription.AppendAligned,
                         Classification = InputClassification.PerVertexData,
                         InstanceDataStepRate = 0
+                    },
+                    new InputElementDescription()
+                    {
+                        SemanticName = "NORMAL",
+                        SemanticIndex = 0,
+                        Format = Format.R32G32B32_Float,
+                        Slot = 0,
+                        AlignedByteOffset = InputElementDescription.AppendAligned,
+                        Classification = InputClassification.PerVertexData,
+                        InstanceDataStepRate = 0
                     }
+
             };
 
             return InputElements;
@@ -113,12 +124,12 @@ namespace PylonGameEngine.Render11
                     D3D11GraphicsDevice.DeviceContext.Draw(RawObjects[i].Item1, VertexOffset);
                     VertexOffset += RawObjects[i].Item1;
 
-                    MatrixBuffer.Dispose();
+                  
                    // imageTexture.Destroy();
                     ObjectMatrixBuffer.Release();
-                    VertexBuffer.Dispose();
-                    IndexBuffer.Dispose();
                 }
+                    VertexBuffer.Release();
+                    IndexBuffer.Release();
                 RawObjects.Clear();
                 Triangles.Clear();
             }

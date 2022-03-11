@@ -89,7 +89,7 @@ namespace PylonGameEngine.ShaderLibrary
             Compiler.Compile(ShaderCode, ShaderEntryPoint, this.GetType().Name, "ps_4_0", out Blob pixelShaderByteCode, out Blob ErrorBlob);
             if (ErrorBlob != null)
             {
-                MyLog.Default.Write("ShaderCompileError: " + Encoding.Default.GetString(ErrorBlob.GetBytes()), LogSeverity.Critical);
+                MyLog.Default.Write("ShaderCompileError: " + Encoding.Default.GetString(ErrorBlob.AsBytes()), LogSeverity.Critical);
             }
 
             PixelShader = device.CreatePixelShader(pixelShaderByteCode);

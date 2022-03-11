@@ -228,7 +228,7 @@ public class MyScript : GameScript
     {
         i.LengthFrames = (int)(Program.sly.Value * 60);
 
-
+        BillBoard.DrawLineCube(Vector3.Zero, new Vector3(10), MyGame.Materials.Get("DEBUG_Red"), false);
         //Program.Cube.Mesh = Primitves3D.CreateCube(MyGame.Materials.Get("DEBUG_Red"), new Vector3(Mathf.Sin(MyGame.RenderLoop.Frames / 60f / Mathf.PI) * 10, 0, 0), new Vector3(10), Quaternion.FromEuler(45, 45, 0), true);
         //Program.Cube.Mesh.EnableBoundingBox = false;
 
@@ -617,33 +617,34 @@ public static class Program
     {
         GameProperties.GameName = "GIW TEST";
         GameProperties.Version = new MyVersion(1, 0, 0);
-        GameProperties.StartWindowSize = new Vector2(1600, 900);
-        GameProperties.FullScreen = false;
+        GameProperties.StartWindowSize = new Vector2(1920, 1080);
+        GameProperties.FullScreen = true;
         GameProperties.Titlebar = false;
         GameProperties.SplashScreen = new SplashScreen((Bitmap)Bitmap.FromFile("Splash.png"));
         GameProperties.RenderTickRate = 60;
         MyGame.Initialize();
 
-        MyGameWorld.RenderTarget = new DesktopRenderTarget(MyGame.MainWindow);
+        MyGameWorld.RenderTarget = new WindowRenderTarget(MyGame.MainWindow); // = new DesktopRenderTarget(MyGame.MainWindow);
+
 
         MirrorTexture = new RenderTexture(1920, 1080);
         PylonGameEngine.UI.Drawing.Graphics g = new PylonGameEngine.UI.Drawing.Graphics(MirrorTexture);
-        g.BeginDraw();
+        //g.BeginDraw();
 
-        g.FillRectangle(g.CreateSolidBrush(RGBColor.Black));
+        //g.FillRectangle(g.CreateSolidBrush(RGBColor.Black));
 
-        var pen = g.CreatePen(RGBColor.White, 1);
-        for (int i = 0; i < MirrorTexture.Size.X; i += 15)
-        {
-            g.DrawLine(pen, i, 0, i, MirrorTexture.Size.Y);
-        }
+        //var pen = g.CreatePen(RGBColor.White, 1);
+        //for (int i = 0; i < MirrorTexture.Size.X; i += 15)
+        //{
+        //    g.DrawLine(pen, i, 0, i, MirrorTexture.Size.Y);
+        //}
 
-        for (int i = 0; i < MirrorTexture.Size.Y; i += 15)
-        {
-            g.DrawLine(pen, 0, i, MirrorTexture.Size.X, i);
-        }
+        //for (int i = 0; i < MirrorTexture.Size.Y; i += 15)
+        //{
+        //    g.DrawLine(pen, 0, i, MirrorTexture.Size.X, i);
+        //}
 
-        g.EndDraw();
+        //g.EndDraw();
 
         graph = new Graph();
         graph.Transform.Size = new Vector2(1920, 1000);
@@ -653,10 +654,15 @@ public static class Program
         Material Mirror = new Material("Mirror", MirrorShader);
         MyGame.Materials.Add(Mirror);
 
+        MeshObject cubeobj = new MeshObject();
+        cubeobj.Mesh = Primitves3D.CreateCube(Mirror, Vector3.Zero, new Vector3(10));
+        MyGameWorld.Objects.Add(cubeobj);
+
         var WindowTarget = (RenderTexture)MyGameWorld.RenderTarget;
         var MAINCAM = new CameraObject(WindowTarget, true);
 
         MAINCAM.Activate();
+        MyGameWorld.ActiveCamera.CameraRender.SetSkyboxMaterial(new Material("", new TextureShader(@"C:\Users\Endric\Pictures\Screenshot 2022-01-01 231629.png")));
         MyPhysics.Gravity = Vector3.Zero;
         MeshObject Plane = new MeshObject();
         Plane.Transform.Position = new Vector3(0, 40f, 0);
@@ -687,7 +693,7 @@ public static class Program
         Camera2.Far *= 100;
         Camera2.Transform.Rotation = Quaternion.FromEuler(0, 180, 0);
 
-        PylonAudioFile audiofile = new WaveFile(@"Z:\Output\TEST.wav").ConvertToPylonFormat();
+        //PylonAudioFile audiofile = new WaveFile(@"Z:\Output\TEST.wav").ConvertToPylonFormat();
 
         //var file = new RawFile();
         //DataWriter writer = new DataWriter(file);
@@ -976,13 +982,13 @@ public static class Program
 
 
 
-        cubetest cubetest = new cubetest();
-        cubetest.Transform.Size = new Vector2(1920, 1080);
-        cubetest.PositionLayout = PositionLayout.Center;
-        //MyGameWorld.GUI.Add(cubetest);
+        //cubetest cubetest = new cubetest();
+        //cubetest.Transform.Size = new Vector2(1920, 1080);
+        //cubetest.PositionLayout = PositionLayout.Center;
+        ////MyGameWorld.GUI.Add(cubetest);
 
-        PylonAudioFile File = new WaveFile(@"E:\Downloads\SoundEffect.wav").ConvertToPylonFormat();
-        audio = new Audio(File);
+        //PylonAudioFile File = new WaveFile(@"E:\Downloads\SoundEffect.wav").ConvertToPylonFormat();
+        //audio = new Audio(File);
 
 
         //Oscilliscope oscilliscope = new Oscilliscope();

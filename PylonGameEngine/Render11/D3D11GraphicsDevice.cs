@@ -465,7 +465,7 @@ namespace PylonGameEngine.Render11
                 frame.SetPixelFormat(targetGuid);
 
                 //var mapped = context.Map(staging, 0, MapMode.Read, MapFlags.None);
-                Span<Vortice.Mathematics.Color> colors = DeviceContext.Map<Vortice.Mathematics.Color>(staging, 0, 0, MapMode.Read, Vortice.Direct3D11.MapFlags.None);
+                ReadOnlySpan<Vortice.Mathematics.Color> colors = DeviceContext.Map<Vortice.Mathematics.Color>(staging, 0, 0, MapMode.Read, Vortice.Direct3D11.MapFlags.None);
 
                 // Check conversion
                 //R8G8B8A8_UNorm_SRgb

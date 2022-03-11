@@ -252,7 +252,7 @@ namespace PylonGameEngine.UI.Drawing
 
         public void DrawPixel(Pen pen, Vector2 Position)
         {
-            RenderTarget.FillRectangle(new Vortice.Mathematics.Rectangle(Position.X, Position.Y, 1, 1), pen.br);
+            RenderTarget.FillRectangle(new Vortice.Mathematics.Rect(Position.X, Position.Y, 1, 1), pen.br);
         }
 
 
@@ -260,19 +260,19 @@ namespace PylonGameEngine.UI.Drawing
         {
             for (int i = 0; i < Positions.Length; i++)
             {
-                RenderTarget.FillRectangle(new Vortice.Mathematics.Rectangle(Positions[i].X, Positions[i].Y, 1, 1), pen.br);
+                RenderTarget.FillRectangle(new Vortice.Mathematics.Rect(Positions[i].X, Positions[i].Y, 1, 1), pen.br);
             }
             
         }
 
         public void DrawRectangle(Pen pen)
         {
-            RenderTarget.DrawRectangle(new Vortice.Mathematics.Rectangle(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawRectangle(new Vortice.Mathematics.Rect(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), pen.br, pen.Width, pen.StrokeStyle);
         }
 
         public void DrawRectangle(Pen pen, Vector2 Position, Vector2 Size)
         {
-            RenderTarget.DrawRectangle(new Vortice.Mathematics.Rectangle(Position.X, Position.Y, Size.X, Size.Y), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawRectangle(new Vortice.Mathematics.Rect(Position.X, Position.Y, Size.X, Size.Y), pen.br, pen.Width, pen.StrokeStyle);
         }
 
         public void DrawRectangle(Pen pen, RectangleF rectangle)
@@ -297,12 +297,12 @@ namespace PylonGameEngine.UI.Drawing
 
         public void DrawLine(Pen pen, Vector2 p1, Vector2 p2)
         {
-            RenderTarget.DrawLine(p1.ToVorticePoint(), p2.ToVorticePoint(), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawLine(p1.ToSystemNumerics(), p2.ToSystemNumerics(), pen.br, pen.Width, pen.StrokeStyle);
         }
 
         public void DrawLine(Pen pen, float x1, float y1, float x2, float y2)
         {
-            RenderTarget.DrawLine(new Vortice.Mathematics.Point(x1, y1), new Vortice.Mathematics.Point(x2, y2), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawLine(new System.Numerics.Vector2(x1, y1), new System.Numerics.Vector2(x2, y2), pen.br, pen.Width, pen.StrokeStyle);
         }
 
         public void DrawArrow(Pen pen, Vector2 p1, Vector2 p2)
@@ -528,12 +528,12 @@ namespace PylonGameEngine.UI.Drawing
 
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
             var sink = geometry.Open();
-            sink.BeginFigure(points[0].ToVorticePoint(), FigureBegin.Filled);
+            sink.BeginFigure(points[0].ToSystemNumerics(), FigureBegin.Filled);
 
-            List<Vortice.Mathematics.Point> Points = new List<Vortice.Mathematics.Point>();
+            List<System.Numerics.Vector2> Points = new List<System.Numerics.Vector2>();
             for (int i = 1; i < points.Length; i++)
             {
-                Points.Add(points[i].ToVorticePoint());
+                Points.Add(points[i].ToSystemNumerics());
             }
             sink.AddLines(Points.ToArray());
             sink.EndFigure(FigureEnd.Closed);
@@ -549,12 +549,12 @@ namespace PylonGameEngine.UI.Drawing
 
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
             var sink = geometry.Open();
-            sink.BeginFigure(points[0].ToVorticePoint(), FigureBegin.Filled);
+            sink.BeginFigure(points[0].ToSystemNumerics(), FigureBegin.Filled);
 
-            List<Vortice.Mathematics.Point> Points = new List<Vortice.Mathematics.Point>();
+            List<System.Numerics.Vector2> Points = new List<System.Numerics.Vector2>();
             for (int i = 1; i < points.Length; i++)
             {
-                Points.Add(points[i].ToVorticePoint());
+                Points.Add(points[i].ToSystemNumerics());
             }
             sink.AddLines(Points.ToArray());
             sink.EndFigure(FigureEnd.Closed);
@@ -572,12 +572,12 @@ namespace PylonGameEngine.UI.Drawing
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
 
             var sink = geometry.Open();
-            sink.BeginFigure(points[0].ToVorticePoint(), FigureBegin.Filled);
+            sink.BeginFigure(points[0].ToSystemNumerics(), FigureBegin.Filled);
 
-            List<Vortice.Mathematics.Point> Points = new List<Vortice.Mathematics.Point>();
+            List<System.Numerics.Vector2> Points = new List<System.Numerics.Vector2>();
             for (int i = 1; i < points.Length; i++)
             {
-                Points.Add(points[i].ToVorticePoint());
+                Points.Add(points[i].ToSystemNumerics());
             }
             sink.AddLines(Points.ToArray());
             sink.EndFigure((FigureEnd)(Closed ? 1 : 0));
@@ -600,7 +600,7 @@ namespace PylonGameEngine.UI.Drawing
             List<BezierSegment> segments = new List<BezierSegment>();
             foreach (var item in CurveSegments)
             {
-                segments.Add(new BezierSegment(item.Point1.ToVorticePoint(), item.ControlPoint.ToVorticePoint(), item.Point2.ToVorticePoint()));
+                segments.Add(new BezierSegment(item.Point1.ToSystemNumerics(), item.ControlPoint.ToSystemNumerics(), item.Point2.ToSystemNumerics()));
             }
             //  sink.AddQuadraticBeziers(segments.ToArray());
             sink.AddBeziers(segments.ToArray());
@@ -619,9 +619,9 @@ namespace PylonGameEngine.UI.Drawing
             var geometry = D3D11GraphicsDevice.Factory2D.CreatePathGeometry();
 
             var sink = geometry.Open();
-            sink.BeginFigure(StartPoint.ToVorticePoint(), FigureBegin.Filled);
+            sink.BeginFigure(StartPoint.ToSystemNumerics(), FigureBegin.Filled);
 
-            sink.AddArc(new ArcSegment(EndPoint.ToVorticePoint(), new Vortice.Mathematics.Size(Size.X, Size.Y), 0f, SweepDirection.Clockwise, ArcSize.Large));
+            sink.AddArc(new ArcSegment(EndPoint.ToSystemNumerics(), new Vortice.Mathematics.Size(Size.X, Size.Y), 0f, SweepDirection.Clockwise, ArcSize.Large));
             sink.EndFigure((FigureEnd)(Closed ? 1 : 0));
 
             //var group = D3D11GraphicsDevice.Factory2D.CreateGeometryGroup(Vortice.Direct2D1.FillMode.Alternate, new ID2D1Geometry[] { geometry});

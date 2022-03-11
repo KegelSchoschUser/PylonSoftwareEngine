@@ -31,7 +31,7 @@ namespace PylonGameEngine.Render11
             Compiler.Compile(PylonGameEngine.Resources.Shaders.VertexShader3D, "EntryPoint3D", this.GetType().Name, "vs_4_0", out Blob ShaderByteCode, out Blob ErrorBlob);
             if (ErrorBlob != null)
             {
-                Console.Write("ShaderCompileError (3D): " + Encoding.Default.GetString(ErrorBlob.GetBytes()));
+                Console.Write("ShaderCompileError (3D): " + Encoding.Default.GetString(ErrorBlob.AsBytes()));
             }
 
             return ShaderByteCode;
@@ -184,7 +184,7 @@ namespace PylonGameEngine.Render11
             D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(2, ObjectMatrixBuffer);
 
             D3D11GraphicsDevice.DeviceContext.Draw(Triangles.Count * 3, 0);
-            MatrixBuffer.Release();
+      
             ObjectMatrixBuffer.Release();
             VertexBuffer.Release();
             IndexBuffer.Release();

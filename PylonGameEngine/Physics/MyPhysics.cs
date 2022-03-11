@@ -11,7 +11,7 @@ namespace PylonGameEngine.Physics
     {
         public static Simulation Simulation { get; internal set; }
         public static BufferPool BufferPool;
-        internal static ThreadDispatcher ThreadDispatcher { get; private set; }
+        internal static BepuUtilities.ThreadDispatcher ThreadDispatcher { get; private set; }
         private static object RigidLock = new object();
         private static object StaticLock = new object();
         private static object TriggerLock = new object();
@@ -36,7 +36,7 @@ namespace PylonGameEngine.Physics
             BufferPool = new BufferPool();
 
             var ThreadCount = Environment.ProcessorCount > 4 ? Environment.ProcessorCount - 2 : Environment.ProcessorCount - 1;
-            ThreadDispatcher = new ThreadDispatcher(ThreadCount);
+            ThreadDispatcher = new BepuUtilities.ThreadDispatcher(ThreadCount);
 
             Simulation = Simulation.Create(BufferPool, new DemoNarrowPhaseCallbacks(), demoPoseIntegratorCallbacks, new SolveDescription(1, 4));
             Initialized = true;

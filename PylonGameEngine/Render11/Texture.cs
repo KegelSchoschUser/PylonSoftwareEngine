@@ -53,7 +53,7 @@ namespace PylonGameEngine.Render11
             srvDesc.Texture2D.MipLevels = -1;
 
             var Resource = D3D11GraphicsDevice.Device.CreateShaderResourceView(InternalTexture, srvDesc);
-            D3D11GraphicsDevice.DeviceContext.GenerateMips(Resource);
+            //D3D11GraphicsDevice.DeviceContext.GenerateMips(Resource);
 
             return Resource;
         }

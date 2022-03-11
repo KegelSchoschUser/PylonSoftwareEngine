@@ -79,6 +79,8 @@ namespace PylonGameEngine.Render11
                 D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(0, MatrixBuffer);
 
                 OnRender();
+
+                MatrixBuffer.Release();
             }
         }
 

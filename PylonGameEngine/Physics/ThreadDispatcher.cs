@@ -82,19 +82,6 @@ namespace PylonGameEngine.Physics
             }
         }
 
-        public void DispatchWorkers(Action<int> workerBody)
-        {
-            Debug.Assert(this.workerBody == null);
-            workerIndex = 1; //Just make the inline thread worker 0. While the other threads might start executing first, the user should never rely on the dispatch order.
-            completedWorkerCounter = 0;
-            this.workerBody = workerBody;
-            SignalThreads();
-            //Calling thread does work. No reason to spin up another worker and block this one!
-            DispatchThread(0);
-            finished.WaitOne();
-            this.workerBody = null;
-        }
-
         volatile bool disposed;
         public void Dispose()
         {
@@ -117,6 +104,19 @@ namespace PylonGameEngine.Physics
         public BufferPool GetThreadMemoryPool(int workerIndex)
         {
             return bufferPools[workerIndex];
+        }
+
+        public void DispatchWorkers(Action<int> workerBody, int maximumWorkerCount = int.MaxValue)
+        {
+            Debug.Assert(this.workerBody == null);
+            workerIndex = 1; //Just make the inline thread worker 0. While the other threads might start executing first, the user should never rely on the dispatch order.
+            completedWorkerCounter = 0;
+            this.workerBody = workerBody;
+            SignalThreads();
+            //Calling thread does work. No reason to spin up another worker and block this one!
+            DispatchThread(0);
+            finished.WaitOne();
+            this.workerBody = null;
         }
     }
 }

@@ -9,12 +9,10 @@ namespace PylonGameEngine.GameWorld3D
     public class MeshObject : GameObject3D
     {
         public Mesh Mesh;
-        public List<CameraObject> ExcludedCameras;
 
         public MeshObject()
         {
             Mesh = new Mesh();
-            ExcludedCameras = new List<CameraObject>();
         }
 
         //public MeshObject(string Filename, bool RightHanded = false)

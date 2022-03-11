@@ -23,6 +23,12 @@ namespace PylonGameEngine.FileSystem.Filetypes.Pylon
         }
         
 
+        public PylonAudioFile()
+        {
+            Samples = new float[0, 0];
+            SampleRate = 0;
+        }
+
         public PylonAudioFile(int channels, int Length, int sampleRate)
         {
             Samples = new float[Length, channels];

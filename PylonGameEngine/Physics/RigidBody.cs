@@ -109,7 +109,7 @@ namespace PylonGameEngine.Physics
                         }
                         BepuPhysics.Collidables.Mesh collisionShape = new BepuPhysics.Collidables.Mesh(triangles, Parent.Transform.Scale.ToSystemNumerics(), MyPhysics.BufferPool);
                         CollisionMesh = collisionShape;
-                        collisionShape.ComputeOpenInertia(InitDesc.Mass, out Inertia);
+                        Inertia = collisionShape.ComputeOpenInertia(InitDesc.Mass, out var center);
                         meshIndex = MyPhysics.Simulation.Shapes.Add(collisionShape);
                     }
                     break;
