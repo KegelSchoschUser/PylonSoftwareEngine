@@ -11,6 +11,7 @@ namespace PylonGameEngine.Mathematics
 
         public static readonly Vector2 Zero = new Vector2(0, 0);
         public static readonly Vector2 One = new Vector2(1, 1);
+        public static readonly Vector2 Max = new Vector2(float.MaxValue, float.MaxValue);
 
         //public float w;
 
@@ -235,6 +236,10 @@ namespace PylonGameEngine.Mathematics
         public static implicit operator System.Drawing.Size(Vector2 v) => new System.Drawing.Size((int)v.X, (int)v.Y);
         public static implicit operator Vector2(System.Drawing.Size v) => new Vector2(v.Width, v.Height);
 
+        public static Vector2 Clamp(Vector2 vector, Vector2 minimum, Vector2 maximum)
+        {
+            return new Vector2(Mathf.Clamp(vector.X, minimum.X, maximum.X), Mathf.Clamp(vector.Y, minimum.Y, maximum.Y));
+        }
 
         public override string ToString()
         {

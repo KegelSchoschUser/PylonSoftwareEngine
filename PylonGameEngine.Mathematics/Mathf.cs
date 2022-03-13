@@ -98,7 +98,9 @@ namespace PylonGameEngine
         public static float Cos(float value) => (float)System.Math.Cos(value);
         public static float Tan(float value) => (float)System.Math.Tan(value);
         public static float Abs(float value) => (float)System.Math.Abs(value);
+        public static int Round(float value) => (int)System.Math.Round(value);
         public static int Floor(float value) => (int)System.Math.Floor(value);
+        public static int Ceiling(float value) => (int)System.Math.Ceiling(value); 
         public static float Pow(float x, float y) => (float)System.Math.Pow(x, y);
         public static int Truncate(float value) => (int)System.Math.Truncate(value);
     }

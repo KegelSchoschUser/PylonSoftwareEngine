@@ -1123,6 +1123,12 @@ namespace PylonGameEngine.Mathematics
             set { M11 = value.X; M22 = value.Y; M33 = value.Z; }
         }
 
+        public Vector2 ScaleVector2D
+        {
+            get => new Vector2(M11, M22);
+            set { M11 = value.X; M22 = value.Y; }
+        }
+
         /// <summary>
         /// Creates a translation mat4x4 using the specified offsets.
         /// </summary>

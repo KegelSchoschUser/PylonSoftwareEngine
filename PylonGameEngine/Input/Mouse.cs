@@ -153,16 +153,17 @@ namespace PylonGameEngine.Input
 
         public void Update()
         {
-            DownButtons.Clear();
-            DownButtons.UnionWith(DownButtonsBuffer);
-            DownButtonsBuffer.Clear();
-
-            UpButtons.Clear();
-            UpButtons.UnionWith(UpButtonsBuffer);
-            UpButtonsBuffer.Clear();
-
             lock (LOCK)
             {
+                DownButtons.Clear();
+                DownButtons.UnionWith(DownButtonsBuffer);
+                DownButtonsBuffer.Clear();
+
+                UpButtons.Clear();
+                UpButtons.UnionWith(UpButtonsBuffer);
+                UpButtonsBuffer.Clear();
+
+
                 if (LockedRectange.IsEmpty == false && InputManager.Window.GlobalRectangle == LockedRectange)
                 {
                     var Pos = LockedRectange.Location + new Size(LockedRectange.Size.Width / 2, LockedRectange.Size.Height / 2);

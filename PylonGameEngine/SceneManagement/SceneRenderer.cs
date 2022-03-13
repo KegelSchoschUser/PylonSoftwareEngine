@@ -170,7 +170,6 @@ namespace PylonGameEngine.SceneManagement
 
         private void RenderCamera3D(Camera Camera, List<(int, Matrix4x4)> RawObjects)
         {
-
             Camera.RenderTarget.OnRender();
             D3D11GraphicsDevice.DeviceContext.OMSetRenderTargets(Camera.RenderTarget.InternalRenderTarget, Camera.RenderTarget.DepthStencilView);
 
@@ -204,6 +203,7 @@ namespace PylonGameEngine.SceneManagement
 
         public void Render2D()
         {
+            MainRenderTarget.OnRender();
             D3D11GraphicsDevice.DeviceContext.OMSetRenderTargets(MainRenderTarget.InternalRenderTarget, MainRenderTarget.DepthStencilView);
             D3D11GraphicsDevice.DeviceContext.OMSetDepthStencilState(DepthStencilStateDisabled);
             D3D11GraphicsDevice.DeviceContext.IASetInputLayout(InputLayout2D);
@@ -250,7 +250,6 @@ namespace PylonGameEngine.SceneManagement
                     textureshader2D.Textures.Add(RawObjects[i].Item3);
                 else
                     textureshader2D.Textures[0] = RawObjects[i].Item3;
-
                 textureshader2D.InitializeShader(D3D11GraphicsDevice.Device, D3D11GraphicsDevice.DeviceContext);
                 textureshader2D.SetShaderTextures(D3D11GraphicsDevice.Device, D3D11GraphicsDevice.DeviceContext);
 

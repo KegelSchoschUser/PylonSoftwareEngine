@@ -51,7 +51,7 @@ namespace PylonGameEngine.Extensions
 
             string ValueText = Value.ToString(CultureInfo.CurrentCulture);
 
-            foreach (var character in Keyboard.CharacterKeys)
+            foreach (var character in SceneContext.InputManager.Keyboard.CharacterKeys)
             {
                 if (character == '\b')
                 {

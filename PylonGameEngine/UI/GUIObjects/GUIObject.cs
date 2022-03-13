@@ -28,6 +28,9 @@ namespace PylonGameEngine.GameWorld
 
     public class GUIObject : UniqueNameInterface, IGameObject
     {
+        public float DeltaTime => MyGame.RenderLoop.DeltaTime;
+        public float FixedDeltaTime => MyGame.GameTickLoop.DeltaTime;
+
         public List<GameScript> scripts;
         public Transform2D Transform = new Transform2D();
         public PylonGameEngine.UI.Drawing.Graphics Graphics;
@@ -38,7 +41,7 @@ namespace PylonGameEngine.GameWorld
 
         private GUIObject _Parent;
 
-        internal Scene SceneContext = null;
+        public Scene SceneContext = null;
         public GUIObject Parent
         {
             get

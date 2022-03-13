@@ -221,7 +221,15 @@ namespace PylonGameEngine
         {
             foreach (var inputmanager in InputManagers)
             {
-                inputmanager.MouseMove(e.X, e.Y);
+                if(FormBorderStyle == FormBorderStyle.None)
+                    inputmanager.MouseMove(e.X + 5, e.Y);
+                else
+                {
+                    Rectangle screenRectangle = this.RectangleToScreen(this.ClientRectangle);
+
+                    int titleHeight = screenRectangle.Top - this.Top;
+                    inputmanager.MouseMove(e.X + 5, e.Y + titleHeight);
+                }
             }
         }
 

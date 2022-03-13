@@ -17,13 +17,15 @@ namespace PylonGameEngine.Utilities
         public bool WriteInConsole = true;
         public bool FireEvents = true;
         public string Output { get; private set; }
+        public string FolderPath { get; private set; }
 
         public delegate void OnWriteText(string Text);
         public event OnWriteText OnWrite;
 
-        public MyLog(string FolderPath, string appName, string appversion)
+        public MyLog(string folderPath, string appName, string appversion)
         {
             OnWrite += FAKE_OnWrite;
+            FolderPath = folderPath + @"\" + "Logs";
             Init(FolderPath, appName, appversion);
         }
 
@@ -58,7 +60,7 @@ namespace PylonGameEngine.Utilities
             sb.Append(appName);
             sb.Append("_");
             sb.Append(GetDateTimeForFilename(DateTime.Now));
-            sb.Append(".giwlog");
+            sb.Append(".pylog");
 
             return sb.ToString();
         }

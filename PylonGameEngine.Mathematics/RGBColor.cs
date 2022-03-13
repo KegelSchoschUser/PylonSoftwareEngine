@@ -153,7 +153,7 @@ namespace PylonGameEngine.Mathematics
 
         public Vortice.Mathematics.Color ToVorticeColor()
         {
-            return new Vortice.Mathematics.Color(((int)R * 255), ((int)G * 255), ((int)B * 255), ((int)A * 255));
+            return new Vortice.Mathematics.Color((int)(R * 255), (int)(G * 255), (int)(B * 255), (int)(A * 255));
         }
 
         public static bool operator !=(RGBColor left, RGBColor right)
