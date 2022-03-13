@@ -49,7 +49,7 @@ namespace PylonGameEngine.Physics
             catch (Exception)
             {
 
-               
+
             }
 
             if (Interlocked.Increment(ref completedWorkerCounter) == threadCount)

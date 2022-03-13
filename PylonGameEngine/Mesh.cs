@@ -1,11 +1,8 @@
-﻿using System;
+﻿using PylonGameEngine.Mathematics;
+using PylonGameEngine.ShaderLibrary;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using PylonGameEngine.Mathematics;
-using PylonGameEngine.ShaderLibrary;
 
 namespace PylonGameEngine
 {
@@ -19,7 +16,7 @@ namespace PylonGameEngine
 
         public Mesh()
         {
-            
+
         }
 
 

@@ -1,17 +1,8 @@
-﻿using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PylonGameEngine.GameWorld;
-using PylonGameEngine.General;
-using PylonGameEngine.Mathematics;
+﻿using SharpGen.Runtime;
 using System;
-using System.Runtime.InteropServices;
-using Vortice.Direct3D;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
 using Vortice.Mathematics;
-using SharpGen.Runtime;
-using System.Diagnostics;
 
 namespace PylonGameEngine.Render11
 {
@@ -33,8 +24,8 @@ namespace PylonGameEngine.Render11
         {
             SwapChainDescription1 swapChainDescription = new SwapChainDescription1()
             {
-                Width = (int)MyGame.MainWindow.Size.X,
-                Height = (int)MyGame.MainWindow.Size.Y,
+                Width = (int)Window.Size.X,
+                Height = (int)Window.Size.Y,
                 Format = Format.R8G8B8A8_UNorm,
                 BufferCount = 2,
                 BufferUsage = Vortice.DXGI.Usage.RenderTargetOutput,
@@ -48,15 +39,20 @@ namespace PylonGameEngine.Render11
             {
                 Windowed = true
             };
-            SwapChain = D3D11GraphicsDevice.Factory.CreateSwapChainForHwnd(D3D11GraphicsDevice.Device, MyGame.MainWindow.Handle, swapChainDescription, fullscreenDescription);
-            D3D11GraphicsDevice.Factory.MakeWindowAssociation(MyGame.MainWindow.Handle, WindowAssociationFlags.IgnorePrintScreen);
+            SwapChain = D3D11GraphicsDevice.Factory.CreateSwapChainForHwnd(D3D11GraphicsDevice.Device, Window.Handle, swapChainDescription, fullscreenDescription);
+            D3D11GraphicsDevice.Factory.MakeWindowAssociation(Window.Handle, WindowAssociationFlags.IgnorePrintScreen);
 
             BackBufferTexture = SwapChain.GetBuffer<ID3D11Texture2D>(0);
             InternalTexture = BackBufferTexture;
             InternalRenderTarget = D3D11GraphicsDevice.Device.CreateRenderTargetView(BackBufferTexture);
         }
 
-        public void Present()
+        internal override void OnRender()
+        {
+            D3D11GraphicsDevice.DeviceContext.RSSetViewport(new Viewport(0, 0, Window.Size.X, Window.Size.Y));
+        }
+
+        internal void Present()
         {
             Result result = SwapChain.Present(0, PresentFlags.None);
 

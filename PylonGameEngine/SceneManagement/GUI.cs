@@ -1,15 +1,14 @@
 ﻿using PylonGameEngine.GameWorld;
 using PylonGameEngine.Utilities;
 using System;
-using System.Collections.Generic;
 
-namespace PylonGameEngine.UI
+namespace PylonGameEngine.SceneManagement
 {
     public class GUI
     {
-        public static LockedList<GUIObject> GUIObjects { get; private set; }
+        public LockedList<GUIObject> GUIObjects { get; private set; }
 
-        public GUIObject FocusedObject { get; private set; }
+        internal GUIObject FocusedObject { get; private set; }
         internal GUIObject FocusedLostObject { get; private set; }
         private GUIObject LastFocusedObject;
 
@@ -20,11 +19,14 @@ namespace PylonGameEngine.UI
         internal GUIObject MouseLeaveObject { get; private set; }
 
         private GUIObject PlaceHolder;
+        internal Scene SceneContext { get; private set; }
 
-        public GUI()
+        public GUI(Scene scenecontext)
         {
+            SceneContext = scenecontext;
             GUIObjects = new LockedList<GUIObject>(ref MyGame.RenderLock);
-            PlaceHolder = new GUIObject() { Transform = new Mathematics.Transform2D() { Size = new Mathematics.Vector2(MyGame.MainWindow.Size.X, MyGame.MainWindow.Size.Y) } };
+            PlaceHolder = new GUIObject() { Transform = new Mathematics.Transform2D() { Size = new Mathematics.Vector2(float.MaxValue) } };
+            PlaceHolder.SceneContext = scenecontext;
         }
 
         public void SetFocus(GUIObject obj)
@@ -56,7 +58,7 @@ namespace PylonGameEngine.UI
                             FocusedObject = objs.Item2;
                         break;
                     }
-                    
+
                 }
                 //else
                 //{
@@ -87,13 +89,11 @@ namespace PylonGameEngine.UI
                 FocusedLostObject = LastFocusedObject;
             else
                 FocusedLostObject = null;
+        }
 
+        internal void UpdateFrame()
+        {
 
-            foreach (GUIObject obj in GetRenderOrder())
-            {
-                obj.UpdateTickInternal();
-                obj.UpdateTick();
-            }
         }
 
         public LockedList<GUIObject> GetRenderOrder()
@@ -121,9 +121,10 @@ namespace PylonGameEngine.UI
 
         public void Add(GUIObject gUIObject, GUIObject Parent = null)
         {
+            gUIObject.SceneContext = SceneContext;
             if (Parent == null)
             {
-                GUI.GUIObjects.Add(gUIObject);
+                GUIObjects.Add(gUIObject);
             }
             else
             {
@@ -135,6 +136,7 @@ namespace PylonGameEngine.UI
         {
             foreach (var obj in gUIObject)
             {
+                obj.SceneContext = SceneContext;
                 Add(obj, Parent);
             }
         }

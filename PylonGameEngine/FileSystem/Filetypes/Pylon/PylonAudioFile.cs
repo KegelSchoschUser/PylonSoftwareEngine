@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PylonGameEngine.FileSystem.Filetypes.Pylon
 {
@@ -21,7 +18,7 @@ namespace PylonGameEngine.FileSystem.Filetypes.Pylon
         {
             get { return Samples.GetLength(0); }
         }
-        
+
 
         public PylonAudioFile()
         {

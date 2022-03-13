@@ -3,7 +3,6 @@ using PylonGameEngine.Render11;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Vortice.Direct3D11;
 
 namespace PylonGameEngine.ShaderLibrary
 {

@@ -1,5 +1,4 @@
 ﻿using PylonGameEngine.Mathematics;
-using System;
 using System.Collections.Generic;
 
 namespace PylonGameEngine
@@ -123,7 +122,7 @@ namespace PylonGameEngine
             m.Points.Add(new Vector3(0, 1, 0));    //1 //
             m.Points.Add(new Vector3(1, 1, 0));    //2 //
             m.Points.Add(new Vector3(1, 0, 0));    //3
-                                                                                                                
+
             m.Points.Add(new Vector3(0, 0, 1));    //4
             m.Points.Add(new Vector3(0, 1, 1));    //5 //
             m.Points.Add(new Vector3(1, 1, 1));    //6 //
@@ -141,23 +140,23 @@ namespace PylonGameEngine
             m.Normals.Add(Vector3.Up);              //4
             m.Normals.Add(Vector3.Down);            //5
 
-            m.Triangles.Add(new TrianglePointer(Material,         0, 1, 2,        3, 0, 1,        0));    //Front
-            m.Triangles.Add(new TrianglePointer(Material,         0, 2, 3,        3, 1, 2,        0));    //Front
+            m.Triangles.Add(new TrianglePointer(Material, 0, 1, 2, 3, 0, 1, 0));    //Front
+            m.Triangles.Add(new TrianglePointer(Material, 0, 2, 3, 3, 1, 2, 0));    //Front
 
-            m.Triangles.Add(new TrianglePointer(Material,         7, 6, 5,        3, 0, 1,        1));    //Back
-            m.Triangles.Add(new TrianglePointer(Material,         7, 5, 4,        3, 1, 2,        1));    //Back   
+            m.Triangles.Add(new TrianglePointer(Material, 7, 6, 5, 3, 0, 1, 1));    //Back
+            m.Triangles.Add(new TrianglePointer(Material, 7, 5, 4, 3, 1, 2, 1));    //Back   
 
-            m.Triangles.Add(new TrianglePointer(Material,         4, 5, 1,        3, 0, 1,        2));    //Left
-            m.Triangles.Add(new TrianglePointer(Material,         4, 1, 0,        3, 1, 2,        2));    //Left
+            m.Triangles.Add(new TrianglePointer(Material, 4, 5, 1, 3, 0, 1, 2));    //Left
+            m.Triangles.Add(new TrianglePointer(Material, 4, 1, 0, 3, 1, 2, 2));    //Left
 
-            m.Triangles.Add(new TrianglePointer(Material,         3, 2, 6,        3, 0, 1,        3));    //Right
-            m.Triangles.Add(new TrianglePointer(Material,         3, 6, 7,        3, 1, 2,        3));    //Right  
+            m.Triangles.Add(new TrianglePointer(Material, 3, 2, 6, 3, 0, 1, 3));    //Right
+            m.Triangles.Add(new TrianglePointer(Material, 3, 6, 7, 3, 1, 2, 3));    //Right  
 
-            m.Triangles.Add(new TrianglePointer(Material,         6, 2, 1,        1, 2, 3,        4));    //Top
-            m.Triangles.Add(new TrianglePointer(Material,         6, 1, 5,        1, 3, 0,        4));    //Top
+            m.Triangles.Add(new TrianglePointer(Material, 6, 2, 1, 1, 2, 3, 4));    //Top
+            m.Triangles.Add(new TrianglePointer(Material, 6, 1, 5, 1, 3, 0, 4));    //Top
 
-            m.Triangles.Add(new TrianglePointer(Material,         3, 7, 4,        1, 2, 3,        5));    //Bottom
-            m.Triangles.Add(new TrianglePointer(Material,         3, 4, 0,        1, 3, 0,        5));    //Bottom //  0, 3, 4
+            m.Triangles.Add(new TrianglePointer(Material, 3, 7, 4, 1, 2, 3, 5));    //Bottom
+            m.Triangles.Add(new TrianglePointer(Material, 3, 4, 0, 1, 3, 0, 5));    //Bottom //  0, 3, 4
 
 
             ApplyTransform(m, Position, Size, Rotation, Origin);
@@ -211,7 +210,7 @@ namespace PylonGameEngine
                 for (float alpha = 0; alpha <= limitAlpha; alpha += space)
                 {
                     //Start editing our vertex.
-                    
+
                     vctTmp.X = (float)(radius * Mathf.Sin(Mathf.Deg2Rad * alpha) * Mathf.Sin(Mathf.Deg2Rad * beta));
                     vctTmp.Y = (float)(radius * Mathf.Cos(Mathf.Deg2Rad * alpha) * Mathf.Sin(Mathf.Deg2Rad * beta));
                     vctTmp.Z = (float)(radius * Mathf.Cos(Mathf.Deg2Rad * beta));
@@ -273,7 +272,7 @@ namespace PylonGameEngine
                 m.AddQuad(quad, Material);
             }
 
-                ApplyTransform(m, Position, Vector3.One, Quaternion.Identity, Origin);
+            ApplyTransform(m, Position, Vector3.One, Quaternion.Identity, Origin);
             return m;
         }
 

@@ -2,19 +2,25 @@
 
 namespace PylonGameEngine.Input
 {
-    public static class Keyboard
+    public class Keyboard
     {
-        public static HashSet<KeyboardKey> DownKeys = new HashSet<KeyboardKey>();
-        private static HashSet<KeyboardKey> DownKeysBuffer = new HashSet<KeyboardKey>();
-        public static HashSet<KeyboardKey> PressedKeys = new HashSet<KeyboardKey>();
-        public static HashSet<KeyboardKey> UpKeys = new HashSet<KeyboardKey>();
-        private static HashSet<KeyboardKey> UpKeysBuffer = new HashSet<KeyboardKey>();
-        public static HashSet<char> CharacterKeys = new HashSet<char>();
-        private static HashSet<char> CharacterKeysBuffer = new HashSet<char>();
+        internal InputManager InputManager { get; private set; }
 
+        public HashSet<KeyboardKey> DownKeys = new HashSet<KeyboardKey>();
+        private HashSet<KeyboardKey> DownKeysBuffer = new HashSet<KeyboardKey>();
+        public HashSet<KeyboardKey> PressedKeys = new HashSet<KeyboardKey>();
+        public HashSet<KeyboardKey> UpKeys = new HashSet<KeyboardKey>();
+        private HashSet<KeyboardKey> UpKeysBuffer = new HashSet<KeyboardKey>();
+        public HashSet<char> CharacterKeys = new HashSet<char>();
+        private HashSet<char> CharacterKeysBuffer = new HashSet<char>();
+
+        public Keyboard(InputManager manager)
+        {
+            InputManager = manager;
+        }
 
         #region Core
-        internal static void AddKey(KeyboardKey key)
+        internal void AddKey(KeyboardKey key)
         {
             if (!PressedKeys.Contains(key))
             {
@@ -24,18 +30,18 @@ namespace PylonGameEngine.Input
             PressedKeys.Add(key);
         }
 
-        internal static void AddCharKey(char c)
+        internal void AddCharKey(char c)
         {
             CharacterKeysBuffer.Add(c);
         }
 
-        internal static void RemoveKey(KeyboardKey key)
+        internal void RemoveKey(KeyboardKey key)
         {
             UpKeysBuffer.Add(key);
             PressedKeys.Remove(key);
         }
 
-        internal static void Cycle()
+        internal void Update()
         {
             DownKeys.Clear();
             DownKeys.UnionWith(DownKeysBuffer);
@@ -51,17 +57,17 @@ namespace PylonGameEngine.Input
         }
         #endregion Core
 
-        public static bool KeyDown(KeyboardKey key)
+        public bool KeyDown(KeyboardKey key)
         {
             return DownKeys.Contains(key);
         }
 
-        public static bool KeyPressed(KeyboardKey key)
+        public bool KeyPressed(KeyboardKey key)
         {
             return PressedKeys.Contains(key);
         }
 
-        public static bool KeyUp(KeyboardKey key)
+        public bool KeyUp(KeyboardKey key)
         {
             return UpKeys.Contains(key);
         }

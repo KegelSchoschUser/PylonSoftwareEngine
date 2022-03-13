@@ -73,7 +73,7 @@ namespace PylonGameEngine.Utilities
                             DeltaTime = (now - previousStart).Ticks / 10000000f;
                             if (!Paused)
                             {
-    
+
                                 Tick();
                                 TickInfo(this);
                                 for (int i = 0; i < Invokes.Count; i++)
@@ -115,13 +115,13 @@ namespace PylonGameEngine.Utilities
                         DeltaTime = (now - previousStart).Ticks / 10000000f;
                         if (!Paused)
                         {
-                            
-                                Tick();
-                                TickInfo(this);
-                                for (int i = 0; i < Invokes.Count; i++)
-                                {
-                                    Invokes.Dequeue().Invoke();
-                                }
+
+                            Tick();
+                            TickInfo(this);
+                            for (int i = 0; i < Invokes.Count; i++)
+                            {
+                                Invokes.Dequeue().Invoke();
+                            }
                         }
 
                         if (Tickrate != -1.0f)

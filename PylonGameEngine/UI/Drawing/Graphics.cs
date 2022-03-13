@@ -8,7 +8,6 @@ using System.IO;
 using Vortice;
 using Vortice.Direct2D1;
 using Vortice.Direct2D1.Effects;
-using Vortice.Direct3D11;
 using Vortice.DirectWrite;
 using Vortice.DXGI;
 using Vortice.WIC;
@@ -28,7 +27,7 @@ namespace PylonGameEngine.UI.Drawing
         {
             Texture = texture;
             DXGISurface = Texture.InternalTexture.QueryInterface<IDXGISurface>();
-            
+
             RenderTargetProperties renderTargetProperties = new RenderTargetProperties(new Vortice.DCommon.PixelFormat(Vortice.DXGI.Format.R8G8B8A8_UNorm_SRgb, Vortice.DCommon.AlphaMode.Premultiplied));
             RenderTarget = D3D11GraphicsDevice.Factory2D.CreateDxgiSurfaceRenderTarget(DXGISurface, renderTargetProperties);
             DeviceContext = RenderTarget.QueryInterface<ID2D1DeviceContext>();
@@ -79,17 +78,17 @@ namespace PylonGameEngine.UI.Drawing
             }
         }
 
-        
+
         public void Destroy()
         {
             lock (MyGame.RenderLock)
             {
 
-            
-            WriteFactory.Release();
-            DXGISurface.Release();
-            //if (CreatedFromGUIObject)
-            //DeviceContext.Release();
+
+                WriteFactory.Release();
+                DXGISurface.Release();
+                //if (CreatedFromGUIObject)
+                //DeviceContext.Release();
                 //    Texture.Destroy();
                 //RenderTarget.Dispose();
             }
@@ -140,7 +139,7 @@ namespace PylonGameEngine.UI.Drawing
         public void EndDraw()
         {
             RenderTarget.Flush(out var tag1, out var tag2);
-  
+
             RenderTarget.EndDraw();
         }
 
@@ -262,7 +261,7 @@ namespace PylonGameEngine.UI.Drawing
             {
                 RenderTarget.FillRectangle(new Vortice.Mathematics.Rect(Positions[i].X, Positions[i].Y, 1, 1), pen.br);
             }
-            
+
         }
 
         public void DrawRectangle(Pen pen)
@@ -458,7 +457,7 @@ namespace PylonGameEngine.UI.Drawing
         public void DrawBitmap(PylonBitmap bitmap, RectangleF rectangle, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
         {
             RawRectF rect = new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom);
-            RenderTarget.DrawBitmap(bitmap.InternalBitmap, rect, opacity, (Vortice.Direct2D1.BitmapInterpolationMode)interpolationMode, new RawRectF(0, 0, bitmap.InternalBitmap.Size.Width, bitmap.InternalBitmap.Size.Height));       
+            RenderTarget.DrawBitmap(bitmap.InternalBitmap, rect, opacity, (Vortice.Direct2D1.BitmapInterpolationMode)interpolationMode, new RawRectF(0, 0, bitmap.InternalBitmap.Size.Width, bitmap.InternalBitmap.Size.Height));
         }
 
         public void DrawBitmap(string FileName, float opacity = 1f, Enums.InterpolationMode interpolationMode = Enums.InterpolationMode.Linear)
@@ -691,7 +690,7 @@ namespace PylonGameEngine.UI.Drawing
             var bitmap = DeviceContext.CreateBitmap(new Vortice.Mathematics.SizeI((int)RenderTarget.Size.Width, (int)RenderTarget.Size.Height), IntPtr.Zero, 0, ref bitmapProperties);
             bitmap.CopyFromRenderTarget(RenderTarget);
             return new PylonBitmap(bitmap);
-            
+
         }
 
 
@@ -804,8 +803,8 @@ namespace PylonGameEngine.UI.Drawing
             AffineTransform2D transform = new AffineTransform2D(DeviceContext);
             transform.SetInput(0, Bitmap, new SharpGen.Runtime.RawBool(false));
             var TranslationMatrix = System.Numerics.Matrix3x2.Identity;
-            var ScaleMatrix       = System.Numerics.Matrix3x2.Identity;
-            var RotationMatrix    = System.Numerics.Matrix3x2.Identity;
+            var ScaleMatrix = System.Numerics.Matrix3x2.Identity;
+            var RotationMatrix = System.Numerics.Matrix3x2.Identity;
             var RotationMatrixCenter = System.Numerics.Matrix3x2.Identity;
             var RotationMatrixNegativeCenter = System.Numerics.Matrix3x2.Identity;
 

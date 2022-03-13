@@ -1,11 +1,6 @@
-﻿using PylonGameEngine.GameWorld;
-using PylonGameEngine.Utilities.Win32;
-using SharpGen.Runtime;
-using System;
+﻿using System;
 using System.Drawing;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using Vortice.Direct3D;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
@@ -51,8 +46,6 @@ namespace PylonGameEngine.Render11
             // GlobalManager.RenderLoop.Starting += () => { INIT(); };
         }
 
-        
-
         public static void INIT()
         {
             if (CreateDXGIFactory1(out Factory).Failure)
@@ -61,7 +54,7 @@ namespace PylonGameEngine.Render11
             }
 
             Factory2D = Vortice.Direct2D1.D2D1.D2D1CreateFactory<Vortice.Direct2D1.ID2D1Factory7>();
-            
+
             using (IDXGIAdapter1 adapter = GetHardwareAdapter())
             {
                 DeviceCreationFlags creationFlags = DeviceCreationFlags.BgraSupport;
@@ -124,7 +117,6 @@ namespace PylonGameEngine.Render11
             // Now set the rasterizer state.
             DeviceContext.RSSetState(RasterState);
             // Setup and create the viewport for rendering.
-            DeviceContext.RSSetViewport(new Viewport(0, 0, MyGame.MainWindow.Size.X, MyGame.MainWindow.Size.Y));
 
             BlendDescription blendDescription = new BlendDescription();
             blendDescription.RenderTarget[0].IsBlendEnabled = true;
@@ -152,11 +144,6 @@ namespace PylonGameEngine.Render11
 
             // Create the blend state using the description.
             AlphaDisableBlendingState = Device.CreateBlendState(blendDescription);
-
-            // Initialize the color shader object.
-            Renderer.Initialize();
-
-            MyGame.RenderLoop.Tick += DrawFrame;
         }
 
         public static void TurnOnAlphaBlending()
@@ -250,32 +237,6 @@ namespace PylonGameEngine.Render11
             return adapter;
         }
 
-        public static unsafe void DrawFrame()
-        {
-            if (MyGame.RendererEnabled == false)
-                return;
-            foreach (GameScript item in WorldManager.Scripts)
-            {
-                item.UpdateFrame();
-            }
-
-            if (MyGameWorld.ActiveCamera == null)
-            {
-                return;
-            }
-
-
-
-            DeviceContext.IASetPrimitiveTopology(PrimitiveTopology.TriangleList);
-            TurnOnAlphaBlending();
-            if (MyGameWorld.ActiveCamera != null)
-                Renderer.Render();
-
-            if(MyGameWorld.RenderTarget is WindowRenderTarget)
-                ((WindowRenderTarget)MyGameWorld.RenderTarget).Present();
-            else if (MyGameWorld.RenderTarget is DesktopRenderTarget)
-                ((DesktopRenderTarget)MyGameWorld.RenderTarget).Present();
-        }
 
 
 

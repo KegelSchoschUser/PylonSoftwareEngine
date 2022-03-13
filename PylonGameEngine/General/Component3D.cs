@@ -1,4 +1,4 @@
-﻿using PylonGameEngine.GameWorld;
+﻿using PylonGameEngine.SceneManagement;
 
 namespace PylonGameEngine.General
 {
@@ -7,16 +7,6 @@ namespace PylonGameEngine.General
         public GameObject3D Parent;
 
         public Component3D()
-        {
-
-        }
-
-        public virtual void UpdateFrame()
-        {
-
-        }
-
-        public virtual void UpdateTick()
         {
 
         }

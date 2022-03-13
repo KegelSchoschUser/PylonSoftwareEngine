@@ -89,7 +89,7 @@ namespace PylonGameEngine.Mathematics
             byte b = (byte)(B * 255f);
 
             string Output = "#";
-            if(Alpha)
+            if (Alpha)
                 Output += a.ToString("X2");
             Output += r.ToString("X2");
             Output += g.ToString("X2");

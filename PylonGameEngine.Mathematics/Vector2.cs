@@ -217,7 +217,7 @@ namespace PylonGameEngine.Mathematics
         }
 
         public static implicit operator System.Numerics.Vector2(Vector2 v) => new System.Numerics.Vector2(v.X, v.Y);
-        public static implicit operator Vector2(System.Numerics.Vector2 v) => new Vector2(v.X,v.Y);
+        public static implicit operator Vector2(System.Numerics.Vector2 v) => new Vector2(v.X, v.Y);
 
         public static implicit operator Vortice.Mathematics.Point(Vector2 v) => new Vortice.Mathematics.Point(v.X, v.Y);
         public static implicit operator Vector2(Vortice.Mathematics.Point v) => new Vector2(v.X, v.Y);

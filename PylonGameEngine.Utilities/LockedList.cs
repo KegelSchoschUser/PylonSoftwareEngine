@@ -7,27 +7,33 @@ namespace PylonGameEngine.Utilities
     [Serializable]
     public class LockedList<T> : IList<T> where T : UniqueNameInterface
     {
+        public static object GLOBALLOCK = new object();
         public List<T> List { get; private set; }
-        public object LOCK;
+        public object Lock;
 
-        public LockedList(ref object Lock)
+        public LockedList()
         {
             List = new List<T>();
-            LOCK = Lock;
+            Lock = GLOBALLOCK;
+        }
+        public LockedList(ref object _Lock)
+        {
+            List = new List<T>();
+            Lock = _Lock;
         }
 
         public T this[int index]
         {
             get
             {
-                lock (LOCK)
+                lock (Lock)
                 {
                     return List[index];
                 }
             }
             set
             {
-                lock (LOCK)
+                lock (Lock)
                 {
                     List[index] = value;
                 }
@@ -36,7 +42,7 @@ namespace PylonGameEngine.Utilities
 
         public void AddRange(IEnumerable<T> collection)
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 List.AddRange(collection);
             }
@@ -44,7 +50,7 @@ namespace PylonGameEngine.Utilities
 
         public void Reverse()
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 List.Reverse();
             }
@@ -54,7 +60,7 @@ namespace PylonGameEngine.Utilities
         {
             get
             {
-                lock (LOCK)
+                lock (Lock)
                 {
                     return List.Count;
                 }
@@ -65,7 +71,7 @@ namespace PylonGameEngine.Utilities
 
         public void Add(T item)
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 List.Add(item);
             }
@@ -73,7 +79,7 @@ namespace PylonGameEngine.Utilities
 
         public void Clear()
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 List.Clear();
             }
@@ -81,7 +87,7 @@ namespace PylonGameEngine.Utilities
 
         public bool Contains(T item)
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 return List.Contains(item);
             }
@@ -89,7 +95,7 @@ namespace PylonGameEngine.Utilities
 
         public void CopyTo(T[] array, int arrayIndex)
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 List.CopyTo(array, arrayIndex);
             }
@@ -97,7 +103,7 @@ namespace PylonGameEngine.Utilities
 
         public IEnumerator<T> GetEnumerator()
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 return List.GetEnumerator();
             }
@@ -105,7 +111,7 @@ namespace PylonGameEngine.Utilities
 
         public int IndexOf(T item)
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 return List.IndexOf(item);
             }
@@ -113,7 +119,7 @@ namespace PylonGameEngine.Utilities
 
         public void Insert(int index, T item)
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 List.Insert(index, item);
             }
@@ -121,7 +127,7 @@ namespace PylonGameEngine.Utilities
 
         public bool Remove(T item)
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 return List.Remove(item);
             }
@@ -129,7 +135,7 @@ namespace PylonGameEngine.Utilities
 
         public T? Find(Predicate<T> match)
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 try
                 {
@@ -144,7 +150,7 @@ namespace PylonGameEngine.Utilities
 
         public void RemoveAt(int index)
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 List.RemoveAt(index);
             }
@@ -152,7 +158,7 @@ namespace PylonGameEngine.Utilities
 
         public void RemoveRange(int index, int count)
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 List.RemoveRange(index, count);
             }
@@ -165,7 +171,7 @@ namespace PylonGameEngine.Utilities
         /// <returns></returns>
         public T? Get(string Name)
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 return this.Find(x => x.Name == Name);
             }
@@ -174,7 +180,7 @@ namespace PylonGameEngine.Utilities
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            lock (LOCK)
+            lock (Lock)
             {
                 return List.GetEnumerator();
             }

@@ -1,9 +1,6 @@
 ﻿using PylonGameEngine.Mathematics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PylonGameEngine.Interpolation
 {
@@ -13,7 +10,7 @@ namespace PylonGameEngine.Interpolation
         public List<Vector2> Values
         {
             get { return _Values; }
-            set {lock(MyGame.RenderLock) _Values = value; }
+            set { lock (MyGame.RenderLock) _Values = value; }
         }
         public float YFrame { get; private set; }
         public float YTick { get; private set; }
@@ -75,7 +72,7 @@ namespace PylonGameEngine.Interpolation
             for (int i = 0; i < Values.Count; i++)
             {
                 var current = Values[i];
-                if(XFrame - current.X < 0)
+                if (XFrame - current.X < 0)
                 {
                     index = i - 1;
                     break;
@@ -91,8 +88,8 @@ namespace PylonGameEngine.Interpolation
 
             if (index == Values.Count)
             {
-                 secondX = Values[index].X;
-                 secondY = Values[index].Y;
+                secondX = Values[index].X;
+                secondY = Values[index].Y;
             }
             else
             {
@@ -100,7 +97,7 @@ namespace PylonGameEngine.Interpolation
                 secondY = Values[index + 1].Y;
             }
 
-            float by = Mathf.Abs( 1 / ((firstX-secondX) / (XFrame - firstX)) );
+            float by = Mathf.Abs(1 / ((firstX - secondX) / (XFrame - firstX)));
             YFrame = Mathf.Lerp(firstY, secondY, by);
         }
     }

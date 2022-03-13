@@ -99,8 +99,8 @@ namespace PylonGameEngine.Utilities
             sb.Clear();
             sb.Append(newlinecorrection);
 
-            if(newLine)
-            sb.Append('\n');
+            if (newLine)
+                sb.Append('\n');
             WriteToStream(sb.ToString());
             if (WriteInConsole)
             {

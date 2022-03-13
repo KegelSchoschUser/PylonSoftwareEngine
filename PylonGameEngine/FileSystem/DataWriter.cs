@@ -1,7 +1,6 @@
 ﻿using PylonGameEngine.FileSystem.Filetypes;
 using PylonGameEngine.Mathematics;
 using System;
-using System.Diagnostics;
 using System.Text;
 
 namespace PylonGameEngine.FileSystem
@@ -29,7 +28,7 @@ namespace PylonGameEngine.FileSystem
         }
         public void WriteShort(short value)
         {
-            WriteBytes( BitConverter.GetBytes(value));
+            WriteBytes(BitConverter.GetBytes(value));
         }
         public void WriteShortArray(short[] value)
         {
@@ -54,7 +53,7 @@ namespace PylonGameEngine.FileSystem
 
         public void WriteInt(int value)
         {
-            WriteBytes( BitConverter.GetBytes(value));
+            WriteBytes(BitConverter.GetBytes(value));
         }
 
         public void WriteIntArray(int[] value)
@@ -68,7 +67,7 @@ namespace PylonGameEngine.FileSystem
 
         public void WriteLong(long value)
         {
-            WriteBytes( BitConverter.GetBytes(value));
+            WriteBytes(BitConverter.GetBytes(value));
         }
 
         public void WriteLongArray(long[] value)
@@ -82,7 +81,7 @@ namespace PylonGameEngine.FileSystem
 
         public void WriteFloat(float value)
         {
-            WriteBytes( BitConverter.GetBytes(value));
+            WriteBytes(BitConverter.GetBytes(value));
         }
 
         public void WriteFloatArray(float[] value)
@@ -161,7 +160,7 @@ namespace PylonGameEngine.FileSystem
         {
             var length = Encoding.ASCII.GetBytes(value).Length;
             WriteInt(length);
-            if(length != 0)
+            if (length != 0)
                 WriteBytes(Encoding.ASCII.GetBytes(value));
         }
         public void WriteByte(byte Byte)

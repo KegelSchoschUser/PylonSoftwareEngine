@@ -1,20 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PylonGameEngine.GameWorld;
-using PylonGameEngine.General;
-using PylonGameEngine.Mathematics;
-using System;
-using System.Runtime.InteropServices;
-using Vortice.Direct3D;
-using Vortice.Direct3D11;
-using Vortice.DXGI;
-using Vortice.Mathematics;
-using Vortice.WIC;
+﻿using PylonGameEngine.Mathematics;
 using System.IO;
 using Vortice;
+using Vortice.Direct3D11;
+using Vortice.DXGI;
+using Vortice.WIC;
 
 namespace PylonGameEngine.Render11
 {
@@ -109,7 +98,7 @@ namespace PylonGameEngine.Render11
                 // Copy the content of the WIC to the buffer
                 formatconverter.CopyPixels(stride, formatconverter.Size.Height * stride, buffer.BasePointer);
 
-              //  var bitmap = factory.CreateBitmap(formatconverter.Size.Width, formatconverter.Size.Height, BitmapCreateCacheOption.CacheOnDemand);
+                //  var bitmap = factory.CreateBitmap(formatconverter.Size.Width, formatconverter.Size.Height, BitmapCreateCacheOption.CacheOnDemand);
                 return factory.CreateBitmapFromMemory(formatconverter.Size.Width, formatconverter.Size.Height, PixelFormat.Format32bppRGBA, stride, formatconverter.Size.Height * stride, buffer.BasePointer.ToPointer());
             }
         }

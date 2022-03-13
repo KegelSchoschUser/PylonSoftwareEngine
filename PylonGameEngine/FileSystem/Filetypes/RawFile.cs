@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PylonGameEngine.FileSystem.Filetypes
 {
@@ -35,7 +33,7 @@ namespace PylonGameEngine.FileSystem.Filetypes
         {
             try
             {
-            Directory.CreateDirectory(Path.GetDirectoryName(FileName));
+                Directory.CreateDirectory(Path.GetDirectoryName(FileName));
 
             }
             catch (Exception)

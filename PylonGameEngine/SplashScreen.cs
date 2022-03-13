@@ -8,7 +8,7 @@ namespace PylonGameEngine
     public class SplashScreen
     {
         private INTERNALSplashScreen INTERNALSplashScreen;
-        private bool HasImage = false;    
+        private bool HasImage = false;
 
         public SplashScreen(Image Image, bool UseProgressbar = false)
         {
@@ -25,7 +25,7 @@ namespace PylonGameEngine
 
         public void ShowAsync()
         {
-            if(HasImage)
+            if (HasImage)
                 INTERNALSplashScreen.ShowAsync();
         }
 

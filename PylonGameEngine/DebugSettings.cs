@@ -1,10 +1,4 @@
-﻿using PylonGameEngine.GameWorld;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-namespace PylonGameEngine
+﻿namespace PylonGameEngine
 {
     public static class DebugSettings
     {
@@ -26,7 +20,14 @@ namespace PylonGameEngine
             public static bool DrawLayoutRectangle
             {
                 get { return _DrawLayoutRectangle; }
-                set { _DrawLayoutRectangle = value; MyGameWorld.GUI.RefreshALL(); }
+                set
+                {
+                    _DrawLayoutRectangle = value;
+                    foreach (var scene in SceneManagement.SceneManager.Scenes)
+                    {
+                        scene.Gui.RefreshALL();
+                    }
+                }
             }
         }
     }

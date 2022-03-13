@@ -1,7 +1,6 @@
 ﻿using PylonGameEngine.General;
-using PylonGameEngine.GUI.GUIObjects;
-using PylonGameEngine.Input;
 using PylonGameEngine.Mathematics;
+using PylonGameEngine.SceneManagement;
 using PylonGameEngine.Utilities;
 using System;
 using System.Collections.Generic;
@@ -38,6 +37,8 @@ namespace PylonGameEngine.GameWorld
         public bool Visible = true;
 
         private GUIObject _Parent;
+
+        internal Scene SceneContext = null;
         public GUIObject Parent
         {
             get
@@ -70,6 +71,7 @@ namespace PylonGameEngine.GameWorld
 
         public bool MouseInBounds()
         {
+
             return (MouseLocal >= 0f && MouseLocal <= Transform.Size);
         }
 
@@ -77,7 +79,7 @@ namespace PylonGameEngine.GameWorld
         {
             get
             {
-                return (Mouse.Position - GlobalMatrix.TranslationVector2D);
+                return (SceneContext.InputManager.SceneContext.InputManager.Mouse.Position - GlobalMatrix.TranslationVector2D);
             }
         }
 
@@ -103,11 +105,11 @@ namespace PylonGameEngine.GameWorld
             }
         }
 
-        public bool Focused => this == MyGameWorld.GUI.FocusedObject && FocusedLost == false;
-        protected bool FocusedLost => this == MyGameWorld.GUI.FocusedLostObject;
-        protected bool MouseHover => this == MyGameWorld.GUI.MouseHoverObject;
-        protected bool MouseEnter => this == MyGameWorld.GUI.MouseEnterObject;
-        protected bool MouseLeave => this == MyGameWorld.GUI.MouseLeaveObject;
+        public bool Focused => this == SceneContext.Gui.FocusedObject && FocusedLost == false;
+        protected bool FocusedLost => this == SceneContext.Gui.FocusedLostObject;
+        protected bool MouseHover => this == SceneContext.Gui.MouseHoverObject;
+        protected bool MouseEnter => this == SceneContext.Gui.MouseEnterObject;
+        protected bool MouseLeave => this == SceneContext.Gui.MouseLeaveObject;
         protected bool LeftMousePressed = false;
         protected bool LeftMouseClicked = false;
         protected bool LeftMouseUp = false;
@@ -125,18 +127,18 @@ namespace PylonGameEngine.GameWorld
         {
             #region Left
             LeftMouseClicked = false;
-            if (this.Focused && Mouse.LeftButtonDown() && MouseInBounds())
+            if (this.Focused && SceneContext.InputManager.Mouse.LeftButtonDown() && MouseInBounds())
             {
                 LeftMouseClicked = true;
             }
 
             LeftMouseUp = false;
-            if (this.Focused && Mouse.LeftButtonUp())
+            if (this.Focused && SceneContext.InputManager.Mouse.LeftButtonUp())
             {
                 LeftMouseUp = true;
             }
             LeftMousePressed = false;
-            if (this.Focused && Mouse.LeftButtonPressed() && MouseInBounds())
+            if (this.Focused && SceneContext.InputManager.Mouse.LeftButtonPressed() && MouseInBounds())
             {
                 LeftMousePressed = true;
             }
@@ -144,20 +146,20 @@ namespace PylonGameEngine.GameWorld
 
             #region Middle
             MiddleMouseClicked = false;
-            if (this.Focused && Mouse.MiddleButtonDown() && MouseInBounds())
+            if (this.Focused && SceneContext.InputManager.Mouse.MiddleButtonDown() && MouseInBounds())
             {
                 MiddleMouseClicked = true;
             }
 
             MiddleMouseUp = false;
-            if (this.Focused && Mouse.MiddleButtonUp())
+            if (this.Focused && SceneContext.InputManager.Mouse.MiddleButtonUp())
             {
                 MiddleMouseUp = true;
             }
 
             MiddleMousePressed = false;
 
-            if (this.Focused && Mouse.MiddleButtonPressed() && MouseInBounds())
+            if (this.Focused && SceneContext.InputManager.Mouse.MiddleButtonPressed() && MouseInBounds())
             {
                 MiddleMousePressed = true;
             }
@@ -165,19 +167,19 @@ namespace PylonGameEngine.GameWorld
 
             #region Right
             RightMouseClicked = false;
-            if (this.Focused && Mouse.RightButtonDown() && MouseInBounds())
+            if (this.Focused && SceneContext.InputManager.SceneContext.InputManager.Mouse.RightButtonDown() && MouseInBounds())
             {
                 RightMouseClicked = true;
             }
 
             RightMouseUp = false;
-            if (this.Focused && Mouse.RightButtonUp())
+            if (this.Focused && SceneContext.InputManager.SceneContext.InputManager.Mouse.RightButtonUp())
             {
                 RightMouseUp = true;
             }
 
             RightMousePressed = false;
-            if (this.Focused && Mouse.RightButtonPressed() && MouseInBounds())
+            if (this.Focused && SceneContext.InputManager.SceneContext.InputManager.Mouse.RightButtonPressed() && MouseInBounds())
             {
                 RightMousePressed = true;
             }
@@ -200,7 +202,7 @@ namespace PylonGameEngine.GameWorld
                 Vector2 ParentSize;
 
                 if (Parent == null)
-                    ParentSize = new Vector2(MyGame.MainWindow.Size.X, MyGame.MainWindow.Size.Y);
+                    ParentSize = SceneContext.MainCamera.RenderTarget.Size;
                 else
                     ParentSize = Parent.Transform.Size;
 
@@ -288,7 +290,7 @@ namespace PylonGameEngine.GameWorld
                     case (RotationLayout.TopMiddle):
                         {
                             RotationPosition.X = (0.5f * Transform.Size.X);
-                            RotationPosition.Y = 0f ;
+                            RotationPosition.Y = 0f;
                             break;
                         }
                     case (RotationLayout.TopRight):
@@ -305,13 +307,13 @@ namespace PylonGameEngine.GameWorld
                         }
                     case (RotationLayout.Center):
                         {
-                            RotationPosition.X = (0.5f *Transform.Size.X);
-                            RotationPosition.Y = (0.5f *Transform.Size.Y);
+                            RotationPosition.X = (0.5f * Transform.Size.X);
+                            RotationPosition.Y = (0.5f * Transform.Size.Y);
                             break;
                         }
                     case (RotationLayout.MiddleRight):
                         {
-                            RotationPosition.X = (1f   * Transform.Size.X);
+                            RotationPosition.X = (1f * Transform.Size.X);
                             RotationPosition.Y = (0.5f * Transform.Size.Y);
                             break;
                         }
@@ -324,7 +326,7 @@ namespace PylonGameEngine.GameWorld
                     case (RotationLayout.BottomMiddle):
                         {
                             RotationPosition.X = (0.5f * Transform.Size.X);
-                            RotationPosition.Y = (1f *   Transform.Size.Y);
+                            RotationPosition.Y = (1f * Transform.Size.Y);
                             break;
                         }
                     case (RotationLayout.BottomRight):
@@ -335,7 +337,7 @@ namespace PylonGameEngine.GameWorld
                         }
                 }
 
-                Matrix4x4 t = Matrix4x4.Translation(PixelPosition.X, PixelPosition.Y , 0);
+                Matrix4x4 t = Matrix4x4.Translation(PixelPosition.X, PixelPosition.Y, 0);
                 Matrix4x4 negativerotationOffset = Matrix4x4.Translation(-RotationPosition.X, -RotationPosition.Y, 0);
                 Matrix4x4 positiverotationOffset = Matrix4x4.Translation(RotationPosition.X, RotationPosition.Y, 0);
                 Matrix4x4 r = Matrix4x4.RotationQuaternion(Quaternion.FromEuler(0, 0, Transform.Rotation));
@@ -420,7 +422,7 @@ namespace PylonGameEngine.GameWorld
 
         public (float, float, float, float) GetClip()
         {
-            Vector2 ParentSize = Parent != null ? Parent.Transform.Size : MyGameWorld.RenderTarget.Size;
+            Vector2 ParentSize = Parent != null ? Parent.Transform.Size : SceneContext.MainCamera.RenderTarget.Size;
 
             float ClipX = Mathf.Clamp(Transform.Position.X, 0f, ParentSize.X) - Transform.Position.X;
             float ClipY = Mathf.Clamp(Transform.Position.Y, 0f, ParentSize.Y) - Transform.Position.Y;
@@ -492,7 +494,7 @@ namespace PylonGameEngine.GameWorld
             }
             else
             {
-                MyGameWorld.GUI.Destroy(this);
+                SceneContext.Gui.Destroy(this);
                 foreach (GUIObject child in Children)
                 {
                     child.Parent = null;
@@ -512,7 +514,7 @@ namespace PylonGameEngine.GameWorld
         {
             if (FocusAble && Visible && ExtendedFocusCheck())
             {
-                if (Mouse.LeftButtonDown() == true /*|| Mouse.LeftButtonPressed() == true*/)
+                if (SceneContext.InputManager.Mouse.LeftButtonDown() == true /*|| SceneContext.InputManager.Mouse.LeftButtonPressed() == true*/)
                 {
                     return true;
                 }
@@ -554,7 +556,7 @@ namespace PylonGameEngine.GameWorld
             GUIObject objFocus = null;
             if (this.MouseInBounds())
             {
-                if(FocusAble && ExtendedHoverCheck())
+                if (FocusAble && ExtendedHoverCheck())
                     objhover = this;
                 if (OnFocusCheck())
                 {
@@ -576,21 +578,21 @@ namespace PylonGameEngine.GameWorld
                     }
                 }
             }
-            
+
 
             return (objhover, objFocus);
         }
 
         public void ToFront()
-        {   
-            PylonGameEngine.UI.GUI.GUIObjects.Remove(this);
-            PylonGameEngine.UI.GUI.GUIObjects.Add(this);
+        {
+            SceneContext.Gui.GUIObjects.Remove(this);
+            SceneContext.Gui.GUIObjects.Add(this);
         }
 
         public void ToBack()
         {
-            PylonGameEngine.UI.GUI.GUIObjects.Remove(this);
-            PylonGameEngine.UI.GUI.GUIObjects.Insert(0, this);
+            SceneContext.Gui.GUIObjects.Remove(this);
+            SceneContext.Gui.GUIObjects.Insert(0, this);
         }
 
         public virtual void OnDestroy()

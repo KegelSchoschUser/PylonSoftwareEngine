@@ -1,9 +1,5 @@
-﻿using PylonGameEngine.Mathematics;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PylonGameEngine.Interpolation
 {
@@ -13,7 +9,7 @@ namespace PylonGameEngine.Interpolation
         public List<float> Values
         {
             get { return _Values; }
-            set { lock(MyGame.RenderLock) _Values = value; }
+            set { lock (MyGame.RenderLock) _Values = value; }
         }
         public float YFrame { get; private set; }
         public float YTick { get; private set; }

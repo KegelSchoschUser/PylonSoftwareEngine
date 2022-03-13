@@ -1,9 +1,14 @@
-﻿using PylonGameEngine.Utilities;
+﻿using PylonGameEngine.SceneManagement;
+using PylonGameEngine.Utilities;
 
 namespace PylonGameEngine.General
 {
     public class IComponent : UniqueNameInterface
     {
+        public Scene Scene { get; internal set; }
+        public float DeltaTime => MyGame.RenderLoop.DeltaTime;
+        public float FixedDeltaTime => MyGame.GameTickLoop.DeltaTime;
+
         public virtual void Initialize()
         {
 

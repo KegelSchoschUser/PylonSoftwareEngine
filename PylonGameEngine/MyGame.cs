@@ -1,29 +1,25 @@
 ﻿using PylonGameEngine.Audio;
-using PylonGameEngine.GameWorld;
 using PylonGameEngine.Input;
 using PylonGameEngine.Interpolation;
 using PylonGameEngine.Physics;
 using PylonGameEngine.Render11;
+using PylonGameEngine.SceneManagement;
 using PylonGameEngine.Utilities;
-using PylonGameEngine.Utilities.Win32;
 using System;
-using System.Runtime.InteropServices;
-using System.Threading;
+using System.Collections.Generic;
 using System.Windows.Forms;
-using System.Windows.Input;
- using static PylonGameEngine.Utilities.Win32.User32;
+using static PylonGameEngine.Utilities.Win32.User32;
 
 namespace PylonGameEngine
 {
     public static class MyGame
     {
-
         public static bool Initialized { get; private set; }
 
+        public static List<Window> Windows = new List<Window>();
         public static GameLoop GameTickLoop;
         public static GameLoop RenderLoop;
         public static GameLoop PhysicsLoop;
-        public static Window MainWindow;
         public static object RenderLock = new object();
         public static LockedList<Material> Materials = new LockedList<Material>(ref RenderLock);
         internal static bool RendererEnabled = true;
@@ -40,9 +36,6 @@ namespace PylonGameEngine
             //"925124183044792341"
             RPC = new Utilities.DiscordRPC("925124183044792341", GameProperties.GameName);
 
-            MainWindow = new Window(GameProperties.GameName, GameProperties.StartWindowPosition, GameProperties.StartWindowSize, GameProperties.FullScreen, GameProperties.Titlebar);
-   
-
             RenderLoop = new GameLoop(GameProperties.RenderTickRate, "RenderLoop");
             RenderLoop.Tick += RenderLoop_Tick;
 
@@ -55,7 +48,6 @@ namespace PylonGameEngine
             MyPhysics.Initialize();
             AudioEngine.Initialize();
             Touchscreen.DisableWPFTabletSupport();
-            Touchscreen.RegisterTouchEvent(MainWindow.Handle);
 
             Initialized = true;
             MyLog.Default.Write("Game Initialized!");
@@ -70,27 +62,32 @@ namespace PylonGameEngine
                 throw new MyExceptions.EngineNotInitializedException();
             }
 
-
             RenderLoop.Starting += () => { MyLog.Default.Write("Game Started!"); };
             GameProperties.SplashScreen.Close();
 
             GameTickLoop.Start();
             RenderLoop.Start();
-            MainWindow.Start();
         }
 
         public static void Stop()
         {
+            Mouse.UnlockMouse();
+
+
+            Window[] windows = new Window[Windows.Count];
+            Windows.CopyTo(windows);
+            foreach (var window in windows)
+                window.Destroy();
+
+
             GameTickLoop.Stop();
             RenderLoop.Stop();
-            MainWindow.Destroy();
         }
 
         private static void GameTickLoop_Tick()
         {
             Input.Touchscreen.Cycle();
-            Input.Mouse.Cycle();
-            Input.Keyboard.Cycle();
+
 
             lock (MyGame.RenderLock)
             {
@@ -101,7 +98,7 @@ namespace PylonGameEngine
 
             }
 
-            MyGameWorld.GUI.UpdateTick();
+            SceneManager.UpdateFrame();
             //GC.Collect();
         }
 
@@ -115,6 +112,8 @@ namespace PylonGameEngine
                     Interpolator.Interpolators[i].UpdateFrame();
                 }
             }
+
+            SceneManager.UpdateTick();
 
             //RPC.Update();
         }

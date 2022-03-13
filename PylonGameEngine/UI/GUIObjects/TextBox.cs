@@ -1,5 +1,4 @@
 ﻿using PylonGameEngine.GameWorld;
-using PylonGameEngine.Input;
 using PylonGameEngine.Mathematics;
 using PylonGameEngine.UI;
 using PylonGameEngine.UI.Drawing;
@@ -71,7 +70,7 @@ namespace PylonGameEngine.GUI.GUIObjects
             if (!Focused)
                 return;
 
-            foreach (var character in Keyboard.CharacterKeys)
+            foreach (var character in SceneContext.InputManager.Keyboard.CharacterKeys)
             {
                 if (character == '\b')
                 {

@@ -1,9 +1,4 @@
 ﻿using DiscordRPC;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PylonGameEngine.Utilities
 {
@@ -20,10 +15,10 @@ namespace PylonGameEngine.Utilities
 
             RichPresence = new RichPresence();
             RichPresence.Details = "Playing " + GameName;
-            RichPresence.Assets = new Assets() {LargeImageKey = "logo", LargeImageText = "Round 1"};
+            RichPresence.Assets = new Assets() { LargeImageKey = "logo", LargeImageText = "Round 1" };
 
             RichPresence.State = "Playing Solo ;(";
-            
+
             DiscordRpcClient.SetPresence(RichPresence);
         }
 

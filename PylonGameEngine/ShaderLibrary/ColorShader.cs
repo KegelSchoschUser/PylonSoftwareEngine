@@ -1,7 +1,6 @@
 ﻿using PylonGameEngine.Mathematics;
 using System;
 using System.Reflection;
-using System.Resources;
 using System.Runtime.InteropServices;
 
 namespace PylonGameEngine.ShaderLibrary

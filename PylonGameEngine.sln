@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PylonGameEngine", "PylonGam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PylonGameEngine.Resources", "PylonGameEngine.Resources\PylonGameEngine.Resources.csproj", "{FE657B5B-7282-4461-A62D-E73450229FD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PylonGameEngine.Extensions", "PylonGameEngine.Extensions\PylonGameEngine.Extensions.csproj", "{C6F12158-7E1C-4474-9D1A-985B1F355EC9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PylonGameEngine.Extensions", "PylonGameEngine.Extensions\PylonGameEngine.Extensions.csproj", "{C6F12158-7E1C-4474-9D1A-985B1F355EC9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

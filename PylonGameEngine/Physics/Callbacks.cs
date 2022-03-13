@@ -3,7 +3,6 @@ using BepuPhysics.Collidables;
 using BepuPhysics.CollisionDetection;
 using BepuPhysics.Constraints;
 using BepuUtilities;
-using PylonGameEngine.Mathematics;
 using PylonGameEngine.Utilities;
 using System;
 using System.Numerics;
@@ -103,7 +102,7 @@ namespace PylonGameEngine.Physics
             //Transforming to "array of structures" (AOS) format for the callback and then back to AOSOA would involve a lot of overhead, so instead the callback works on the AOSOA representation directly.
 
             var RigidBody = MyPhysics.RigidBodies.Find(x => x.Index == bodyIndices[0]);
-            if(RigidBody != null)
+            if (RigidBody != null)
             {
                 if (RigidBody.UseGravity && RigidBody.UsePhysics)
                 {
@@ -128,7 +127,7 @@ namespace PylonGameEngine.Physics
             {
                 MyLog.Default.Write("Couldn't find RigidBody", LogSeverity.Error);
             }
-           
+
         }
     }
     public unsafe struct DemoNarrowPhaseCallbacks : INarrowPhaseCallbacks
@@ -189,7 +188,7 @@ namespace PylonGameEngine.Physics
 
             if (A_Trigger != null || B_Trigger != null)
             {
-                if(  (A_Trigger != null && B_Trigger != null) == false)
+                if ((A_Trigger != null && B_Trigger != null) == false)
                 {
                     if (A_Trigger != null)
                         A_Trigger.InvokeEvent(B_Rigid != null ? B_Rigid : B_Static);

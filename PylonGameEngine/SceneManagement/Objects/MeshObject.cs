@@ -1,10 +1,4 @@
-﻿using PylonGameEngine.GameWorld;
-using PylonGameEngine.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.IO;
-
-namespace PylonGameEngine.GameWorld3D
+﻿namespace PylonGameEngine.SceneManagement.Objects
 {
     public class MeshObject : GameObject3D
     {

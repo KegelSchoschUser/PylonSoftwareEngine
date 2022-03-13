@@ -1,20 +1,11 @@
-﻿using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PylonGameEngine.GameWorld;
-using PylonGameEngine.General;
-using PylonGameEngine.Mathematics;
+﻿using PylonGameEngine.Utilities;
+using SharpGen.Runtime;
 using System;
 using System.Runtime.InteropServices;
-using Vortice.Direct3D;
+using System.Windows.Forms;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
-using Vortice.Mathematics;
-using SharpGen.Runtime;
-using System.Diagnostics;
 using static PylonGameEngine.Utilities.Win32.User32;
-using PylonGameEngine.Utilities;
-using System.Windows.Forms;
 
 namespace PylonGameEngine.Render11
 {
@@ -203,8 +194,8 @@ namespace PylonGameEngine.Render11
             {
                 Windowed = true
             };
-            SwapChain = D3D11GraphicsDevice.Factory.CreateSwapChainForHwnd(D3D11GraphicsDevice.Device, MyGame.MainWindow.Handle, swapChainDescription, fullscreenDescription);
-            D3D11GraphicsDevice.Factory.MakeWindowAssociation(MyGame.MainWindow.Handle, WindowAssociationFlags.IgnorePrintScreen);
+            SwapChain = D3D11GraphicsDevice.Factory.CreateSwapChainForHwnd(D3D11GraphicsDevice.Device, Window.Handle, swapChainDescription, fullscreenDescription);
+            D3D11GraphicsDevice.Factory.MakeWindowAssociation(Window.Handle, WindowAssociationFlags.IgnorePrintScreen);
 
             BackBufferTexture = SwapChain.GetBuffer<ID3D11Texture2D>(0);
             InternalTexture = BackBufferTexture;

@@ -1,16 +1,14 @@
 ﻿using PylonGameEngine.Mathematics;
+using PylonGameEngine.Utilities.Win32;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using System.Windows.Input;
-using PylonGameEngine.Utilities.Win32;
-using static PylonGameEngine.Utilities.Win32.User32;
-using System.Diagnostics;
-using System.Reflection;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Windows.Input;
+using static PylonGameEngine.Utilities.Win32.User32;
 
 namespace PylonGameEngine.Input
 {
@@ -18,7 +16,7 @@ namespace PylonGameEngine.Input
     {
         private static object LOCK = new object();
 
-    [System.Runtime.InteropServices.DllImport("user32.dll")]
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
         public static extern int GetSystemMetrics(int nIndex);
 
         private const int SM_DIGITIZER = 94;
@@ -116,8 +114,8 @@ namespace PylonGameEngine.Input
                                 Delta = TouchPointsBuffer[TOUCHINPUT.dwID].Location - new Vector2(TOUCHINPUT.x * 0.01, TOUCHINPUT.y * 0.01),
                             };
 
-                       
-                            TouchPointsBuffer[TOUCHINPUT.dwID] = e; 
+
+                            TouchPointsBuffer[TOUCHINPUT.dwID] = e;
                         }
                         break;
 
@@ -152,12 +150,12 @@ namespace PylonGameEngine.Input
             if (devices.Count > 0)
             {
                 // Get the Type of InputManager.
-                var inputManagerType = typeof(InputManager);
+                var inputManagerType = typeof(System.Windows.Input.InputManager);
 
                 // Call the StylusLogic method on the InputManager.Current instance.
                 var stylusLogic = inputManagerType.InvokeMember("StylusLogic",
                             BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
-                            null, InputManager.Current, null);
+                            null, System.Windows.Input.InputManager.Current, null);
 
                 if (stylusLogic != null)
                 {

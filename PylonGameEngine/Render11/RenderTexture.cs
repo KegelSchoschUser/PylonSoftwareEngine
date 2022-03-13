@@ -1,15 +1,6 @@
-﻿using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PylonGameEngine.GameWorld;
-using PylonGameEngine.General;
-using PylonGameEngine.Mathematics;
-using System;
-using System.Runtime.InteropServices;
-using Vortice.Direct3D;
+﻿using PylonGameEngine.Mathematics;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
-using Vortice.Mathematics;
 
 namespace PylonGameEngine.Render11
 {
@@ -18,8 +9,7 @@ namespace PylonGameEngine.Render11
         internal ID3D11RenderTargetView InternalRenderTarget;
         internal ID3D11Texture2D DepthStencilBuffer;
         internal ID3D11DepthStencilView DepthStencilView;
-        public ID3D11DepthStencilState DepthStencilStateEnabled;
-        public ID3D11DepthStencilState DepthStencilStateDisabled;
+
 
         public RenderTexture(int width, int height) : base(width, height)
         {
@@ -37,35 +27,6 @@ namespace PylonGameEngine.Render11
         {
             DepthStencilBuffer = D3D11GraphicsDevice.Device.CreateTexture2D((int)Size.X, (int)Size.Y, Format.D32_Float, 1, 1, null, BindFlags.DepthStencil);
 
-            DepthStencilDescription DepthStencilDesc = new DepthStencilDescription()
-            {
-                DepthEnable = true,
-                DepthWriteMask = DepthWriteMask.All,
-                StencilEnable = true,
-                StencilReadMask = 0xFF,
-                StencilWriteMask = 0xFF,
-                DepthFunc = ComparisonFunction.Less,
-                // Stencil operation if pixel front-facing.
-                FrontFace = new DepthStencilOperationDescription()
-                {
-                    StencilFailOp = StencilOperation.Keep,
-                    StencilDepthFailOp = StencilOperation.Increment,
-                    StencilPassOp = StencilOperation.Keep,
-                    StencilFunc = ComparisonFunction.Always,
-                },
-                // Stencil operation if pixel is back-facing.
-                BackFace = new DepthStencilOperationDescription()
-                {
-                    StencilFailOp = StencilOperation.Keep,
-                    StencilDepthFailOp = StencilOperation.Decrement,
-                    StencilPassOp = StencilOperation.Keep,
-                    StencilFunc = ComparisonFunction.Always,
-                }
-            };
-
-            DepthStencilStateEnabled = D3D11GraphicsDevice.Device.CreateDepthStencilState(DepthStencilDesc);
-            DepthStencilDesc.DepthEnable = false;
-            DepthStencilStateDisabled = D3D11GraphicsDevice.Device.CreateDepthStencilState(DepthStencilDesc);
             DepthStencilView = D3D11GraphicsDevice.Device.CreateDepthStencilView(DepthStencilBuffer);
         }
 
@@ -73,6 +34,12 @@ namespace PylonGameEngine.Render11
         {
             InternalRenderTarget = D3D11GraphicsDevice.Device.CreateRenderTargetView(InternalTexture);
         }
+
+        internal virtual void OnRender()
+        {
+
+        }
+
 
         public void Clear()
         {

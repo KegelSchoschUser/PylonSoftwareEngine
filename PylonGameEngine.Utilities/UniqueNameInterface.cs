@@ -3,11 +3,11 @@
     public class UniqueNameInterface
     {
         private string _Name = null;
-        public string Name 
+        public string Name
         {
             get
             {
-                if(_Name == null)
+                if (_Name == null)
                 {
                     return this.GetType().Name;
                 }
@@ -21,7 +21,7 @@
             {
                 _Name = value;
             }
-        
+
         }
     }
 }

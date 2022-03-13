@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing;
 
 using System.Runtime.InteropServices;
 
@@ -77,7 +76,7 @@ namespace PylonGameEngine.Mathematics
         }
 
         public RGBColor ToRGB()
-        {            
+        {
             // https://github.com/rivy/OpenPDN
 
             // HsvColor contains values scaled as in the color wheel:
@@ -172,9 +171,9 @@ namespace PylonGameEngine.Mathematics
             }
             // return an RgbColor structure, with values scaled
             // to be between 0 and 255.
-            return new RGBColor(r, g ,b);
-        }        
+            return new RGBColor(r, g, b);
+        }
 
-        
+
     }
 }

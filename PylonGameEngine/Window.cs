@@ -1,41 +1,19 @@
 ﻿using PylonGameEngine.Input;
 using PylonGameEngine.Mathematics;
-using PylonGameEngine.Utilities.Win32;
-using System;
-using System.Drawing;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using static PylonGameEngine.Utilities.Win32.Kernel32;
-using static PylonGameEngine.Utilities.Win32.User32;
-using System.Windows.Threading;
 using PylonGameEngine.Utilities;
-using System.Windows.Forms;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
+using System.Windows.Forms;
+using System.Windows.Threading;
+using static PylonGameEngine.Utilities.Win32.User32;
 
 namespace PylonGameEngine
 {
     public class Window : Form
     {
-        private bool _CursorLocked = false;
-        public bool CursorLocked
-        {
-            get { return _CursorLocked; }
-            set
-            {
-                _CursorLocked = value;
-                if (value == true)
-                {
-                    Rectangle screenRectangle = this.RectangleToScreen(this.ClientRectangle);
-                    Cursor.Clip = screenRectangle;
-                    Cursor.Hide(); //TODO: BUG NOT WORKING
-                }
-                else
-                {
-                    Cursor.Clip = new Rectangle();
-                    Cursor.Show();//TODO: BUG NOT WORKING
-                }
-            }
-        }
+        internal List<InputManager> InputManagers = new List<InputManager>();
 
         public new Vector2 Size
         {
@@ -61,11 +39,25 @@ namespace PylonGameEngine
             }
         }
 
-      
-        
-        public Window(string title, Vector2 position, Vector2 size, bool FullScreen = false, bool Titlebar = false)
+        public Rectangle GlobalRectangle => base.RectangleToScreen(base.ClientRectangle);
+
+        public static Window CreateWindow(string title, Vector2 position, Vector2 size, bool FullScreen = false, bool Titlebar = false)
         {
-            
+            Window window = null;
+            Thread t = new Thread(() =>
+            {
+                window = new Window(title, position, size, FullScreen, Titlebar);
+                Application.Run(window);
+            });
+            t.Start();
+            while (window == null)
+                ;
+
+            return window;
+        }
+        internal Window(string title, Vector2 position, Vector2 size, bool FullScreen = false, bool Titlebar = false)
+        {
+            Touchscreen.RegisterTouchEvent(Handle);
             AutoScaleMode = AutoScaleMode.Dpi;
             Text = title;
             Position = position;
@@ -86,11 +78,9 @@ namespace PylonGameEngine
             }
 
             SetWindowPos(Handle, new IntPtr(1), (int)position.X, (int)position.Y, (int)size.X, (int)size.Y, SetWindowPosFlags.DoNotActivate);
-        }
+            MyGame.Windows.Add(this);
 
-        internal unsafe void Start()
-        {
-            Application.Run(this);
+
         }
 
         protected override void OnShown(EventArgs e)
@@ -100,7 +90,7 @@ namespace PylonGameEngine
 
         protected override void OnClosed(EventArgs e)
         {
-            MyGame.Stop();
+
         }
 
         protected override void WndProc(ref System.Windows.Forms.Message m)
@@ -108,7 +98,8 @@ namespace PylonGameEngine
             nint message = m.Msg;
             nint wParam = m.WParam;
             nint lParam = m.LParam;
-     
+
+
             switch (message)
             {
                 case WM_ACTIVATEAPP:
@@ -141,17 +132,26 @@ namespace PylonGameEngine
                     break;
                 case WM_KEYDOWN:
                     {
-                        Input.Keyboard.AddKey(KeyCodes.ConvertToKey((int)wParam));
+                        foreach (var inputmanager in InputManagers)
+                        {
+                            inputmanager.KeyDown(KeyCodes.ConvertToKey((int)wParam));
+                        }
                     }
                     break;
                 case WM_CHAR:
                     {
-                        Input.Keyboard.AddCharKey((char)wParam);
+                        foreach (var inputmanager in InputManagers)
+                        {
+                            inputmanager.CharKey((char)wParam);
+                        }
                     }
                     break;
                 case WM_KEYUP:
                     {
-                        Input.Keyboard.RemoveKey(KeyCodes.ConvertToKey((int)wParam));
+                        foreach (var inputmanager in InputManagers)
+                        {
+                            inputmanager.KeyUp(KeyCodes.ConvertToKey((int)wParam));
+                        }
                     }
                     break;
                 //case WM_INPUT:
@@ -169,42 +169,59 @@ namespace PylonGameEngine
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            Mouse.MouseScrollEvent(e.Delta);
+            foreach (var inputmanager in InputManagers)
+            {
+                inputmanager.MouseScrollEvent(e.Delta);
+            }
         }
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            switch (e.Button)
+            foreach (var inputmanager in InputManagers)
             {
-                case MouseButtons.Left:
-                    Mouse.MouseButtonEvent(Mouse.MouseButton.LeftButton, true);
-                    break;
+                switch (e.Button)
+                {
+                    case MouseButtons.Left:
+                        inputmanager.MouseButtonEvent(Mouse.MouseButton.LeftButton, true);
+                        break;
 
-                case MouseButtons.Middle:
-                    Mouse.MouseButtonEvent(Mouse.MouseButton.MiddleButton, true);
-                    break;
+                    case MouseButtons.Middle:
+                        inputmanager.MouseButtonEvent(Mouse.MouseButton.MiddleButton, true);
+                        break;
 
-                case MouseButtons.Right:
-                    Mouse.MouseButtonEvent(Mouse.MouseButton.RightButton, true);
-                    break;
+                    case MouseButtons.Right:
+                        inputmanager.MouseButtonEvent(Mouse.MouseButton.RightButton, true);
+                        break;
+                }
             }
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            switch (e.Button)
+            foreach (var inputmanager in InputManagers)
             {
-                case MouseButtons.Left:
-                    Mouse.MouseButtonEvent(Mouse.MouseButton.LeftButton, false);
-                    break;
+                switch (e.Button)
+                {
+                    case MouseButtons.Left:
+                        inputmanager.MouseButtonEvent(Mouse.MouseButton.LeftButton, false);
+                        break;
 
-                case MouseButtons.Middle:
-                    Mouse.MouseButtonEvent(Mouse.MouseButton.MiddleButton, false);
-                    break;
+                    case MouseButtons.Middle:
+                        inputmanager.MouseButtonEvent(Mouse.MouseButton.MiddleButton, false);
+                        break;
 
-                case MouseButtons.Right:
-                    Mouse.MouseButtonEvent(Mouse.MouseButton.RightButton, false);
-                    break;
+                    case MouseButtons.Right:
+                        inputmanager.MouseButtonEvent(Mouse.MouseButton.RightButton, false);
+                        break;
+                }
+            }
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            foreach (var inputmanager in InputManagers)
+            {
+                inputmanager.MouseMove(e.X, e.Y);
             }
         }
 
@@ -271,7 +288,7 @@ namespace PylonGameEngine
 
         internal void Destroy()
         {
-            if(Visible == false)
+            MyGame.Windows.Remove(this);
             Close();
         }
     }

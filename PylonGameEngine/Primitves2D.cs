@@ -1,5 +1,4 @@
 ﻿using PylonGameEngine.Mathematics;
-using System;
 using System.Collections.Generic;
 
 namespace PylonGameEngine
@@ -12,9 +11,9 @@ namespace PylonGameEngine
 
             var Position3D = (Vector3)Position;
             var Size3D = (Vector3)Size;
-            m.Points.Add(Position3D);                           
+            m.Points.Add(Position3D);
             m.Points.Add(Position3D + new Vector3(Size3D.X, 0));
-            m.Points.Add(Position3D + Size3D);                  
+            m.Points.Add(Position3D + Size3D);
             m.Points.Add(Position3D + new Vector3(0, Size3D.Y));
 
 
@@ -25,8 +24,8 @@ namespace PylonGameEngine
 
             m.Normals.Add(Vector3.Zero);
 
-            m.Triangles.Add(new TrianglePointer(materialindex,           0, 1, 2,           0, 1, 2,    0));
-            m.Triangles.Add(new TrianglePointer(materialindex,           0, 2, 3,           0, 2, 3,    0));
+            m.Triangles.Add(new TrianglePointer(materialindex, 0, 1, 2, 0, 1, 2, 0));
+            m.Triangles.Add(new TrianglePointer(materialindex, 0, 2, 3, 0, 2, 3, 0));
             return m;
         }
 

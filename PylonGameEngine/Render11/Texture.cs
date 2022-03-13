@@ -1,20 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PylonGameEngine.GameWorld;
-using PylonGameEngine.General;
-using PylonGameEngine.Mathematics;
-using System;
-using System.Runtime.InteropServices;
+﻿using PylonGameEngine.Mathematics;
 using Vortice.Direct3D;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
-using Vortice.Mathematics;
-using Vortice.WIC;
-using System.IO;
-using Vortice;
 
 namespace PylonGameEngine.Render11
 {

@@ -399,7 +399,7 @@ namespace PylonGameEngine.Utilities.Win32
         }
 
         public static readonly unsafe ushort* IDC_ARROW = (ushort*)32512;
-        
+
         public const int WM_NULL = 0x0000;
         public const int WM_QUIT = 18;
         public const int WM_ACTIVATEAPP = 28;
@@ -1996,7 +1996,7 @@ namespace PylonGameEngine.Utilities.Win32
         }
         #endregion // SPI
 
-    // ALTERNATIVE K.I.S.S. VERSION
+        // ALTERNATIVE K.I.S.S. VERSION
 
         public const uint SPI_GETBEEP = 0x0001;
         public const uint SPI_SETBEEP = 0x0002;

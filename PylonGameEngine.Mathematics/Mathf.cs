@@ -21,7 +21,7 @@ namespace PylonGameEngine
 
             float first = values[index];
             float second;
-            if(index + 1 == values.Length)
+            if (index + 1 == values.Length)
                 second = values[index];
             else
                 second = values[index + 1];
@@ -71,7 +71,7 @@ namespace PylonGameEngine
                     index = i;
                 }
             }
-            
+
             return (index, value);
         }
 

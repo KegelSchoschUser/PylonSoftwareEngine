@@ -1544,8 +1544,8 @@ namespace PylonGameEngine.Mathematics
         public static Vector2 operator *(Matrix4x4 matrix, Vector2 vector)
         {
             Vector2 res;
-            res.X = matrix.M11 * vector.X +        matrix.M12 * vector.Y + matrix.M14;
-            res.Y = matrix.M21 * vector.X +        matrix.M22 * vector.Y + matrix.M24;
+            res.X = matrix.M11 * vector.X + matrix.M12 * vector.Y + matrix.M14;
+            res.Y = matrix.M21 * vector.X + matrix.M22 * vector.Y + matrix.M24;
 
             return res;
         }

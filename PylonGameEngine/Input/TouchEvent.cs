@@ -1,10 +1,5 @@
 ﻿using PylonGameEngine.Mathematics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using static PylonGameEngine.Utilities.Win32.User32;
 
 namespace PylonGameEngine.Input

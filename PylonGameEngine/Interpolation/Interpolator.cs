@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PylonGameEngine.Interpolation
 {
@@ -29,7 +26,7 @@ namespace PylonGameEngine.Interpolation
             get { return _LengthFrames; }
             set
             {
-                lock(MyGame.RenderLock)
+                lock (MyGame.RenderLock)
                     _LengthFrames = Math.Clamp(value, 1, int.MaxValue);
             }
         }
@@ -98,7 +95,7 @@ namespace PylonGameEngine.Interpolation
 
         internal void UpdateTick()
         {
-            if(TickDeactivated && FrameDeactivated)
+            if (TickDeactivated && FrameDeactivated)
             {
                 Interpolators.Remove(this);
                 End(this);

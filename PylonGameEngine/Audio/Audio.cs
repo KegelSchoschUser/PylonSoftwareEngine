@@ -1,9 +1,5 @@
 ﻿using PylonGameEngine.FileSystem.Filetypes.Pylon;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Vortice.Multimedia;
 using Vortice.XAudio2;
 
@@ -95,9 +91,9 @@ namespace PylonGameEngine.Audio
 
                 for (int x = 0; x < SamplesLeft.Length * 2; x++)
                 {
-                    if(x % 2 == 0)
+                    if (x % 2 == 0)
                     {
-                        samples[x] = SamplesLeft[x /2];
+                        samples[x] = SamplesLeft[x / 2];
 
                     }
                     else

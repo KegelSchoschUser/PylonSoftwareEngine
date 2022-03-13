@@ -1,29 +1,26 @@
 ﻿using PylonGameEngine.Mathematics;
 using PylonGameEngine.Render11;
-using System;
 
-namespace PylonGameEngine.GameWorld
+namespace PylonGameEngine.SceneManagement.Objects
 {
-    public class CameraObject : GameObject3D
+    public class Camera : GameObject3D
     {
         public float FoV = 90f;
         public float OrthographicFoV = 1f;
         public float Near = 0.1f;
         public float Far = 10000.0f;
-        public CameraRender CameraRender;
         public bool Enabled = true;
 
+        public RenderTexture RenderTarget;
 
-        public CameraObject(RenderTexture renderTarget, bool HasUI = true)
+        public Camera(RenderTexture renderTarget)
         {
-            CameraRender = new CameraRender(this, ref renderTarget, HasUI);
-
-            WorldManager.Add(this);
+            RenderTarget = renderTarget;
         }
 
-        ~CameraObject()
+        public override void OnDestroy()
         {
-            WorldManager.Remove(this);
+            SceneContext.Cameras.Remove(this);
         }
 
         public Matrix4x4 ViewMatrix3D
@@ -62,8 +59,8 @@ namespace PylonGameEngine.GameWorld
             Vector3 v = new Vector3();
             float x = 0;
             float y = 0;
-            float width = (int)MyGame.MainWindow.Size.X;
-            float height = (int)MyGame.MainWindow.Size.Y;
+            float width = (int)RenderTarget.Size.X;
+            float height = (int)RenderTarget.Size.Y;
             float minZ = Near;
             float maxZ = Far;
             Matrix4x4 worldViewProjection = ViewMatrix3D * ProjectionMatrix;
@@ -78,8 +75,8 @@ namespace PylonGameEngine.GameWorld
             Vector3 v = new Vector3();
             float x = 0;
             float y = 0;
-            float width = (int)MyGame.MainWindow.Size.X;
-            float height = (int)MyGame.MainWindow.Size.Y;
+            float width = (int)RenderTarget.Size.X;
+            float height = (int)RenderTarget.Size.Y;
             Matrix4x4 worldViewProjection = ViewMatrix3D * ProjectionMatrix;
 
             v = Vector3.TransformCoordinate(vector, worldViewProjection);
@@ -92,8 +89,8 @@ namespace PylonGameEngine.GameWorld
             Vector3 v = new Vector3();
             float x = 0;
             float y = 0;
-            float width = (int)MyGame.MainWindow.Size.X;
-            float height = (int)MyGame.MainWindow.Size.Y;
+            float width = (int)RenderTarget.Size.X;
+            float height = (int)RenderTarget.Size.Y;
             float minZ = Near;
             float maxZ = Far;
             Matrix4x4 worldViewProjection = ViewMatrix3D * ProjectionMatrix;
@@ -121,14 +118,13 @@ namespace PylonGameEngine.GameWorld
             return output;
         }
 
-
         public Vector3 ScreenToWorldPoint(Vector3 vector)
         {
             Quaternion v = new Quaternion();
             float x = 0;
             float y = 0;
-            float width = (int)MyGame.MainWindow.Size.X;
-            float height = (int)MyGame.MainWindow.Size.Y;
+            float width = (int)RenderTarget.Size.X;
+            float height = (int)RenderTarget.Size.Y;
             float minZ = Near;
             float maxZ = Far;
             Matrix4x4 worldViewProjection = ViewMatrix3D * ProjectionMatrix;
@@ -146,30 +142,16 @@ namespace PylonGameEngine.GameWorld
         {
             get
             {
-                return Matrix4x4.PerspectiveFovLH(FoV * (float)System.Math.PI / 180f, (MyGame.MainWindow.Size.X / (float)MyGame.MainWindow.Size.Y), Near, Far);
+                return Matrix4x4.PerspectiveFovLH(FoV * (float)System.Math.PI / 180f, (RenderTarget.Size.X / (float)RenderTarget.Size.Y), Near, Far);
             }
         }
-
 
         public Matrix4x4 OrthographicMatrix
         {
             get
             {
                 //return Matrix4x4.OrthoLH(GlobalManager.MainWindow.Width / OrthographicFoV, GlobalManager.MainWindow.Height / OrthographicFoV, 0, 1);;
-                return Matrix4x4.OrthoOffCenterLH((-MyGame.MainWindow.Size.X) / 2f * OrthographicFoV, (MyGame.MainWindow.Size.X) / 2f, (-MyGame.MainWindow.Size.Y) / 2f * OrthographicFoV, (MyGame.MainWindow.Size.Y) / 2f, 0, 1);
-            }
-        }
-
-        public void Activate()
-        {
-            MyGameWorld.ActiveCamera = this;
-        }
-
-        public void Deactivate()
-        {
-            if (MyGameWorld.ActiveCamera == this)
-            {
-                MyGameWorld.ActiveCamera = null;
+                return Matrix4x4.OrthoOffCenterLH((-RenderTarget.Size.X) / 2f * OrthographicFoV, (RenderTarget.Size.X) / 2f, (-RenderTarget.Size.Y) / 2f * OrthographicFoV, (RenderTarget.Size.Y) / 2f, 0, 1);
             }
         }
     }

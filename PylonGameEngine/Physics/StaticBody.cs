@@ -61,7 +61,7 @@ namespace PylonGameEngine.Physics
 
 
             StaticHandle Handle = MyPhysics.Simulation.Statics.Add(new StaticDescription(Parent.Transform.GlobalMatrix.TranslationVector.ToSystemNumerics(), Matrix4x4.RotationQuaternion(Parent.Transform.GlobalMatrix).ToSystemNumerics(), new CollidableDescription(meshIndex, 0.1f).Shape));
-            
+
             Index = Handle.Value;
             Body = new StaticReference(Handle, MyPhysics.Simulation.Statics);
             Body.Pose.Position = -Parent.Transform.Position.ToSystemNumerics();

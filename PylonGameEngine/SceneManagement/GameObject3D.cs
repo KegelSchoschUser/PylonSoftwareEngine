@@ -6,26 +6,24 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace PylonGameEngine.GameWorld
+namespace PylonGameEngine.SceneManagement
 {
     public class GameObject3D : UniqueNameInterface, IGameObject
     {
-        public List<IComponent> Components;
+        public List<Component3D> Components;
         public Transform Transform = new Transform();
         public GameObject3D Parent { get; private set; }
         public List<GameObject3D> Children { get; private set; }
 
         public List<string> Tags = new List<string>();
 
-
-
+        internal Scene SceneContext = null;
 
 
         public GameObject3D()
         {
-            WorldManager.Objects.Add(this);
             Children = new List<GameObject3D>();
-            Components = new List<IComponent>();
+            Components = new List<Component3D>();
 
             OnCreate();
         }
@@ -33,13 +31,9 @@ namespace PylonGameEngine.GameWorld
         public void AddComponent(Component3D component)
         {
             component.Parent = this;
+            component.Scene = SceneContext;
             Components.Add(component);
-            component.Initialize();
-        }
-
-        public void AddComponent(IComponent component)
-        {
-            Components.Add(component);
+            SceneContext.Components.Add(component);
             component.Initialize();
         }
 
@@ -51,6 +45,7 @@ namespace PylonGameEngine.GameWorld
             }
 
             gameObject.Parent = this;
+            gameObject.SceneContext = SceneContext;
             gameObject.Transform.SetParent(this.Transform);
             Children.Add(gameObject);
         }
@@ -64,7 +59,6 @@ namespace PylonGameEngine.GameWorld
                 Component.OnDestroy();
             }
 
-            WorldManager.Objects.Remove(this);
             if (Parent != null)
             {
                 Parent.Children.Remove(this);
@@ -77,7 +71,6 @@ namespace PylonGameEngine.GameWorld
             }
             else
             {
-                MyGameWorld.Objects.Remove(this);
                 foreach (GameObject3D child in Children)
                 {
                     child.Parent = null;

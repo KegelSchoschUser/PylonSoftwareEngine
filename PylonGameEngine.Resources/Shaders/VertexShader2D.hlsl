@@ -20,7 +20,6 @@ struct Vertex2DInputType
 {
 	float4 position : POSITION;
 	float2 tex : TEXCOORD0;
-	float3 normal : NORMAL;
 };
 
 struct Pixel2DInputType
