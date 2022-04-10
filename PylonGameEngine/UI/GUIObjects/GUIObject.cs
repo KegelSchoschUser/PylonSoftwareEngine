@@ -18,6 +18,11 @@ namespace PylonGameEngine.GameWorld
         MiddleLeft, Center, MiddleRight,
         BottomLeft, BottomMiddle, BottomRight
     }
+    public enum SizeLayout
+    {
+        Pixel,
+        UnitInterval
+    } 
 
     public enum RotationLayout
     {
@@ -36,6 +41,7 @@ namespace PylonGameEngine.GameWorld
         public PylonGameEngine.UI.Drawing.Graphics Graphics;
 
         public PositionLayout PositionLayout = PositionLayout.Pixel;
+        public SizeLayout SizeLayout = SizeLayout.Pixel;
         public RotationLayout RotationLayout = RotationLayout.TopLeft;
         public bool Visible = true;
 
@@ -468,6 +474,7 @@ namespace PylonGameEngine.GameWorld
 
         public void AddScript(GameScript script)
         {
+            script.Scene = this.SceneContext;
             scripts.Add(script);
         }
 
@@ -479,7 +486,9 @@ namespace PylonGameEngine.GameWorld
             }
 
             gameObject.Parent = this;
+            gameObject.SceneContext = this.SceneContext;
             gameObject.QueueDraw();
+   
             Children.Add(gameObject);
         }
 
@@ -515,9 +524,9 @@ namespace PylonGameEngine.GameWorld
 
         internal bool OnFocusCheck()
         {
-            if (FocusAble && Visible && ExtendedFocusCheck())
+            if (FocusAble && Visible)
             {
-                if (SceneContext.InputManager.Mouse.LeftButtonDown() == true /*|| SceneContext.InputManager.Mouse.LeftButtonPressed() == true*/)
+                if (SceneContext.InputManager.Mouse.LeftButtonDown() == true || ExtendedFocusCheck() /*|| SceneContext.InputManager.Mouse.LeftButtonPressed() == true*/)
                 {
                     return true;
                 }

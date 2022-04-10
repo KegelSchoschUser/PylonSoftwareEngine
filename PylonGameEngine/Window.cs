@@ -83,6 +83,7 @@ namespace PylonGameEngine
 
         }
 
+
         protected override void OnShown(EventArgs e)
         {
 
@@ -132,6 +133,7 @@ namespace PylonGameEngine
                     break;
                 case WM_KEYDOWN:
                     {
+
                         foreach (var inputmanager in InputManagers)
                         {
                             inputmanager.KeyDown(KeyCodes.ConvertToKey((int)wParam));
@@ -165,6 +167,24 @@ namespace PylonGameEngine
                     break;
             }
             base.WndProc(ref m);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Menu)
+                foreach (var inputmanager in InputManagers)
+                {
+                    inputmanager.KeyDown(KeyboardKey.Alt);
+                }
+        }
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Menu)
+                foreach (var inputmanager in InputManagers)
+                {
+                    inputmanager.KeyUp(KeyboardKey.Alt);
+                }
         }
 
         protected override void OnMouseWheel(MouseEventArgs e)
@@ -257,6 +277,8 @@ namespace PylonGameEngine
 
         }
 
+
+
         /*
         private static void ProcessRawInput(IntPtr hWnd, nint wParam, nint lParam)
         {
@@ -294,10 +316,11 @@ namespace PylonGameEngine
         }
         */
 
-        internal void Destroy()
+        public void Destroy()
         {
             MyGame.Windows.Remove(this);
             Close();
+            DestroyHandle();
         }
     }
 }

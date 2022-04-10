@@ -32,6 +32,14 @@ namespace PylonGameEngine.Audio
             }
         }
 
+        public int BuffersQueued
+        {
+            get
+            {
+                return Voice.State.BuffersQueued;
+            }
+        }
+
         public int SampleRate
         {
             get
@@ -59,7 +67,7 @@ namespace PylonGameEngine.Audio
         public Audio(PylonAudioFile file)
         {
             CreateVoice(file.SampleRate, file.ChannelCount);
-            SubmitBuffer(file.Samples);
+            AddBuffer(file.Samples, true);
         }
 
         private void CreateVoice(int SampleRate = 48000, int Channels = 2)
@@ -76,12 +84,12 @@ namespace PylonGameEngine.Audio
             }
         }
 
-        public void SubmitBuffer(PylonAudioFile File)
+        public void AddBuffer(PylonAudioFile File, bool Final)
         {
-            SubmitBuffer(File.Samples);
+            AddBuffer(File.Samples, Final);
         }
 
-        public void SubmitBuffer(float[] SamplesLeft, float[] SamplesRight)
+        public void AddBuffer(float[] SamplesLeft, float[] SamplesRight, bool Final)
         {
             if (SamplesLeft.Length != SamplesRight.Length)
                 throw new ArgumentOutOfRangeException();
@@ -101,16 +109,16 @@ namespace PylonGameEngine.Audio
                         samples[x] = SamplesRight[x / 2];
                     }
                 }
-                ConvertSamples(samples);
+                ConvertSamplesAndSubmit(samples, Final);
             }
         }
 
-        public void SubmitBuffer(float[] Samples)
+        public void AddBuffer(float[] Samples, bool Final)
         {
-            ConvertSamples(Samples);
+            ConvertSamplesAndSubmit(Samples, Final);
         }
 
-        public void SubmitBuffer(float[,] Samples)
+        public void AddBuffer(float[,] Samples, bool Final)
         {
             float[] samples = new float[Samples.Rank * Samples.Length];
             int i = 0;
@@ -122,11 +130,11 @@ namespace PylonGameEngine.Audio
                     i++;
                 }
             }
-            ConvertSamples(samples);
+            ConvertSamplesAndSubmit(samples, Final);
 
         }
 
-        private void ConvertSamples(float[] Samples)
+        private void ConvertSamplesAndSubmit(float[] Samples, bool Final)
         {
             var Bytes = new byte[Samples.Length * 2];
 
@@ -142,18 +150,16 @@ namespace PylonGameEngine.Audio
             if (Bytes.Length != 0)
             {
                 Buffer = Bytes;
+                SubmitBuffer(Final);
             }
-
-            SubmitBuffer();
         }
 
-        private void SubmitBuffer()
+        private void SubmitBuffer(bool Final)
         {
-            Stop();
-            Voice.FlushSourceBuffers();
-
-            var Audiobuffer = new AudioBuffer(Buffer, BufferFlags.EndOfStream);
-            Voice.SubmitSourceBuffer(Audiobuffer);
+            var Audiobuffer = new AudioBuffer(Buffer, Final ? BufferFlags.EndOfStream : BufferFlags.None);
+      
+            if (Voice.State.BuffersQueued < 64)
+                Voice.SubmitSourceBuffer(Audiobuffer);
         }
 
         public bool Play()
@@ -161,9 +167,9 @@ namespace PylonGameEngine.Audio
             Stop();
             SamplesPlayedLastStop = (int)Voice.State.SamplesPlayed;
 
-            if (Buffer == null || Buffer.Length == 0)
-                return false;
-            SubmitBuffer();
+            //if (Buffer == null || Buffer.Length == 0)
+            //    return false;
+            //SubmitBuffer(true);
             Voice.Start();
 
             return true;
@@ -172,6 +178,12 @@ namespace PylonGameEngine.Audio
         public void Stop()
         {
             Voice.Stop();
+        }
+
+        public void FlushBuffers()
+        {
+            Stop();
+            Voice.FlushSourceBuffers();
         }
 
         ~Audio()

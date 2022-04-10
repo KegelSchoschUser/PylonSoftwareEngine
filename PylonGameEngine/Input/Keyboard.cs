@@ -14,10 +14,18 @@ namespace PylonGameEngine.Input
         public HashSet<char> CharacterKeys = new HashSet<char>();
         private HashSet<char> CharacterKeysBuffer = new HashSet<char>();
 
+        public delegate void KeyDownEvent(KeyboardKey key);
+        public event KeyDownEvent OnKeyDown;
+
+        public delegate void KeyUpEvent(KeyboardKey key);
+        public event KeyUpEvent OnKeyUp;
         public Keyboard(InputManager manager)
         {
             InputManager = manager;
+            OnKeyDown += (k) =>{ };
+            OnKeyUp += (k) => { };
         }
+
 
         #region Core
         internal void AddKey(KeyboardKey key)
@@ -28,17 +36,18 @@ namespace PylonGameEngine.Input
             }
 
             PressedKeys.Add(key);
+            OnKeyDown(key);
         }
 
         internal void AddCharKey(char c)
         {
             CharacterKeysBuffer.Add(c);
         }
-
         internal void RemoveKey(KeyboardKey key)
         {
             UpKeysBuffer.Add(key);
             PressedKeys.Remove(key);
+            OnKeyUp(key);
         }
 
         internal void Update()

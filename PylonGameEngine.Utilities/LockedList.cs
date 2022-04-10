@@ -129,7 +129,16 @@ namespace PylonGameEngine.Utilities
         {
             lock (Lock)
             {
+                try
+                {
+
                 return List.Remove(item);
+                }
+                catch (Exception)
+                {
+                    return false;
+            
+                }
             }
         }
 

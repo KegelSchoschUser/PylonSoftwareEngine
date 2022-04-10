@@ -10,7 +10,7 @@ namespace PylonGameEngine.Input
         public Mouse Mouse { get; private set; }
         public Keyboard Keyboard { get; private set; }
 
-        internal InputManager(Scene sceneContext, Window window)
+        public InputManager(Scene sceneContext = null, Window window = null)
         {
             SceneContext = sceneContext;
             Window = window;
@@ -19,7 +19,7 @@ namespace PylonGameEngine.Input
             Keyboard = new Keyboard(this);
         }
 
-        internal void SetWindow(Window window)
+        public void SetWindow(Window window)
         {
             if (Window != null)
                 if (Window.InputManagers.Contains(this))

@@ -69,7 +69,17 @@ namespace PylonGameEngine.Input
         internal void MouseMoveEvent(int X, int Y)
         {
             lock (LOCK)
-                MousePostionBuffer = new Vector2(X, Y);
+            {
+                if(InputManager.Window != null)
+                {
+                    if(InputManager.Window.FormBorderStyle == FormBorderStyle.None)
+                        MousePostionBuffer = new Vector2(X, Y);
+                    else
+                        MousePostionBuffer = new Vector2(X, Y - SystemInformation.CaptionHeight);
+                }
+                //MousePostionBuffer = new Vector2(X, Y);
+            }
+                
 
         }
         internal void MouseScrollEvent(int Y)

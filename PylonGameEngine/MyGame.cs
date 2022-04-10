@@ -102,6 +102,7 @@ namespace PylonGameEngine
             //GC.Collect();
         }
 
+        [STAThread]
         private unsafe static void RenderLoop_Tick()
         {
             Application.DoEvents();

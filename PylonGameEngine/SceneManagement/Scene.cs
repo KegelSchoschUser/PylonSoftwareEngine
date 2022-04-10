@@ -84,7 +84,7 @@ namespace PylonGameEngine.SceneManagement
         {
             Gui.UpdateFrame();
 
-            foreach (var obj in Gui.GUIObjects)
+            foreach (var obj in Gui.GetRenderOrder())
             {
                 obj.UpdateFrame();
             }
@@ -94,7 +94,7 @@ namespace PylonGameEngine.SceneManagement
                 component.UpdateFrame();
             }
 
-            foreach (var obj in Gui.GUIObjects)
+            foreach (var obj in Gui.GetRenderOrder())
             {
                 obj.OnDrawInternal();
             }
@@ -105,7 +105,7 @@ namespace PylonGameEngine.SceneManagement
             InputManager.UpdateTick();
             Gui.UpdateTick();
 
-            foreach (var obj in Gui.GUIObjects)
+            foreach (var obj in Gui.GetRenderOrder())
             {
                 obj.UpdateTickInternal();
                 obj.UpdateTick();
