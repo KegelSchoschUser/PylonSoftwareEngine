@@ -142,7 +142,7 @@ namespace PylonGameEngine.GameWorld
             }
 
             LeftMouseUp = false;
-            if (this.Focused && SceneContext.InputManager.Mouse.LeftButtonUp())
+            if (this.Focused && SceneContext.InputManager.Mouse.LeftButtonUp() || (MouseLeave && LeftMousePressed))
             {
                 LeftMouseUp = true;
             }
@@ -161,7 +161,7 @@ namespace PylonGameEngine.GameWorld
             }
 
             MiddleMouseUp = false;
-            if (this.Focused && SceneContext.InputManager.Mouse.MiddleButtonUp())
+            if (this.Focused && SceneContext.InputManager.Mouse.MiddleButtonUp() || (MouseLeave && LeftMousePressed))
             {
                 MiddleMouseUp = true;
             }
@@ -182,7 +182,7 @@ namespace PylonGameEngine.GameWorld
             }
 
             RightMouseUp = false;
-            if (this.Focused && SceneContext.InputManager.SceneContext.InputManager.Mouse.RightButtonUp())
+            if (this.Focused && SceneContext.InputManager.SceneContext.InputManager.Mouse.RightButtonUp() || (MouseLeave && LeftMousePressed))
             {
                 RightMouseUp = true;
             }
@@ -195,6 +195,11 @@ namespace PylonGameEngine.GameWorld
             #endregion Right
         }
 
+        public virtual void OnAddScene()
+        {
+
+        }
+
         public virtual void UpdateFrame()
         {
 
@@ -204,6 +209,7 @@ namespace PylonGameEngine.GameWorld
         {
 
         }
+
         public Matrix4x4 ObjectMatrix
         {
             get
@@ -487,6 +493,7 @@ namespace PylonGameEngine.GameWorld
 
             gameObject.Parent = this;
             gameObject.SceneContext = this.SceneContext;
+            gameObject.OnAddScene();
             gameObject.QueueDraw();
    
             Children.Add(gameObject);

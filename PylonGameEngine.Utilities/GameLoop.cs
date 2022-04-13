@@ -82,15 +82,17 @@ namespace PylonGameEngine.Utilities
                                 }
                             }
 
-                            _nextLoop = _nextLoop.AddMilliseconds(MillisecondsPerTick);
+                            _nextLoop = _nextLoop.AddTicks((int)(MillisecondsPerTick * 10000f));
 
-                            if (_nextLoop > DateTime.Now && Tickrate != -1.0f)
-                            {
-                                if ((_nextLoop - DateTime.Now).Milliseconds >= 0f)
-                                {
-                                    Thread.Sleep((_nextLoop - DateTime.Now).Milliseconds);
-                                }
-                            }
+                            //if (_nextLoop > DateTime.Now && Tickrate != -1.0f)
+                            //{
+                                while((_nextLoop - DateTime.Now).TotalMilliseconds > 0)
+                                { }
+                                //if ((_nextLoop - DateTime.Now).Milliseconds >= 0f)
+                                //{
+                                //    Thread.Sleep((_nextLoop - DateTime.Now).TotalMilliseconds);
+                                //}
+                            //}
                             previousStart = now;
                             if (!Running)
                             {
@@ -126,16 +128,18 @@ namespace PylonGameEngine.Utilities
 
                         if (Tickrate != -1.0f)
                         {
-                            _nextLoop = _nextLoop.AddMilliseconds(MillisecondsPerTick);
+                            _nextLoop = _nextLoop.AddTicks((int)(MillisecondsPerTick * 10000f));
                         }
 
-                        if (_nextLoop > DateTime.Now)
-                        {
-                            if ((_nextLoop - DateTime.Now).Milliseconds >= 0f)
-                            {
-                                Thread.Sleep((_nextLoop - DateTime.Now).Milliseconds);
-                            }
-                        }
+                        //if (_nextLoop > DateTime.Now)
+                        //{
+                            while ((_nextLoop - DateTime.Now).TotalMilliseconds > 0)
+                            { }
+                            //if ((_nextLoop - DateTime.Now).Milliseconds >= 0f)
+                            //{
+                            //    Thread.Sleep((_nextLoop - DateTime.Now).Milliseconds);
+                            //}
+                        //}
                         previousStart = now;
                         if (!Running)
                         {

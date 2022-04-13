@@ -5,6 +5,7 @@ using PylonGameEngine.Physics;
 using PylonGameEngine.Render11;
 using PylonGameEngine.SceneManagement;
 using PylonGameEngine.Utilities;
+using PylonGameEngine.Utilities.Win32;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -19,7 +20,6 @@ namespace PylonGameEngine
         public static List<Window> Windows = new List<Window>();
         public static GameLoop GameTickLoop;
         public static GameLoop RenderLoop;
-        public static GameLoop PhysicsLoop;
         public static object RenderLock = new object();
         public static LockedList<Material> Materials = new LockedList<Material>(ref RenderLock);
         internal static bool RendererEnabled = true;
@@ -66,7 +66,7 @@ namespace PylonGameEngine
             GameProperties.SplashScreen.Close();
 
             GameTickLoop.Start();
-            RenderLoop.Start();
+            RenderLoop.Start(false);
         }
 
         public static void Stop()
@@ -121,12 +121,12 @@ namespace PylonGameEngine
 
         public static void ShowConsole()
         {
-            ShowWindow(GetConsoleWindow(), 5);
+            ShowWindow(GetConsoleWindow(), ShowWindowCommand.Show);
         }
 
         public static void HideConsole()
         {
-            ShowWindow(GetConsoleWindow(), 0);
+            ShowWindow(GetConsoleWindow(), ShowWindowCommand.Hide);
         }
     }
 }

@@ -136,6 +136,7 @@ namespace PylonGameEngine
 
                         foreach (var inputmanager in InputManagers)
                         {
+                            //Console.WriteLine(wParam);
                             inputmanager.KeyDown(KeyCodes.ConvertToKey((int)wParam));
                         }
                     }

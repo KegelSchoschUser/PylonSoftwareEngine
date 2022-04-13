@@ -125,6 +125,7 @@ namespace PylonGameEngine.SceneManagement
             if (Parent == null)
             {
                 GUIObjects.Add(gUIObject);
+                gUIObject.OnAddScene();
             }
             else
             {

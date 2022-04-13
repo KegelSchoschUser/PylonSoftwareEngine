@@ -36,6 +36,7 @@ namespace PylonGameEngine.Input
         private Vector2 MousePostionBuffer = Vector2.Zero;
         private Vector2 LastMousePosition = Vector2.Zero;
         public Vector2 Position { get; private set; }
+        public Vector2 GlobalPosition => Cursor.Position;
 
         private HashSet<MouseButton> DownButtons = new HashSet<MouseButton>();
         private HashSet<MouseButton> PressedButtons = new HashSet<MouseButton>();

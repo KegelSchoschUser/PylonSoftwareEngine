@@ -1,4 +1,6 @@
 ﻿using PylonGameEngine.Mathematics;
+using System;
+using System.Drawing;
 using System.IO;
 using Vortice;
 using Vortice.Direct3D11;
@@ -15,12 +17,15 @@ namespace PylonGameEngine.Render11
         {
             var factory = new IWICImagingFactory();
             InternalBitmap = FormatConverterToWicBitmap(factory, CreateFormatConverter(FileName));
+            //InternalBitmap = factory.CreateBitmapFromHBITMAP(((Bitmap)Bitmap.FromFile(FileName)).GetHbitmap(), System.IntPtr.Zero, BitmapAlphaChannelOption.UsePremultipliedAlpha);
         }
 
         public WicBitmap(System.Drawing.Bitmap bitmap)
         {
             var factory = new IWICImagingFactory();
             InternalBitmap = FormatConverterToWicBitmap(factory, CreateFormatConverter(bitmap));
+            //InternalBitmap = factory.CreateBitmapFromHBITMAP(bitmap.GetHbitmap(), System.IntPtr.Zero, BitmapAlphaChannelOption.UsePremultipliedAlpha);
+
         }
 
         public Vector2 Size
@@ -114,7 +119,7 @@ namespace PylonGameEngine.Render11
                 formatconverter.CopyPixels(stride, formatconverter.Size.Height * stride, buffer.BasePointer);
                 return D3D11GraphicsDevice.Device.CreateTexture2D(new Texture2DDescription()
                 {
-                    Format = Format.R8G8B8A8_UNorm,
+                    Format = Format.R8G8B8A8_UNorm_SRgb,
                     ArraySize = 1,
                     MipLevels = 1,
                     Width = formatconverter.Size.Width,

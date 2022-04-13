@@ -181,7 +181,7 @@ namespace PylonGameEngine.Render11
             {
                 Width = (int)Window.Size.X,
                 Height = (int)Window.Size.Y,
-                Format = Format.R8G8B8A8_UNorm,
+                Format = Format.R8G8B8A8_UNorm_SRgb,
                 BufferCount = 2,
                 BufferUsage = Vortice.DXGI.Usage.RenderTargetOutput,
                 SampleDescription = new SampleDescription(1, 0),

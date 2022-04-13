@@ -192,6 +192,7 @@
 
     public enum KeyboardKey
     {
+        None = 0,
         Backspace = 8,
         Tab = 9,
         Enter = 13,
@@ -264,7 +265,14 @@
         Comma = 188,
         Minus = 189,
         Dot = 190,
+        Degrees = 220,
+        QuestionMark = 219,
+        Accents = 221,
+        Plus = 187,
+        Hashtag = 191,
+        Ü = 186,
+        Ä = 222,
+        Ö = 192,
+        GreaterSmaller = 226
     }
-
-
 }

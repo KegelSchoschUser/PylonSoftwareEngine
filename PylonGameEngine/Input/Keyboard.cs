@@ -33,10 +33,10 @@ namespace PylonGameEngine.Input
             if (!PressedKeys.Contains(key))
             {
                 DownKeysBuffer.Add(key);
+                OnKeyDown(key);
             }
 
             PressedKeys.Add(key);
-            OnKeyDown(key);
         }
 
         internal void AddCharKey(char c)

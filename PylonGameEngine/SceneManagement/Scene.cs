@@ -9,7 +9,7 @@ namespace PylonGameEngine.SceneManagement
     public class Scene : UniqueNameInterface
     {
         public LockedList<GameObject3D> Objects { get; private set; }
-        internal LockedList<Camera> Cameras { get; private set; }
+        public LockedList<Camera> Cameras { get; private set; }
         private Camera _MainCamera;
         public Camera MainCamera
         {
