@@ -8,6 +8,8 @@ using PylonGameEngine.SceneManagement.Objects;
 using PylonGameEngine.Utilities;
 using System;
 using System.Drawing;
+using System.Text;
+using System.Threading;
 
 namespace MyTestGame
 {
@@ -81,6 +83,7 @@ namespace MyTestGame
 
     public class Program
     {
+        static Random r = new Random((int)(DateTime.Now.Ticks));
         [STAThread]
         public static void Main(string[] args)
         {
@@ -89,6 +92,12 @@ namespace MyTestGame
             GameProperties.SplashScreen = new SplashScreen((Bitmap)Bitmap.FromFile("Splash.png"));
             GameProperties.RenderTickRate = 60;
             MyGame.Initialize();
+
+            MyLog.Default.Write("test", LogSeverity.Info);
+            MyLog.Default.Write("test", LogSeverity.Warning);
+            MyLog.Default.Write("test", LogSeverity.Error);
+            MyLog.Default.Write("test", LogSeverity.Critical);
+            MyLog.Default.Write("test", LogSeverity.Crash);
 
             for (int x = 0; x < 2; x++)
             {

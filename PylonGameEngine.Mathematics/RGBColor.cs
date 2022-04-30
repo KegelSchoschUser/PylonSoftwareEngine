@@ -56,6 +56,14 @@ namespace PylonGameEngine.Mathematics
             A = a;
         }
 
+        public RGBColor(RGBColor BaseColor, float a)
+        {
+            R = BaseColor.R;
+            G = BaseColor.G;
+            B = BaseColor.B;
+            A = a;
+        }
+
         public static RGBColor From255Range(int r, int g, int b)
         {
             return new RGBColor((r / 255f), (g / 255f), (b / 255f), 1f);

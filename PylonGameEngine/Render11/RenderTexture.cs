@@ -23,15 +23,29 @@ namespace PylonGameEngine.Render11
             CreateRenderTarget();
         }
 
+        protected override void Refresh(int width, int height)
+        {
+            base.Refresh(width, height);
+
+            CreateDepth();
+            CreateRenderTarget();
+        }
+
         private void CreateDepth()
         {
+            if(DepthStencilBuffer != null)
+                DepthStencilBuffer.Release();
             DepthStencilBuffer = D3D11GraphicsDevice.Device.CreateTexture2D((int)Size.X, (int)Size.Y, Format.D32_Float, 1, 1, null, BindFlags.DepthStencil);
 
+            if (DepthStencilView != null)
+                DepthStencilView.Release();
             DepthStencilView = D3D11GraphicsDevice.Device.CreateDepthStencilView(DepthStencilBuffer);
         }
 
         private void CreateRenderTarget()
         {
+            if (InternalRenderTarget != null)
+                InternalRenderTarget.Release();
             InternalRenderTarget = D3D11GraphicsDevice.Device.CreateRenderTargetView(InternalTexture);
         }
 
@@ -43,8 +57,11 @@ namespace PylonGameEngine.Render11
 
         public void Clear()
         {
-            D3D11GraphicsDevice.DeviceContext.ClearRenderTargetView(InternalRenderTarget, RGBColor.Transparent);
-            D3D11GraphicsDevice.DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth, 1f, 0);
+            lock (MyGame.RenderLock)
+            {
+                D3D11GraphicsDevice.DeviceContext.ClearRenderTargetView(InternalRenderTarget, RGBColor.Transparent);
+                D3D11GraphicsDevice.DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth, 1f, 0);
+            }
         }
     }
 }

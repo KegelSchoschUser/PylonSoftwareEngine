@@ -97,7 +97,7 @@ namespace PylonGameEngine.Utilities
             int prefixlength = AppendPrefix(sb, severity);
             sb.Append(text);
 
-            string newlinecorrection = sb.ToString().Replace("\n", "\n" + new string(' ', prefixlength - 4) + "->  ");
+            string newlinecorrection = sb.ToString().Replace("\n", "\n" + new string(' ', prefixlength - 4 + 4) + "->  ");
             sb.Clear();
             sb.Append(newlinecorrection);
 
@@ -106,6 +106,44 @@ namespace PylonGameEngine.Utilities
             WriteToStream(sb.ToString());
             if (WriteInConsole)
             {
+                switch (severity)
+                {
+                    case (LogSeverity.Info):
+                        {
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            break;
+                        }
+                    case (LogSeverity.Warning):
+                        {
+                            Console.BackgroundColor = ConsoleColor.Yellow;
+                            break;
+                        }
+                    case (LogSeverity.Error):
+                        {
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            break;
+                        }
+                    case (LogSeverity.Critical):
+                        {
+                            Console.BackgroundColor = ConsoleColor.DarkRed;
+                            break;
+                        }
+                    case (LogSeverity.Crash):
+                        {
+                            Console.BackgroundColor = ConsoleColor.Magenta;
+                            break;
+                        }
+                    default:
+                        {
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            break;
+                        }
+                }
+
+                Console.Write("   ");
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.Write(" ");
+
                 Console.Write(sb.ToString());
             }
 
@@ -115,18 +153,20 @@ namespace PylonGameEngine.Utilities
             }
 
             Output += sb.ToString();
+
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
 
         private int AppendPrefix(StringBuilder sb, LogSeverity severity)
         {
-            AppendDateTime(sb);
+            AppendDateTime(sb, severity);
             AppendThreadId(sb);
             AppendSeverity(sb, severity);
             sb.Append("] ->  ");
             return sb.ToString().Length;
         }
 
-        private void AppendDateTime(StringBuilder sb)
+        private void AppendDateTime(StringBuilder sb, LogSeverity severity)
         {
             DateTime dt = DateTime.Now;
             sb.Append(dt.Day.ToString("00")).Append('.');
@@ -136,7 +176,6 @@ namespace PylonGameEngine.Utilities
             sb.Append(dt.Minute.ToString("00")).Append(':');
             sb.Append(dt.Second.ToString("00")).Append('.');
             sb.Append(dt.Millisecond.ToString("000")).Append(' ');
-
         }
 
         private void AppendThreadId(StringBuilder sb)
@@ -155,31 +194,37 @@ namespace PylonGameEngine.Utilities
             {
                 case (LogSeverity.Info):
                     {
+                        Console.ForegroundColor = ConsoleColor.Gray;
                         SeverityName = "Info";
                         break;
                     }
                 case (LogSeverity.Warning):
                     {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         SeverityName = "Warning";
                         break;
                     }
                 case (LogSeverity.Error):
                     {
+                        Console.ForegroundColor = ConsoleColor.Red;
                         SeverityName = "Error";
                         break;
                     }
                 case (LogSeverity.Critical):
                     {
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
                         SeverityName = "Critical";
                         break;
                     }
                 case (LogSeverity.Crash):
                     {
+                        Console.ForegroundColor = ConsoleColor.Magenta;
                         SeverityName = "Crash";
                         break;
                     }
                 default:
                     {
+                        Console.ForegroundColor = ConsoleColor.Gray;
                         SeverityName = "NONE";
                         break;
                     }

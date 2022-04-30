@@ -57,6 +57,7 @@ namespace PylonGameEngine
         }
         internal Window(string title, Vector2 position, Vector2 size, bool FullScreen = false, bool Titlebar = false)
         {
+            CheckForIllegalCrossThreadCalls = false;
             Touchscreen.RegisterTouchEvent(Handle);
             AutoScaleMode = AutoScaleMode.Dpi;
             Text = title;

@@ -13,25 +13,48 @@ namespace PylonGameEngine.Render11
         public Texture(int width, int height)
         {
             InternalTexture = D3D11GraphicsDevice.Device.CreateTexture2D(width, height, Format.R8G8B8A8_UNorm_SRgb, 1, 1, null, BindFlags.RenderTarget | BindFlags.ShaderResource);
-            CreateShaderResourceView();
+            //CreateShaderResourceView();
         }
 
         public Texture(ID3D11Texture2D texture)
         {
             InternalTexture = texture;
-            CreateShaderResourceView();
+            //CreateShaderResourceView();
         }
 
         public Texture(string FileName)
         {
             InternalTexture = WicBitmap.CreateTexture2D(FileName);
-            CreateShaderResourceView();
+            //CreateShaderResourceView();
         }
 
         public Texture(System.Drawing.Bitmap bitmap)
         {
             InternalTexture = WicBitmap.CreateTexture2D(bitmap);
-            CreateShaderResourceView();
+            //CreateShaderResourceView();
+        }
+
+        protected virtual void Refresh(int width, int height)
+        {
+            int Width ;
+            int Height;
+            if(width == 0 && height == 0)
+            {
+                Width = InternalTexture.Description.Width;
+                Height = InternalTexture.Description.Height;
+            }
+            else
+            {
+                Width = width;
+                Height = height;
+            }
+
+            if (InternalTexture != null)
+                InternalTexture.Release();
+
+            InternalTexture = D3D11GraphicsDevice.Device.CreateTexture2D(Width, Height, Format.R8G8B8A8_UNorm_SRgb, 1, 1, null, BindFlags.RenderTarget | BindFlags.ShaderResource);
+
+            //CreateShaderResourceView();
         }
 
         private ID3D11ShaderResourceView CreateShaderResourceView()
@@ -63,7 +86,13 @@ namespace PylonGameEngine.Render11
         {
             get
             {
-                return new Vector2(InternalTexture.Description.Width, InternalTexture.Description.Height);
+                lock (MyGame.RenderLock)
+                {
+                    int width = InternalTexture.Description.Width;
+                    int height = InternalTexture.Description.Height;
+
+                    return new Vector2(width, height);
+                }
             }
         }
 

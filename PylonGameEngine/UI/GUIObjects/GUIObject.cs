@@ -21,7 +21,9 @@ namespace PylonGameEngine.GameWorld
     public enum SizeLayout
     {
         Pixel,
-        UnitInterval
+        UnitInterval,
+        UnitIntervalX,
+        UnitIntervalY,
     } 
 
     public enum RotationLayout
@@ -57,7 +59,10 @@ namespace PylonGameEngine.GameWorld
             set
             {
                 _Parent = value;
-                Transform.SetParent(_Parent.Transform);
+                if(_Parent != null)
+                    Transform.SetParent(_Parent.Transform);
+                else
+                    Transform.SetParent(null);
                 QueueDraw();
             }
         }
@@ -198,6 +203,67 @@ namespace PylonGameEngine.GameWorld
         public virtual void OnAddScene()
         {
 
+        }
+
+        internal void UpdateFrameInternal()
+        {
+            if(SceneContext != null)
+                if(SceneContext.InputManager != null)
+                    if(SceneContext.InputManager.Window != null)
+                    {
+                        if (SizeLayout == SizeLayout.UnitInterval)
+                        {
+                            Vector2 size;
+
+                            if (Parent != null)
+                            {
+                                size = Parent.Transform.Size * Transform.Size;
+                            }
+                            else
+                            {
+                                size = SceneContext.InputManager.Window.Size;
+                            }
+
+                            if (size != Transform.Size)
+                                Transform.Size = size;
+                        }
+                        else if (SizeLayout == SizeLayout.UnitIntervalX)
+                        {
+                            Vector2 size;
+
+                            if (Parent != null)
+                            {
+                                size = Parent.Transform.Size * Transform.Size;
+                            }
+                            else
+                            {
+                                size = SceneContext.InputManager.Window.Size;
+                            }
+
+                            size.Y = Transform.Size.Y;
+                            if (size != Transform.Size)
+                                Transform.Size = size;
+                        }
+                        else if (SizeLayout == SizeLayout.UnitIntervalY)
+                        {
+                            Vector2 size;
+
+                            if (Parent != null)
+                            {
+                                size = Parent.Transform.Size * Transform.Size;
+                            }
+                            else
+                            {
+                                size = SceneContext.InputManager.Window.Size;
+                            }
+
+                            size.X = Transform.Size.X;
+                            if (size != Transform.Size)
+                                Transform.Size = size;
+                        }
+                    }
+
+            UpdateFrame();
         }
 
         public virtual void UpdateFrame()
@@ -392,6 +458,11 @@ namespace PylonGameEngine.GameWorld
             OnCreate();
         }
 
+        protected void RecreateGraphics()
+        {
+            _RecreateGraphics = true;
+        }
+
         internal bool _QueueDraw = false;
         internal bool _RecreateGraphics = false;
         public void QueueDraw()
@@ -422,13 +493,15 @@ namespace PylonGameEngine.GameWorld
                 Graphics.BeginDraw();
 
                 var Clip = GetClip();
+                Graphics.Clear();
+                Graphics.CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
+                //Graphics.FillRectangle(Graphics.CreateSolidBrush(RGBColor.Red));
 
                 OnDraw(Graphics);
 
                 if (DebugSettings.UISettings.DrawLayoutRectangle)
                     DrawLayoutRectangle(Graphics);
 
-                Graphics.CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
                 Graphics.ApplyClip();
 
                 Graphics.EndDraw();
@@ -497,6 +570,20 @@ namespace PylonGameEngine.GameWorld
             gameObject.QueueDraw();
    
             Children.Add(gameObject);
+        }
+
+        public void RemoveChild(GUIObject gameObject)
+        {
+            if (gameObject == this)
+            {
+                throw new ArgumentException("Cannot delete myself!", "gameObject");
+            }
+
+            gameObject.Parent = null;
+            gameObject.SceneContext = this.SceneContext;
+            gameObject.QueueDraw();
+
+            Children.Remove(gameObject);
         }
 
         public void Destroy()

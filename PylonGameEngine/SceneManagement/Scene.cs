@@ -86,7 +86,7 @@ namespace PylonGameEngine.SceneManagement
 
             foreach (var obj in Gui.GetRenderOrder())
             {
-                obj.UpdateFrame();
+                obj.UpdateFrameInternal();
             }
 
             foreach (var component in Components)
