@@ -1,4 +1,5 @@
-﻿using PylonGameEngine.FileSystem.Filetypes;
+﻿using PylonGameEngine.FileSystem.DataSources;
+using PylonGameEngine.FileSystem.Filetypes;
 using PylonGameEngine.Mathematics;
 using System;
 using System.Collections.Generic;
@@ -7,27 +8,25 @@ using System.Text;
 
 namespace PylonGameEngine.FileSystem
 {
-    public class DataReader
+    public class DataReader : IDisposable
     {
-        public int ReadOffset;
-        private List<byte> Data;
+        public IDataSource DataSource;
 
-        public DataReader(RawFile file)
+        public DataReader(IDataSource dataSource)
         {
-            Data = file.Data;
-            ReadOffset = 0;
+            DataSource = dataSource;
         }
 
-        public DataReader(List<byte> data)
-        {
-            Data = data;
-            ReadOffset = 0;
-        }
-        public DataReader(byte[] data)
-        {
-            Data = data.ToList();
-            ReadOffset = 0;
-        }
+        //public DataReader(List<byte> data)
+        //{
+        //    Data = data;
+        //    ReadOffset = 0;
+        //}
+        //public DataReader(byte[] data)
+        //{
+        //    Data = data.ToList();
+        //    ReadOffset = 0;
+        //}
 
         public bool ReadBool()
         {
@@ -244,11 +243,14 @@ namespace PylonGameEngine.FileSystem
         {
             return Encoding.ASCII.GetString(ReadBytes(str.Length), 0, str.Length) == str;
         }
+
         public byte ReadByte()
         {
-            byte Byte = Data[ReadOffset];
-            ReadOffset++;
-            return Byte;
+            //byte Byte = Data[ReadOffset];
+            //ReadOffset++;
+            //return Byte;
+
+            return DataSource.ReadBytes(1)[0];
         }
 
         public byte[] ReadByteArray()
@@ -259,15 +261,26 @@ namespace PylonGameEngine.FileSystem
 
         public byte[] ReadBytes(int length)
         {
-            byte[] bytes = new byte[length];
+            //byte[] bytes = new byte[length];
 
-            for (int i = 0; i < length; i++)
-            {
-                bytes[i] = ReadByte();
-            }
+            //for (int i = 0; i < length; i++)
+            //{
+            //    bytes[i] = ReadByte();
+            //}
 
-            return bytes;
+            //return bytes;
+
+            return DataSource.ReadBytes(length);
         }
 
+        public void MovePosition(int offset)
+        {
+            DataSource.MovePosition(offset);
+        }
+
+        public void Dispose()
+        {
+            DataSource.Dispose();
+        }
     }
 }

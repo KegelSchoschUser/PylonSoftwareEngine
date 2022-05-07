@@ -673,6 +673,8 @@ namespace PylonGameEngine.UI.Drawing
 
         public void DrawText(string Text, Font f, Vector2 Position, Vector2 Size, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.ReadingDirection ReadingDirection = Enums.ReadingDirection.LeftToRight, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)
         {
+            if (Text == null)
+                Text = "";
             var textFormat = WriteFactory.CreateTextFormat(f.FontFamilyName, (FontWeight)f.FontWeight, (Vortice.DirectWrite.FontStyle)f.FontStyle, f.FontSize);
             textFormat.TextAlignment = (TextAlignment)XAlign;
             textFormat.ParagraphAlignment = (ParagraphAlignment)YAlign;

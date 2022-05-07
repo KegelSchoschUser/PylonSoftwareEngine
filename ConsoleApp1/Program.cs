@@ -32,7 +32,9 @@ namespace MyTestGame
             if (Enabled)
                 return;
             if (Scene.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.W))
+            {
                 Parent.Transform.Position += Parent.Transform.Forward * 5f * FixedDeltaTime;
+            }
 
             if (Scene.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.S))
                 Parent.Transform.Position += Parent.Transform.Backward * 5f * FixedDeltaTime;

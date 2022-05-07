@@ -1,12 +1,13 @@
-﻿using PylonGameEngine.FileSystem.Filetypes.Pylon;
+﻿using PylonGameEngine.FileSystem.DataSources;
+using PylonGameEngine.FileSystem.Filetypes.Pylon;
 using System;
 
 namespace PylonGameEngine.FileSystem.Filetypes.WAVE
 {
     public class WaveFile
     {
-        private RawFile RAWFile;
 
+        private IDataSource DataSource;
 
         public ushort Format;
         public ushort Channels;
@@ -17,16 +18,16 @@ namespace PylonGameEngine.FileSystem.Filetypes.WAVE
 
         public WaveFile(string FileName)
         {
-            RAWFile = new RawFile(FileName);
+            DataSource = new MyFileStream(FileName);
             Initialize();
         }
 
         private bool Initialize()
         {
-            if (RAWFile.Data.Count == 0)
-                throw new IndexOutOfRangeException();
+            //if (RAWFile.Data.Count == 0)
+            //    throw new IndexOutOfRangeException();
 
-            DataReader Reader = RAWFile.ReadData();
+            DataReader Reader = new DataReader(DataSource);
 
             bool HeaderChecked = CheckHeader(Reader);
             if (HeaderChecked)
@@ -37,7 +38,7 @@ namespace PylonGameEngine.FileSystem.Filetypes.WAVE
                     bool DataChecked = ReadData(Reader);
                     if (DataChecked)
                     {
-                        RAWFile.Dispose();
+                        Reader.Dispose();
                         return true;
                     }
                 }
@@ -60,7 +61,7 @@ namespace PylonGameEngine.FileSystem.Filetypes.WAVE
                     }
                     else
                     {
-                        Reader.ReadOffset -= 4;
+                        Reader.MovePosition(-4);
                     }
                     return true;
                 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 
 namespace PylonGameEngine.FileSystem.Filetypes.Pylon
@@ -58,7 +59,7 @@ namespace PylonGameEngine.FileSystem.Filetypes.Pylon
                 var length = reader.ReadInt();
                 var channelcount = reader.ReadInt();
 
-                Samples = new float[Length, channelcount];
+                Samples = new float[length, channelcount];
                 SampleRate = sampleRate;
 
 
@@ -72,7 +73,7 @@ namespace PylonGameEngine.FileSystem.Filetypes.Pylon
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }

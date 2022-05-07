@@ -1,5 +1,6 @@
 ﻿using PylonGameEngine.General;
 using PylonGameEngine.Mathematics;
+using PylonGameEngine.SceneManagement.Objects;
 using PylonGameEngine.Utilities;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,13 @@ namespace PylonGameEngine.SceneManagement
             gameObject.SceneContext = SceneContext;
             gameObject.Transform.SetParent(this.Transform);
             Children.Add(gameObject);
+
+            if (gameObject is Camera)
+            {
+                SceneContext.Cameras.Add((Camera)gameObject);
+                if (SceneContext.Cameras.Count == 1)
+                    SceneContext.MainCamera = (Camera)gameObject;
+            }
         }
 
         public void Destroy()

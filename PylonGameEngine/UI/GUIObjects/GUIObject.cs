@@ -493,15 +493,13 @@ namespace PylonGameEngine.GameWorld
                 Graphics.BeginDraw();
 
                 var Clip = GetClip();
-                Graphics.Clear();
-                Graphics.CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
-                //Graphics.FillRectangle(Graphics.CreateSolidBrush(RGBColor.Red));
 
                 OnDraw(Graphics);
 
                 if (DebugSettings.UISettings.DrawLayoutRectangle)
                     DrawLayoutRectangle(Graphics);
 
+                Graphics.CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
                 Graphics.ApplyClip();
 
                 Graphics.EndDraw();
