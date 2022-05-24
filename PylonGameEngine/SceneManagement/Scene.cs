@@ -2,12 +2,15 @@
 using PylonGameEngine.Input;
 using PylonGameEngine.SceneManagement.Objects;
 using PylonGameEngine.Utilities;
+using System;
 using System.Collections.Generic;
 
 namespace PylonGameEngine.SceneManagement
 {
     public class Scene : UniqueNameInterface
     {
+        public bool Paused = false;
+
         public LockedList<GameObject3D> Objects { get; private set; }
         public LockedList<Camera> Cameras { get; private set; }
         private Camera _MainCamera;
@@ -25,6 +28,7 @@ namespace PylonGameEngine.SceneManagement
 
         public InputManager InputManager { get; private set; }
 
+
         public Scene()
         {
             Objects = new LockedList<GameObject3D>();
@@ -41,6 +45,7 @@ namespace PylonGameEngine.SceneManagement
         {
             OnInitialize();
         }
+
         public virtual void OnInitialize()
         {
 
@@ -57,7 +62,8 @@ namespace PylonGameEngine.SceneManagement
 
         internal void Render()
         {
-            Renderer.Render();
+            if(!Paused)
+                Renderer.Render();
         }
 
         public void Add(GameObject3D obj)
@@ -82,6 +88,8 @@ namespace PylonGameEngine.SceneManagement
 
         internal void UpdateFrame()
         {
+            if (Paused)
+                return;
             Gui.UpdateFrame();
 
             foreach (var obj in Gui.GetRenderOrder())
@@ -102,9 +110,11 @@ namespace PylonGameEngine.SceneManagement
 
         internal void UpdateTick()
         {
+
+            if (Paused)
+                return;
             InputManager.UpdateTick();
             Gui.UpdateTick();
-
             foreach (var obj in Gui.GetRenderOrder())
             {
                 obj.UpdateTickInternal();

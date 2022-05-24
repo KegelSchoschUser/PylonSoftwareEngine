@@ -21,7 +21,7 @@ namespace PylonGameEngine.UI.Drawing
         internal ID2D1RenderTarget RenderTarget;
         internal ID2D1DeviceContext DeviceContext;
         private IDWriteFactory7 WriteFactory;
-        private bool CreatedFromGUIObject = false;
+        private GUIObject CreatedFromGUIObject;
 
         public Graphics(Texture texture)
         {
@@ -36,7 +36,7 @@ namespace PylonGameEngine.UI.Drawing
 
         public Graphics(GUIObject guiobject)
         {
-            CreatedFromGUIObject = true;
+            CreatedFromGUIObject = guiobject;
             Texture = new Texture((int)guiobject.Transform.Size.X, (int)guiobject.Transform.Size.Y);
             DXGISurface = Texture.InternalTexture.QueryInterface<IDXGISurface>();
 
@@ -49,6 +49,11 @@ namespace PylonGameEngine.UI.Drawing
         public void RecreateTexture(float width, float height)
         {
             Texture.Destroy();
+            DXGISurface.Release();
+            RenderTarget.Release();
+            DeviceContext.Release();
+            WriteFactory.Release();
+
             Texture = new Texture((int)width, (int)height);
             DXGISurface = Texture.InternalTexture.QueryInterface<IDXGISurface>();
 
@@ -146,11 +151,21 @@ namespace PylonGameEngine.UI.Drawing
         public void Clear()
         {
             RenderTarget.Clear(RGBColor.Transparent.ToVorticeColor());
+            //if (CreatedFromGUIObject != null)
+            //{
+            //    var Clip = CreatedFromGUIObject.GetClip();
+            //    this.CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
+            //}
         }
 
         public void Clear(RGBColor color)
         {
             RenderTarget.Clear(color.ToVorticeColor());
+            //if (CreatedFromGUIObject != null)
+            //{
+            //    var Clip = CreatedFromGUIObject.GetClip();
+            //    this.CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
+            //}
         }
 
         public void FillRectangle(LinearGradientBrush brush)
@@ -675,6 +690,13 @@ namespace PylonGameEngine.UI.Drawing
         {
             if (Text == null)
                 Text = "";
+
+            if (Size.X < 0)
+                Size.X = 1;
+
+            if (Size.Y < 0)
+                Size.Y = 1;
+
             var textFormat = WriteFactory.CreateTextFormat(f.FontFamilyName, (FontWeight)f.FontWeight, (Vortice.DirectWrite.FontStyle)f.FontStyle, f.FontSize);
             textFormat.TextAlignment = (TextAlignment)XAlign;
             textFormat.ParagraphAlignment = (ParagraphAlignment)YAlign;

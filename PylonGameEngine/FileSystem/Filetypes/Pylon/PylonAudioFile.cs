@@ -15,11 +15,11 @@ namespace PylonGameEngine.FileSystem.Filetypes.Pylon
                 return Samples.GetLength(1);
             }
         }
+
         public int Length
         {
             get { return Samples.GetLength(0); }
         }
-
 
         public PylonAudioFile()
         {

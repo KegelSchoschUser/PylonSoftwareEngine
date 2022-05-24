@@ -24,14 +24,9 @@ namespace PylonGameEngine.Utilities
 
         public MyLog(string folderPath, string appName, string appversion)
         {
-            OnWrite += FAKE_OnWrite;
+            OnWrite += (t) => { };
             FolderPath = folderPath + @"\" + "Logs";
             Init(FolderPath, appName, appversion);
-        }
-
-        private void FAKE_OnWrite(string Text)
-        {
-
         }
 
         private void Init(string FolderPath, string appName, string appversion)

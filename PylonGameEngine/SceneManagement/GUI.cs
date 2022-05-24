@@ -1,6 +1,7 @@
 ﻿using PylonGameEngine.GameWorld;
 using PylonGameEngine.Utilities;
 using System;
+using System.Linq;
 
 namespace PylonGameEngine.SceneManagement
 {
@@ -106,8 +107,11 @@ namespace PylonGameEngine.SceneManagement
                     if (obj.Visible == false)
                         continue;
 
-                    Output.Add(obj);
-                    Output.AddRange(obj.GetChildrenRecursive());
+                    if (!Output.Contains(obj))
+                    {
+                        Output.Add(obj);
+                        Output.AddRange(obj.GetChildrenRecursive());
+                    }
                 }
                 return Output;
             }

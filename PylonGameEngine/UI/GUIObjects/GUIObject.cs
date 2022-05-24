@@ -492,18 +492,24 @@ namespace PylonGameEngine.GameWorld
 
                 Graphics.BeginDraw();
 
+                Clear(Graphics);
                 var Clip = GetClip();
-
+                Graphics.CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
                 OnDraw(Graphics);
+
 
                 if (DebugSettings.UISettings.DrawLayoutRectangle)
                     DrawLayoutRectangle(Graphics);
 
-                Graphics.CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
                 Graphics.ApplyClip();
 
                 Graphics.EndDraw();
             }
+        }
+
+        public virtual void Clear(UI.Drawing.Graphics g)
+        {
+            
         }
 
         public (float, float, float, float) GetClip()
@@ -689,14 +695,30 @@ namespace PylonGameEngine.GameWorld
 
         public void ToFront()
         {
-            SceneContext.Gui.GUIObjects.Remove(this);
-            SceneContext.Gui.GUIObjects.Add(this);
+            if(Parent == null)
+            {
+                SceneContext.Gui.GUIObjects.Remove(this);
+                SceneContext.Gui.GUIObjects.Add(this);
+            }
+            else
+            {
+                Parent.Children.Remove(this);
+                Parent.Children.Add(this);
+            }
         }
 
         public void ToBack()
         {
-            SceneContext.Gui.GUIObjects.Remove(this);
-            SceneContext.Gui.GUIObjects.Insert(0, this);
+            if (Parent == null)
+            {
+                SceneContext.Gui.GUIObjects.Remove(this);
+                SceneContext.Gui.GUIObjects.Insert(0, this);
+            }
+            else
+            {
+                Parent.Children.Remove(this);
+                Parent.Children.Insert(0, this);
+            }
         }
 
         public virtual void OnDestroy()

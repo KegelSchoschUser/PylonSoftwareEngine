@@ -22,7 +22,7 @@ namespace PylonGameEngine
         public static GameLoop RenderLoop;
         public static object RenderLock = new object();
         public static LockedList<Material> Materials = new LockedList<Material>(ref RenderLock);
-        internal static bool RendererEnabled = true;
+        public static bool RendererEnabled = true;
         internal static Utilities.DiscordRPC RPC;
 
         [STAThread]
@@ -124,7 +124,7 @@ namespace PylonGameEngine
 
             }
 
-            SceneManager.UpdateFrame();
+            SceneManager.UpdateTick();
             //GC.Collect();
         }
 
@@ -140,7 +140,7 @@ namespace PylonGameEngine
                 }
             }
 
-            SceneManager.UpdateTick();
+            SceneManager.UpdateFrame();
 
             //RPC.Update();
         }

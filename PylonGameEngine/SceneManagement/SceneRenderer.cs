@@ -26,7 +26,11 @@ namespace PylonGameEngine.SceneManagement
         {
             get
             {
-                return Scene.MainCamera.RenderTarget;
+                if(Scene != null)
+                    if(Scene.MainCamera != null)
+                        if(Scene.MainCamera.RenderTarget != null)
+                            return Scene.MainCamera.RenderTarget;
+                return null;
             }
         }
 
@@ -203,6 +207,8 @@ namespace PylonGameEngine.SceneManagement
 
         public void Render2D()
         {
+            if (MainRenderTarget == null)
+                return;
             MainRenderTarget.OnRender();
             D3D11GraphicsDevice.DeviceContext.OMSetRenderTargets(MainRenderTarget.InternalRenderTarget, MainRenderTarget.DepthStencilView);
             D3D11GraphicsDevice.DeviceContext.OMSetDepthStencilState(DepthStencilStateDisabled);

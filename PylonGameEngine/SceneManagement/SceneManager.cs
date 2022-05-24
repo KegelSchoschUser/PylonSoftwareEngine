@@ -16,30 +16,37 @@ namespace PylonGameEngine.SceneManagement
         internal static void UpdateFrame()
         {
             lock (Lock)
+            {
                 foreach (var scene in Scenes)
                 {
                     scene.UpdateFrame();
                 }
+            }
 
             if (MyGame.RendererEnabled == false)
                 return;
+
             lock (Lock)
+            {
                 foreach (var scene in Scenes)
                 {
                     if (ActiveScene != scene)
                         scene.Render();
                 }
-
-            ActiveScene.Render();
+                ActiveScene.Render();
+            }
         }
 
         internal static void UpdateTick()
         {
             lock (Lock)
-                foreach (var scene in Scenes)
+            {
+                // C# Bug, foreach loop doesn't work somehow (Error: collection was modified)
+                for (int i = 0; i < Scenes.Count; i++)
                 {
-                    scene.UpdateTick();
+                    Scenes[i].UpdateTick();
                 }
+            }
         }
 
         public static void AddScene(Scene Scene)
