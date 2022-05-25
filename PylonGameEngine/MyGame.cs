@@ -22,13 +22,14 @@ namespace PylonGameEngine
         public static GameLoop RenderLoop;
         public static object RenderLock = new object();
         public static LockedList<Material> Materials = new LockedList<Material>(ref RenderLock);
-        internal static bool RendererEnabled = true;
+        public static bool RendererEnabled = true;
         internal static Utilities.DiscordRPC RPC;
 
         [STAThread]
         public static void Initialize()
         {
             MyLog.Default = new MyLog(GameProperties.Roaming, GameProperties.GameName, GameProperties.Version.ToString());
+            InitializeCrashLog();
 
             SetProcessDPIAware();
             GameProperties.SplashScreen.ShowAsync();
@@ -53,6 +54,31 @@ namespace PylonGameEngine
             MyLog.Default.Write("Game Initialized!");
         }
 
+        #region InitializeCrashLog
+        private static void InitializeCrashLog()
+        {
+            AppDomain currentDomain = default(AppDomain);
+            currentDomain = AppDomain.CurrentDomain;
+            // Handler for unhandled exceptions.
+            currentDomain.UnhandledException += GlobalUnhandledExceptionHandler;
+            // Handler for exceptions in threads behind forms.
+            System.Windows.Forms.Application.ThreadException += GlobalThreadExceptionHandler;
+        }
+
+        private static void GlobalUnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs e)
+        {
+            Exception ex = default(Exception);
+            ex = (Exception)e.ExceptionObject;
+            MyLog.Default.Write(ex, LogSeverity.Crash);
+        }
+
+        private static void GlobalThreadExceptionHandler(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            Exception ex = default(Exception);
+            ex = e.Exception;
+            MyLog.Default.Write(ex, LogSeverity.Crash);
+        }
+        #endregion InitializeCrashLog
 
 
         public static void Start()
@@ -98,7 +124,7 @@ namespace PylonGameEngine
 
             }
 
-            SceneManager.UpdateFrame();
+            SceneManager.UpdateTick();
             //GC.Collect();
         }
 
@@ -114,7 +140,7 @@ namespace PylonGameEngine
                 }
             }
 
-            SceneManager.UpdateTick();
+            SceneManager.UpdateFrame();
 
             //RPC.Update();
         }

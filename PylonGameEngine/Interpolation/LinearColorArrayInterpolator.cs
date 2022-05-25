@@ -1,6 +1,7 @@
 ﻿using PylonGameEngine.Mathematics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace PylonGameEngine.Interpolation
@@ -30,7 +31,7 @@ namespace PylonGameEngine.Interpolation
 
         protected override void OnUpdateTick()
         {
-            float k = (float)XTick * (float)Values.Count;
+            float k = (float)XTick * ((float)Values.Count - 1);
             float R = Mathf.LerpArray(Values.ToArray().Select(x => x.R).ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
             float G = Mathf.LerpArray(Values.ToArray().Select(x => x.G).ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
             float B = Mathf.LerpArray(Values.ToArray().Select(x => x.B).ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
@@ -41,7 +42,7 @@ namespace PylonGameEngine.Interpolation
 
         protected override void OnUpdateFrame()
         {
-            float k = (float)XFrame * (float)Values.Count;
+            float k = (float)XFrame * ((float)Values.Count - 1);
             float R = Mathf.LerpArray(Values.ToArray().Select(x => x.R).ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
             float G = Mathf.LerpArray(Values.ToArray().Select(x => x.G).ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
             float B = Mathf.LerpArray(Values.ToArray().Select(x => x.B).ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));

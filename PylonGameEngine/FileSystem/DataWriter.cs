@@ -1,4 +1,5 @@
-﻿using PylonGameEngine.FileSystem.Filetypes;
+﻿using PylonGameEngine.FileSystem.DataSources;
+using PylonGameEngine.FileSystem.Filetypes;
 using PylonGameEngine.Mathematics;
 using System;
 using System.Text;
@@ -7,11 +8,11 @@ namespace PylonGameEngine.FileSystem
 {
     public class DataWriter
     {
-        public RawFile File;
+        public IDataSource DataSource;
 
-        public DataWriter(RawFile file)
+        public DataWriter(IDataSource dataSource)
         {
-            File = file;
+            DataSource = dataSource;
         }
 
         public void WriteBool(bool value)
@@ -165,19 +166,18 @@ namespace PylonGameEngine.FileSystem
         }
         public void WriteByte(byte Byte)
         {
-            File.Data.Add(Byte);
+            DataSource.WriteBytes(new byte[] { Byte });
         }
 
         public void WriteByteArray(byte[] value)
         {
             WriteInt(value.Length);
-            File.Data.AddRange(value);
+            DataSource.WriteBytes(value);
         }
 
         public void WriteBytes(byte[] bytes)
         {
-            File.Data.AddRange(bytes);
+            DataSource.WriteBytes(bytes);
         }
-
     }
 }

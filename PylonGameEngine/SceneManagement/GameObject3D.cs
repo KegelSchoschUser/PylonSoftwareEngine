@@ -49,6 +49,7 @@ namespace PylonGameEngine.SceneManagement
             gameObject.SceneContext = SceneContext;
             gameObject.Transform.SetParent(this.Transform);
             Children.Add(gameObject);
+
             if (gameObject is Camera)
             {
                 SceneContext.Cameras.Add((Camera)gameObject);

@@ -28,13 +28,13 @@ namespace PylonGameEngine.Interpolation
 
         protected override void OnUpdateTick()
         {
-            float k = (float)XTick * (float)Values.Count;
+            float k = (float)XTick * ((float)Values.Count-1);
             YTick = Mathf.LerpArray(Values.ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
         }
 
         protected override void OnUpdateFrame()
         {
-            float k = (float)XFrame * (float)Values.Count;
+            float k = (float)XFrame * ((float)Values.Count - 1);
             YFrame = Mathf.LerpArray(Values.ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
         }
     }

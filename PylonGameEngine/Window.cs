@@ -108,10 +108,10 @@ namespace PylonGameEngine
                     {
                         if (wParam == 1)
                         {
-                            MyGame.RendererEnabled = true;
+                            //MyGame.RendererEnabled = true;
 
-                            if (MyGame.GameTickLoop != null)
-                                MyGame.GameTickLoop.Resume();
+                            //if (MyGame.GameTickLoop != null)
+                            //    MyGame.GameTickLoop.Resume();
                         }
                         else if (wParam == 0)
                         {

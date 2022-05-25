@@ -39,8 +39,10 @@ namespace PylonGameEngine.Render11
 
                 if (InternalTexture != null)
                     InternalTexture.Release();
+
                 BackBufferTexture = SwapChain.GetBuffer<ID3D11Texture2D>(0);
                 InternalTexture = BackBufferTexture;
+
                 if(InternalRenderTarget != null)
                     InternalRenderTarget.Release();
                 InternalRenderTarget = D3D11GraphicsDevice.Device.CreateRenderTargetView(BackBufferTexture);

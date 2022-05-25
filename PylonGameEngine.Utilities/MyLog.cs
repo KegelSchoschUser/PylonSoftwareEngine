@@ -24,14 +24,9 @@ namespace PylonGameEngine.Utilities
 
         public MyLog(string folderPath, string appName, string appversion)
         {
-            OnWrite += FAKE_OnWrite;
+            OnWrite += (t) => { };
             FolderPath = folderPath + @"\" + "Logs";
             Init(FolderPath, appName, appversion);
-        }
-
-        private void FAKE_OnWrite(string Text)
-        {
-
         }
 
         private void Init(string FolderPath, string appName, string appversion)
@@ -40,6 +35,26 @@ namespace PylonGameEngine.Utilities
             stream = File.Open(FolderPath + @"\" + GetLogFileName(appName), FileMode.Create, FileAccess.Write, FileShare.Read);
             streamWriter = new StreamWriter(stream, new UTF8Encoding(false, false));
             Initialized = true;
+
+            string PylonGameEngineASCII = "";
+            PylonGameEngineASCII += @"||==========================================================================================||" + "\n";
+            PylonGameEngineASCII += @"||  _____       _              _____                      ______             _              ||" + "\n";
+            PylonGameEngineASCII += @"|| |  __ \     | |            / ____|                    |  ____|           (_)             ||" + "\n";
+            PylonGameEngineASCII += @"|| | |__) |   _| | ___  _ __ | |  __  __ _ _ __ ___   ___| |__   _ __   __ _ _ _ __   ___   ||" + "\n";
+            PylonGameEngineASCII += @"|| |  ___/ | | | |/ _ \| '_ \| | |_ |/ _` | '_ ` _ \ / _ \  __| | '_ \ / _` | | '_ \ / _ \  ||" + "\n";
+            PylonGameEngineASCII += @"|| | |   | |_| | | (_) | | | | |__| | (_| | | | | | |  __/ |____| | | | (_| | | | | |  __/  ||" + "\n";
+            PylonGameEngineASCII += @"|| |_|    \__, |_|\___/|_| |_|\_____|\__,_|_| |_| |_|\___|______|_| |_|\__, |_|_| |_|\___|  ||" + "\n";
+            PylonGameEngineASCII += @"||         __/ |                                                        __/ |               ||" + "\n";
+            PylonGameEngineASCII += @"||        |___/                                                        |___/                ||" + "\n";
+            PylonGameEngineASCII += @"||==========================================================================================||" + "\n";
+
+
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine(PylonGameEngineASCII);
+            WriteToStream(PylonGameEngineASCII);
+            Output += PylonGameEngineASCII;
+
+
             Write("Log Started");
             Write(string.Format("Timezone (local - UTC): {0}h", GetLocalOffset()));
             Write("App Name: " + appName);
