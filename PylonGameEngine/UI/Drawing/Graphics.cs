@@ -281,42 +281,42 @@ namespace PylonGameEngine.UI.Drawing
 
         public void DrawRectangle(Pen pen)
         {
-            RenderTarget.DrawRectangle(new Vortice.Mathematics.Rect(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawRectangle(new Vortice.Mathematics.Rect(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), pen.br, pen.Width, pen._StrokeStyle);
         }
 
         public void DrawRectangle(Pen pen, Vector2 Position, Vector2 Size)
         {
-            RenderTarget.DrawRectangle(new Vortice.Mathematics.Rect(Position.X, Position.Y, Size.X, Size.Y), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawRectangle(new Vortice.Mathematics.Rect(Position.X, Position.Y, Size.X, Size.Y), pen.br, pen.Width, pen._StrokeStyle);
         }
 
         public void DrawRectangle(Pen pen, RectangleF rectangle)
         {
-            RenderTarget.DrawRectangle(new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawRectangle(new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom), pen.br, pen.Width, pen._StrokeStyle);
         }
 
         public void DrawRoundedRectangle(Pen pen, Vector2 radius)
         {
-            RenderTarget.DrawRoundedRectangle(new RoundedRectangle(new RawRectF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), radius.X, radius.Y), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawRoundedRectangle(new RoundedRectangle(new RawRectF(0, 0, this.RenderTarget.Size.Width, this.RenderTarget.Size.Height), radius.X, radius.Y), pen.br, pen.Width, pen._StrokeStyle);
         }
 
         public void DrawRoundedRectangle(Pen pen, RectangleF rectangle, Vector2 radius)
         {
-            RenderTarget.DrawRoundedRectangle(new RoundedRectangle(new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom), radius.X, radius.Y), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawRoundedRectangle(new RoundedRectangle(new RawRectF(rectangle.Left, rectangle.Top, rectangle.Right, rectangle.Bottom), radius.X, radius.Y), pen.br, pen.Width, pen._StrokeStyle);
         }
 
         public void DrawRoundedRectangle(Pen pen, Vector2 Position, Vector2 Size, float radius)
         {
-            RenderTarget.DrawRoundedRectangle(new RoundedRectangle(new RawRectF(Position.X, Position.Y, Position.X + Size.X, Position.Y + Size.Y), radius, radius), pen.br);
+            RenderTarget.DrawRoundedRectangle(new RoundedRectangle(new RawRectF(Position.X, Position.Y, Position.X + Size.X, Position.Y + Size.Y), radius, radius), pen.br, pen.Width, pen._StrokeStyle);
         }
 
         public void DrawLine(Pen pen, Vector2 p1, Vector2 p2)
         {
-            RenderTarget.DrawLine(p1.ToSystemNumerics(), p2.ToSystemNumerics(), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawLine(p1.ToSystemNumerics(), p2.ToSystemNumerics(), pen.br, pen.Width, pen._StrokeStyle);
         }
 
         public void DrawLine(Pen pen, float x1, float y1, float x2, float y2)
         {
-            RenderTarget.DrawLine(new System.Numerics.Vector2(x1, y1), new System.Numerics.Vector2(x2, y2), pen.br, pen.Width, pen.StrokeStyle);
+            RenderTarget.DrawLine(new System.Numerics.Vector2(x1, y1), new System.Numerics.Vector2(x2, y2), pen.br, pen.Width, pen._StrokeStyle);
         }
 
         public void DrawArrow(Pen pen, Vector2 p1, Vector2 p2)
@@ -673,7 +673,7 @@ namespace PylonGameEngine.UI.Drawing
             textLayout.HitTestTextPosition(Text.Length - 1, false, out float CaretX, out float CaretY, out HitTestMetrics hitTestMetrics);
             textFormat.Release();
             textLayout.Release();
-            return new TextMeasureOutput(new Vector2(Metrics.Height, Metrics.Width), new Vector2(CaretX + hitTestMetrics.Width, CaretY), hitTestMetrics.Height);
+            return new TextMeasureOutput(new Vector2(Metrics.Width, Metrics.Height), new Vector2(CaretX + hitTestMetrics.Width, CaretY), hitTestMetrics.Height);
         }
 
         public void DrawText(string Text, Font f, Enums.TextAlignment XAlign = Enums.TextAlignment.Leading, Enums.ParagraphAlignment YAlign = Enums.ParagraphAlignment.Near, Enums.ReadingDirection ReadingDirection = Enums.ReadingDirection.LeftToRight, Enums.WordWrapping WordWrapping = Enums.WordWrapping.Wrap)

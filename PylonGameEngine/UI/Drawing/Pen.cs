@@ -7,7 +7,7 @@ namespace PylonGameEngine.UI.Drawing
     public class Pen
     {
         internal ID2D1SolidColorBrush br;
-        internal ID2D1StrokeStyle StrokeStyle;
+        internal ID2D1StrokeStyle _StrokeStyle;
         private RGBColor _Color;
         public RGBColor Color
         {
@@ -59,7 +59,20 @@ namespace PylonGameEngine.UI.Drawing
             strokestyleproperties.MiterLimit = style.MiterLimit;
             strokestyleproperties.DashStyle = style.DashStyle;
             strokestyleproperties.DashOffset = style.DashOffset;
-            StrokeStyle = g.RenderTarget.Factory.CreateStrokeStyle(strokestyleproperties);
+            _StrokeStyle = g.RenderTarget.Factory.CreateStrokeStyle(strokestyleproperties);
+        }
+
+        public void SetStrokeStyle(StrokeStyle strokeStyle, Graphics g)
+        {
+            var strokestyleproperties = new StrokeStyleProperties();
+            strokestyleproperties.StartCap = strokeStyle.StartCap;
+            strokestyleproperties.EndCap = strokeStyle.EndCap;
+            strokestyleproperties.DashCap = strokeStyle.DashCap;
+            strokestyleproperties.LineJoin = strokeStyle.LineJoin;
+            strokestyleproperties.MiterLimit = strokeStyle.MiterLimit;
+            strokestyleproperties.DashStyle = strokeStyle.DashStyle;
+            strokestyleproperties.DashOffset = strokeStyle.DashOffset;
+            _StrokeStyle = g.RenderTarget.Factory.CreateStrokeStyle(strokestyleproperties);
         }
 
         public SolidBrush ToSolidBrush()

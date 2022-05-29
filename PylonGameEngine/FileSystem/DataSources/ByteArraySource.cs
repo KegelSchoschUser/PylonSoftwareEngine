@@ -5,18 +5,18 @@ using System.Linq;
 
 namespace PylonGameEngine.FileSystem.DataSources
 {
-    public class CompleteFile : IDisposable, IDataSource
+    public class ByteArraySource : IDisposable, IDataSource
     {
         public List<byte> Data;
         public int ReadOffset;
 
-        public CompleteFile()
+        public ByteArraySource()
         {
             Data = new List<byte>();
             ReadOffset = 0;
         }
 
-        public CompleteFile(string FileName)
+        public ByteArraySource(string FileName)
         {
             ReadFile(FileName);
             ReadOffset = 0;

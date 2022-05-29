@@ -61,6 +61,13 @@
   <ProjectExtensions><VisualStudio><UserProperties BuildVersion_StartDate="2000/1/1" /></VisualStudio></ProjectExtensions>
 
   <ItemGroup>
+    <Compile Remove="Addons\**" />
+    <EmbeddedResource Remove="Addons\**" />
+    <None Remove="Addons\**" />
+    <Page Remove="Addons\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PylonGameEngine.Mathematics\PylonGameEngine.Mathematics.csproj" />
     <ProjectReference Include="..\PylonGameEngine.Resources\PylonGameEngine.Resources.csproj" />
     <ProjectReference Include="..\PylonGameEngine.Utilities\PylonGameEngine.Utilities.csproj" />
@@ -125,10 +132,6 @@
     <None Update="Physics\BEPUphysics_Logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Addons\" />
   </ItemGroup>
 
 </Project>

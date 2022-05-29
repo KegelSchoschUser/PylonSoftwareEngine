@@ -273,6 +273,7 @@
         Ü = 186,
         Ä = 222,
         Ö = 192,
-        GreaterSmaller = 226
+        GreaterSmaller = 226,
+        Escape = 27
     }
 }

@@ -82,7 +82,6 @@ namespace PylonGameEngine.GameWorld
         }
 
 
-
         public bool MouseInBounds()
         {
 
@@ -105,19 +104,8 @@ namespace PylonGameEngine.GameWorld
             }
         }
 
-        private bool _FocusAble = true;
-        public bool FocusAble
-        {
-            get
-            {
-                return _FocusAble;
-            }
+        public virtual bool FocusAble { get; set; }
 
-            set
-            {
-                _FocusAble = value;
-            }
-        }
 
         public bool Focused => this == SceneContext.Gui.FocusedObject && FocusedLost == false;
         protected bool FocusedLost => this == SceneContext.Gui.FocusedLostObject;
@@ -446,6 +434,8 @@ namespace PylonGameEngine.GameWorld
 
         public GUIObject()
         {
+            FocusAble = true;
+
             Graphics = new PylonGameEngine.UI.Drawing.Graphics(this);
             GraphicsInitialized(Graphics);
             //Transform.PositionChange += QueueDraw;
@@ -492,8 +482,9 @@ namespace PylonGameEngine.GameWorld
 
                 Graphics.BeginDraw();
 
-                Clear(Graphics);
+                BeforeClip(Graphics);
                 var Clip = GetClip();
+
                 Graphics.CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
                 OnDraw(Graphics);
 
@@ -507,7 +498,8 @@ namespace PylonGameEngine.GameWorld
             }
         }
 
-        public virtual void Clear(UI.Drawing.Graphics g)
+
+        public virtual void BeforeClip(UI.Drawing.Graphics g)
         {
             
         }
@@ -624,7 +616,7 @@ namespace PylonGameEngine.GameWorld
         {
             if (FocusAble && Visible)
             {
-                if (SceneContext.InputManager.Mouse.LeftButtonDown() == true || ExtendedFocusCheck() /*|| SceneContext.InputManager.Mouse.LeftButtonPressed() == true*/)
+                if (SceneContext.InputManager.Mouse.LeftButtonDown() == true && ANDExtendedFocusCheck() || ORExtendedFocusCheck()/*|| SceneContext.InputManager.Mouse.LeftButtonPressed() == true*/)
                 {
                     return true;
                 }
@@ -633,7 +625,12 @@ namespace PylonGameEngine.GameWorld
             return false;
         }
 
-        protected virtual bool ExtendedFocusCheck()
+        protected virtual bool ORExtendedFocusCheck()
+        {
+            return true;
+        }
+
+        protected virtual bool ANDExtendedFocusCheck()
         {
             return true;
         }
@@ -677,9 +674,9 @@ namespace PylonGameEngine.GameWorld
                 {
                     if (item.MouseInBounds())
                     {
-                        if (FocusAble && ExtendedHoverCheck())
+                        if (item.FocusAble && item.ExtendedHoverCheck())
                             objhover = item;
-                        if (OnFocusCheck())
+                        if (item.OnFocusCheck())
                         {
                             objFocus = item;
                         }

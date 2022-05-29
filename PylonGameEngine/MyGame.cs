@@ -6,6 +6,7 @@ using PylonGameEngine.Render11;
 using PylonGameEngine.SceneManagement;
 using PylonGameEngine.Utilities;
 using PylonGameEngine.Utilities.Win32;
+using PylonGameEngine.Networking;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -48,6 +49,9 @@ namespace PylonGameEngine
 
             MyPhysics.Initialize();
             AudioEngine.Initialize();
+            Networking.Client.Client.Initialize();
+
+
             Touchscreen.DisableWPFTabletSupport();
 
             Initialized = true;

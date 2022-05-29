@@ -51,7 +51,7 @@ namespace PylonGameEngine.Utilities
 
         }
 
-        private DateTime previousStart;
+        private float previousStart;
         private Queue<Action> Invokes = new Queue<Action>();
         public void Start(bool NewThread = true)
         {
@@ -61,19 +61,19 @@ namespace PylonGameEngine.Utilities
             {
                 Thread t = new Thread(() =>
                 {
-                    previousStart = DateTime.Now;
-                    DateTime _nextLoop = DateTime.Now;
-
+                    previousStart = Environment.TickCount64;
+                    float _nextLoop = Environment.TickCount64;
+                    
                     while (true)
                     {
-                        while (_nextLoop < DateTime.Now)
+                        while (_nextLoop < Environment.TickCount64)
                         {
 
-                            DateTime now = DateTime.Now;
-                            DeltaTime = (now - previousStart).Ticks / 10000000f;
+                            float now = Environment.TickCount64;
+                            DeltaTime = (now - previousStart) / 1000f;
+
                             if (!Paused)
                             {
-
                                 Tick();
                                 TickInfo(this);
                                 for (int i = 0; i < Invokes.Count; i++)
@@ -82,15 +82,15 @@ namespace PylonGameEngine.Utilities
                                 }
                             }
 
-                            _nextLoop = _nextLoop.AddTicks((int)(MillisecondsPerTick * 10000f));
+                            _nextLoop += MillisecondsPerTick;
 
-                            //if (_nextLoop > DateTime.Now && Tickrate != -1.0f)
+                            //if (_nextLoop > Environment.TickCount64 && Tickrate != -1.0f)
                             //{
-                                while((_nextLoop - DateTime.Now).TotalMilliseconds > 0)
+                                while((_nextLoop - Environment.TickCount64) > 0)
                                 { }
-                                //if ((_nextLoop - DateTime.Now).Milliseconds >= 0f)
+                                //if ((_nextLoop - Environment.TickCount64).Milliseconds >= 0f)
                                 //{
-                                //    Thread.Sleep((_nextLoop - DateTime.Now).TotalMilliseconds);
+                                //    Thread.Sleep((_nextLoop - Environment.TickCount64).TotalMilliseconds);
                                 //}
                             //}
                             previousStart = now;
@@ -106,15 +106,15 @@ namespace PylonGameEngine.Utilities
             }
             else
             {
-                previousStart = DateTime.Now;
-                DateTime _nextLoop = DateTime.Now;
+                previousStart = Environment.TickCount64;
+                float _nextLoop = Environment.TickCount64;
 
                 while (true)
                 {
-                    while (_nextLoop < DateTime.Now)
+                    while (_nextLoop < Environment.TickCount64)
                     {
-                        DateTime now = DateTime.Now;
-                        DeltaTime = (now - previousStart).Ticks / 10000000f;
+                        float now = Environment.TickCount64;
+                        DeltaTime = (now - previousStart) / 1000f;
                         if (!Paused)
                         {
 
@@ -128,16 +128,16 @@ namespace PylonGameEngine.Utilities
 
                         if (Tickrate != -1.0f)
                         {
-                            _nextLoop = _nextLoop.AddTicks((int)(MillisecondsPerTick * 10000f));
+                            _nextLoop += MillisecondsPerTick;
                         }
 
-                        //if (_nextLoop > DateTime.Now)
+                        //if (_nextLoop > Environment.TickCount64)
                         //{
-                            while ((_nextLoop - DateTime.Now).TotalMilliseconds > 0)
+                            while ((_nextLoop - Environment.TickCount64) > 0)
                             { }
-                            //if ((_nextLoop - DateTime.Now).Milliseconds >= 0f)
+                            //if ((_nextLoop - Environment.TickCount64).Milliseconds >= 0f)
                             //{
-                            //    Thread.Sleep((_nextLoop - DateTime.Now).Milliseconds);
+                            //    Thread.Sleep((_nextLoop - Environment.TickCount64).Milliseconds);
                             //}
                         //}
                         previousStart = now;
