@@ -36,6 +36,7 @@ namespace PylonGameEngine.Interpolation
             float G = Mathf.LerpArray(Values.ToArray().Select(x => x.G).ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
             float B = Mathf.LerpArray(Values.ToArray().Select(x => x.B).ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
             float A = Mathf.LerpArray(Values.ToArray().Select(x => x.A).ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
+
             YTick = new RGBColor(R, G, B, A);
         }
 
@@ -46,6 +47,7 @@ namespace PylonGameEngine.Interpolation
             float G = Mathf.LerpArray(Values.ToArray().Select(x => x.G).ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
             float B = Mathf.LerpArray(Values.ToArray().Select(x => x.B).ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
             float A = Mathf.LerpArray(Values.ToArray().Select(x => x.A).ToArray(), Mathf.Truncate(k), k - Mathf.Truncate(k));
+
             YFrame = new RGBColor(R, G, B, A);
         }
     }
