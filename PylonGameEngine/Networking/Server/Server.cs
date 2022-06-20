@@ -11,13 +11,13 @@ using System.Net;
 
 namespace PylonGameEngine.Networking.Server
 {
-    public static class Server
+    public class Server
     {
-        public static uint MaxConnections = uint.MaxValue;
-        private static TcpListener TcpListener;
-        internal static List<ServerClient> Clients;
+        public uint MaxConnections = uint.MaxValue;
+        private TcpListener TcpListener;
+        internal List<ServerClient> Clients;
 
-        public static void Start(int Port)
+        public void Start(int Port)
         {
             Clients = new List<ServerClient>();
 
@@ -26,7 +26,7 @@ namespace PylonGameEngine.Networking.Server
             TcpListener.BeginAcceptTcpClient(OnClientConnectCallback, null);
         }
 
-        private static void OnClientConnectCallback(IAsyncResult result)
+        private void OnClientConnectCallback(IAsyncResult result)
         {
             TcpClient client = TcpListener.EndAcceptTcpClient(result);
             TcpListener.BeginAcceptTcpClient(OnClientConnectCallback, null);
@@ -39,23 +39,18 @@ namespace PylonGameEngine.Networking.Server
             }
             else
             {
-                var serverclient = new ServerClient(Guid.NewGuid().ToString());
+                var serverclient = new ServerClient(Clients.Count, this);
                 Clients.Add(serverclient);
                 serverclient.Connect(client);
             }
         }
 
-        public static void SendPacketToClient(PacketBase Packet, int Index)
+        public void SendPacketToClient(PacketBase Packet, int Id)
         {
-            Clients[Index].SendPacket(Packet);
+            Clients[Id].SendPacket(Packet);
         }
 
-        public static void SendPacketToClient(PacketBase Packet, string Id)
-        {
-            Clients.Find(x => x.Id == Id).SendPacket(Packet);
-        }
-
-        public static void SendPacketToAll(PacketBase Packet)
+        public void SendPacketToAll(PacketBase Packet)
         {
             for (int i = 0; i < Clients.Count; i++)
             {
@@ -63,16 +58,7 @@ namespace PylonGameEngine.Networking.Server
             }
         }
 
-        public static void SendPacketToAllExcept(PacketBase Packet, int Index)
-        {
-            for (int i = 0; i < Clients.Count; i++)
-            {
-                if(i != Index)
-                    Clients[i].SendPacket(Packet);
-            }
-        }
-
-        public static void SendPacketToAllExcept(PacketBase Packet, string Id)
+        public void SendPacketToAllExcept(PacketBase Packet, int Id)
         {
             for (int i = 0; i < Clients.Count; i++)
             {

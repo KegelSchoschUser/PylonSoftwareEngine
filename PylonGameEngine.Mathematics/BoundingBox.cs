@@ -5,6 +5,8 @@
         public Vector3 Min;
         public Vector3 Max;
 
+        public Vector3 Size => Max - Min;
+
         public BoundingBox(Vector3 min, Vector3 max)
         {
             Min = min;

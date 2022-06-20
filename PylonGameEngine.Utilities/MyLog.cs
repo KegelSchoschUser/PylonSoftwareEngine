@@ -92,7 +92,10 @@ namespace PylonGameEngine.Utilities
 
         public void Write(object message, LogSeverity severity = LogSeverity.Info, bool newLine = true)
         {
-            WriteInternal(message.ToString(), severity, newLine);
+            if(message != null)
+                WriteInternal(message.ToString(), severity, newLine);
+            else
+                WriteInternal("NULL", severity, newLine);
         }
 
 
@@ -107,6 +110,9 @@ namespace PylonGameEngine.Utilities
             {
                 throw new MyExceptions.LogNotInitializedException();
             }
+
+            if (text == null)
+                text = "NULL";
 
             StringBuilder sb = new StringBuilder();
             int prefixlength = AppendPrefix(sb, severity);

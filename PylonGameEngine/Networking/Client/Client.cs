@@ -10,24 +10,24 @@ using PylonGameEngine.Utilities;
 
 namespace PylonGameEngine.Networking.Client
 {
-    public static class Client
+    public class Client
     {
-        private static NetworkStream Stream;
-        private static byte[] ReceiveBuffer;
-        private static TcpClient TcpClient;
+        private NetworkStream Stream;
+        private byte[] ReceiveBuffer;
+        private TcpClient TcpClient;
 
-        internal static void Initialize()
+        public Client()
         {
             TcpClient = new TcpClient() { ReceiveBufferSize = NetworkingManager.BufferSize, SendBufferSize = NetworkingManager.BufferSize };
             ReceiveBuffer = new byte[NetworkingManager.BufferSize];
         }
 
-        public static void Connect(string IP, int Port)
+        public void Connect(string IP, int Port)
         {
             TcpClient.BeginConnect(IP, Port, ConnectCallback, TcpClient);
         }
 
-        private static void ConnectCallback(IAsyncResult _result)
+        private void ConnectCallback(IAsyncResult _result)
         {
             TcpClient.EndConnect(_result);
 
@@ -41,7 +41,7 @@ namespace PylonGameEngine.Networking.Client
             Stream.BeginRead(ReceiveBuffer, 0, NetworkingManager.BufferSize, ReceiveCallback, null);
         }
 
-        private static void ReceiveCallback(IAsyncResult _result)
+        private void ReceiveCallback(IAsyncResult _result)
         {
             try
             {
@@ -69,7 +69,7 @@ namespace PylonGameEngine.Networking.Client
             }
         }
 
-        private static void HandleData(ByteArraySource data)
+        private void HandleData(ByteArraySource data)
         {
             DataReader dataReader = new DataReader(data);
             string PacketID = dataReader.ReadString();
@@ -79,10 +79,10 @@ namespace PylonGameEngine.Networking.Client
             Packet.Data = data;
 
 
-            Packet.OnPacketReceived(dataReader, null);
+            Packet.OnPacketReceived(dataReader, -1);
         }
 
-        public static void SendPacket(PacketBase Packet)
+        public void SendPacket(PacketBase Packet)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace PylonGameEngine.Networking.Client
             }
         }
 
-        public static void Disconnect()
+        public void Disconnect()
         {
             TcpClient.Close();
             MyLog.Default.Write("TcpClient Disconnect", LogSeverity.Info);

@@ -19,47 +19,47 @@ namespace MyTestGame
         public static bool Enabled = false;
         public override void UpdateTick()
         {
-            if (Scene.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.Backspace))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.Backspace))
                 MyGame.Stop();
 
-            if (Scene.InputManager.Keyboard.KeyDown(PylonGameEngine.Input.KeyboardKey.G))
+            if (SceneContext.InputManager.Keyboard.KeyDown(PylonGameEngine.Input.KeyboardKey.G))
             {
                 if (Mouse.CursorLocked)
                     Mouse.UnlockMouse();
                 else
-                    Mouse.LockMouse(Scene.InputManager.Window.GlobalRectangle);
+                    Mouse.LockMouse(SceneContext.InputManager.Window.GlobalRectangle);
             }
 
             if (Enabled)
                 return;
-            if (Scene.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.W))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.W))
             {
                 Parent.Transform.Position += Parent.Transform.Forward * 5f * FixedDeltaTime;
             }
 
-            if (Scene.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.S))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.S))
                 Parent.Transform.Position += Parent.Transform.Backward * 5f * FixedDeltaTime;
 
-            if (Scene.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.A))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.A))
                 Parent.Transform.Position += Parent.Transform.Left * 5f * FixedDeltaTime;
 
-            if (Scene.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.D))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.D))
                 Parent.Transform.Position += Parent.Transform.Right * 5f * FixedDeltaTime;
 
-            if (Scene.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.Space))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.Space))
                 Parent.Transform.Position += Parent.Transform.Up * 5f * FixedDeltaTime;
 
-            if (Scene.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.C))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.C))
                 Parent.Transform.Position += Parent.Transform.Down * 5f * FixedDeltaTime;
 
-            if (Scene.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.Q))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.Q))
                 Parent.Transform.Rotation *= Quaternion.FromEuler(0, 0, 2);
 
-            if (Scene.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.E))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.E))
                 Parent.Transform.Rotation *= Quaternion.FromEuler(0, 0, -2);
 
             if (Mouse.CursorLocked)
-                Parent.Transform.Rotation *= Quaternion.FromEuler(Scene.InputManager.Mouse.Delta.Y / 4f, Scene.InputManager.Mouse.Delta.X / 4f, 0);
+                Parent.Transform.Rotation *= Quaternion.FromEuler(SceneContext.InputManager.Mouse.Delta.Y / 4f, SceneContext.InputManager.Mouse.Delta.X / 4f, 0);
         }
     }
     public class CubeRotator : GameScript

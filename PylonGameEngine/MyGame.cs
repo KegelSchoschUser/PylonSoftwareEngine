@@ -47,9 +47,8 @@ namespace PylonGameEngine
             StandardResources.AddResources();
             D3D11GraphicsDevice.INIT();
 
-            MyPhysics.Initialize();
-            AudioEngine.Initialize();
-            Networking.Client.Client.Initialize();
+            if(GameProperties.UseAudioEngine)
+                AudioEngine.Initialize();
 
 
             Touchscreen.DisableWPFTabletSupport();

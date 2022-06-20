@@ -549,7 +549,7 @@ namespace PylonGameEngine.GameWorld
 
         public void AddScript(GameScript script)
         {
-            script.Scene = this.SceneContext;
+            script.SceneContext = this.SceneContext;
             scripts.Add(script);
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace PylonGameEngine.Mathematics
@@ -15,6 +16,19 @@ namespace PylonGameEngine.Mathematics
         public Vector2 UV3;
 
         public Vector3 Normal;
+
+        public Triangle()
+        {
+            P1 = new Vector3();
+            P2 = new Vector3();
+            P3 = new Vector3();
+
+            UV1 = new Vector2();
+            UV2 = new Vector2();
+            UV3 = new Vector2();
+
+            Normal = new Vector3();
+        }
 
         public Triangle(Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector3 normal)
         {
@@ -75,6 +89,27 @@ namespace PylonGameEngine.Mathematics
                     new RawVertex(P3, UV3, Normal));
         }
 
+
+        /*
+        public static void ArrayToRawVertices(List<Triangle> Triangles, ref RawVertex[] Output)
+        {
+            for (int i = 0; i < Triangles.Count * 3; i+=3)
+            {
+                Output[i].Position = Triangles[i].P1;
+                Output[i].UV = Triangles[i].UV1;
+                Output[i].Normal = Triangles[i].Normal;
+
+
+                Output[i + 1].Position = Triangles[i].P2;
+                Output[i + 1].UV = Triangles[i].UV2;
+                Output[i + 1].Normal = Triangles[i].Normal;
+
+                Output[i + 2].Position = Triangles[i].P3;
+                Output[i + 2].UV = Triangles[i].UV3;
+                Output[i + 2].Normal = Triangles[i].Normal;
+            }
+        }
+         */
         public static List<RawVertex> ArrayToRawVertices(List<Triangle> Triangles)
         {
             var output = new List<RawVertex>();
@@ -106,6 +141,35 @@ namespace PylonGameEngine.Mathematics
                 output.Add(vertices.Item3);
             }
             return output;
+        }
+
+        public static List<Triangle> GetFromVertexList(RawVertex[] Vertices, int[] Indices)
+        {
+            bool flag = Indices.Length % 3 != 0;
+            if (flag)
+            {
+                throw new Exception("Indices List must be a multiple of 3!");
+            }
+
+            List<Triangle> Output = new List<Triangle>();
+
+            for (int i = 0; i < Indices.Length; i += 3)
+            {
+                Triangle T = new Triangle(Vertices[Indices[i]].Position, Vertices[Indices[i + 1]].Position, Vertices[Indices[i + 2]].Position,
+                                          Vertices[Indices[i]].UV, Vertices[Indices[i + 1]].UV, Vertices[Indices[i + 2]].UV);
+                Output.Add(T);
+            }
+            return Output;
+        }
+
+        public static Triangle operator +(Triangle t, Vector3 v)
+        {
+            return new Triangle(t.P1 + v, t.P2 + v, t.P3 + v, t.UV1, t.UV2, t.UV3, t.Normal);
+        }
+
+        public static Triangle operator -(Triangle t, Vector3 v)
+        {
+            return new Triangle(t.P1 - v, t.P2 - v, t.P3 - v, t.UV1, t.UV2, t.UV3, t.Normal);
         }
     }
 }

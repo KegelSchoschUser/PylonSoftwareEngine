@@ -51,7 +51,7 @@
 
   <ItemGroup>
     <PackageReference Include="BEPUik" Version="1.5.1" />
-    <PackageReference Include="BepuPhysics" Version="2.4.0" />
+    <PackageReference Include="BepuPhysics" Version="2.5.0-beta.3" />
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
     <PackageReference Include="Vortice.D3DCompiler" Version="2.1.1-beta12" />
     <PackageReference Include="Vortice.Direct2D1" Version="2.1.1-beta12" />

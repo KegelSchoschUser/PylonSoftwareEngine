@@ -111,6 +111,7 @@ namespace PylonGameEngine.SceneManagement
         #region 3D
         public void Render3D()
         {
+            int verts = 0;
             D3D11GraphicsDevice.DeviceContext.OMSetDepthStencilState(DepthStencilStateEnabled);
             D3D11GraphicsDevice.DeviceContext.IASetInputLayout(InputLayout3D);
             D3D11GraphicsDevice.DeviceContext.VSSetShader(VertexShader3D);
@@ -123,12 +124,16 @@ namespace PylonGameEngine.SceneManagement
                 var GameObjects3D = Scene.GetRenderOrder3D();
                 foreach (var obj in GameObjects3D)
                 {
+                    if (obj.Visible == false)
+                        continue;
                     if (obj is MeshObject)
                     {
                         var meshobj = obj as MeshObject;
                         var triangles = meshobj.Mesh.GetTriangles(material);
+                    
                         Triangles.AddRange(triangles);
                         RawObjects.Add((triangles.Count * 3, obj.Transform.GlobalMatrix));
+                        verts += triangles.Count * 3;
                     }
                 }
 
@@ -226,7 +231,7 @@ namespace PylonGameEngine.SceneManagement
                 var triangles = Primitves2D.Quad(obj.Transform.Size, null).TriangleData;
 
                 Triangles.AddRange(triangles);
-                RawObjects.Add((triangles.Count * 3, obj.GlobalMatrix, obj.Graphics.Texture));
+                RawObjects.Add((triangles.Length * 3, obj.GlobalMatrix, obj.Graphics.Texture));
             }
 
             if (RawObjects.Count == 0 || Triangles.Count == 0)

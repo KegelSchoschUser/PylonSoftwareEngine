@@ -307,5 +307,7 @@ namespace PylonGameEngine.Mathematics
             return "{" + $"{X.ToString("0.000", CultureInfo.InvariantCulture)}, {Y.ToString("0.000", CultureInfo.InvariantCulture)}, {Z.ToString("0.000", CultureInfo.InvariantCulture)}, {W.ToString("0.000", CultureInfo.InvariantCulture)}" + "}";
         }
 
+        public static implicit operator System.Numerics.Quaternion(Quaternion v) => new System.Numerics.Quaternion(v.X, v.Y, v.Z, v.W);
+        public static implicit operator Quaternion(System.Numerics.Quaternion v) => new Quaternion(v.X, v.Y, v.Z, v.W);
     }
 }

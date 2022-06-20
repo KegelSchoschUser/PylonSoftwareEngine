@@ -1,9 +1,11 @@
 ﻿using PylonGameEngine.General;
 using PylonGameEngine.Input;
+using PylonGameEngine.Physics;
 using PylonGameEngine.SceneManagement.Objects;
 using PylonGameEngine.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PylonGameEngine.SceneManagement
 {
@@ -28,6 +30,7 @@ namespace PylonGameEngine.SceneManagement
 
         public InputManager InputManager { get; private set; }
 
+        public MyPhysics Physics;
 
         public Scene()
         {
@@ -39,6 +42,9 @@ namespace PylonGameEngine.SceneManagement
             InputManager = new InputManager(this, null);
             Gui = new GUI(this);
 
+            Physics = new MyPhysics();
+            Physics.SceneContext = this;
+            Physics.Initialize();
         }
 
         internal void Initialize()
@@ -71,6 +77,8 @@ namespace PylonGameEngine.SceneManagement
             if (obj.SceneContext == null)
                 obj.SceneContext = this;
             Objects.Add(obj);
+
+            obj.OnAddScene();
 
             if (obj is Camera)
             {
@@ -121,11 +129,12 @@ namespace PylonGameEngine.SceneManagement
                 obj.UpdateTick();
             }
 
-            foreach (var component in Components)
+            foreach (var component in Components.ToList())
             {
                 component.UpdateTick();
             }
 
+            Physics.Update(MyGame.GameTickLoop.Tickrate);
         }
 
         internal List<GameObject3D> GetRenderOrder3D()

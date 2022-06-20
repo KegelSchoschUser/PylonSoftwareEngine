@@ -2,11 +2,12 @@
 using BepuPhysics.Collidables;
 using PylonGameEngine.General;
 using PylonGameEngine.Mathematics;
+using PylonGameEngine.SceneManagement;
 using System.Collections.Generic;
 
 namespace PylonGameEngine.Physics
 {
-    public class RigidBody : Component3D, IBody
+    public class RigidBody : PhysicsComponent
     {
         public BodyReference Body;
         public bool UseGravity = true;
@@ -102,15 +103,15 @@ namespace PylonGameEngine.Physics
             {
                 case InitializationDescription.Shapes.Mesh:
                     {
-                        MyPhysics.BufferPool.Take<BepuPhysics.Collidables.Triangle>(InitDesc.Triangles.Count, out var triangles);
+                        SceneContext.Physics.BufferPool.Take<BepuPhysics.Collidables.Triangle>(InitDesc.Triangles.Count, out var triangles);
                         for (int i = 0; i < InitDesc.Triangles.Count; ++i)
                         {
                             triangles[i] = new BepuPhysics.Collidables.Triangle(InitDesc.Triangles[i].P3.ToSystemNumerics(), InitDesc.Triangles[i].P2.ToSystemNumerics(), InitDesc.Triangles[i].P1.ToSystemNumerics());
                         }
-                        BepuPhysics.Collidables.Mesh collisionShape = new BepuPhysics.Collidables.Mesh(triangles, Parent.Transform.Scale.ToSystemNumerics(), MyPhysics.BufferPool);
+                        BepuPhysics.Collidables.Mesh collisionShape = new BepuPhysics.Collidables.Mesh(triangles, Parent.Transform.Scale.ToSystemNumerics(), SceneContext.Physics.BufferPool);
                         CollisionMesh = collisionShape;
                         Inertia = collisionShape.ComputeOpenInertia(InitDesc.Mass, out var center);
-                        meshIndex = MyPhysics.Simulation.Shapes.Add(collisionShape);
+                        meshIndex = SceneContext.Physics.Simulation.Shapes.Add(collisionShape);
                     }
                     break;
                 case InitializationDescription.Shapes.Triangle:
@@ -120,7 +121,7 @@ namespace PylonGameEngine.Physics
                                                                                                                InitDesc.Triangles[0].P2.ToSystemNumerics(),
                                                                                                                InitDesc.Triangles[0].P3.ToSystemNumerics());
                         Inertia = collisionShape.ComputeInertia(InitDesc.Mass);
-                        meshIndex = MyPhysics.Simulation.Shapes.Add(collisionShape);
+                        meshIndex = SceneContext.Physics.Simulation.Shapes.Add(collisionShape);
                     }
                     break;
                 case InitializationDescription.Shapes.Box:
@@ -128,7 +129,7 @@ namespace PylonGameEngine.Physics
 
                         Box collisionShape = new Box(InitDesc.BoxSize.X, InitDesc.BoxSize.Y, InitDesc.BoxSize.Z);
                         Inertia = collisionShape.ComputeInertia(InitDesc.Mass);
-                        meshIndex = MyPhysics.Simulation.Shapes.Add(collisionShape);
+                        meshIndex = SceneContext.Physics.Simulation.Shapes.Add(collisionShape);
                     }
                     break;
                 case InitializationDescription.Shapes.Capsule:
@@ -136,7 +137,7 @@ namespace PylonGameEngine.Physics
 
                         Capsule collisionShape = new Capsule(InitDesc.Radius, InitDesc.Length);
                         Inertia = collisionShape.ComputeInertia(InitDesc.Mass);
-                        meshIndex = MyPhysics.Simulation.Shapes.Add(collisionShape);
+                        meshIndex = SceneContext.Physics.Simulation.Shapes.Add(collisionShape);
                     }
                     break;
                 case InitializationDescription.Shapes.Cylinder:
@@ -144,7 +145,7 @@ namespace PylonGameEngine.Physics
 
                         Cylinder collisionShape = new Cylinder(InitDesc.Radius, InitDesc.Length);
                         Inertia = collisionShape.ComputeInertia(InitDesc.Mass);
-                        meshIndex = MyPhysics.Simulation.Shapes.Add(collisionShape);
+                        meshIndex = SceneContext.Physics.Simulation.Shapes.Add(collisionShape);
                     }
                     break;
                 case InitializationDescription.Shapes.Sphere:
@@ -152,26 +153,26 @@ namespace PylonGameEngine.Physics
 
                         Sphere collisionShape = new Sphere(InitDesc.Radius);
                         Inertia = collisionShape.ComputeInertia(InitDesc.Mass);
-                        meshIndex = MyPhysics.Simulation.Shapes.Add(collisionShape);
+                        meshIndex = SceneContext.Physics.Simulation.Shapes.Add(collisionShape);
                     }
                     break;
                 default:
                     return;
             }
 
-            BodyHandle Handle = MyPhysics.Simulation.Bodies.Add(BodyDescription.CreateDynamic(new RigidPose(Parent.Transform.GlobalMatrix.TranslationVector.ToSystemNumerics(), Matrix4x4.RotationQuaternion(Parent.Transform.GlobalMatrix).ToSystemNumerics()),
+            BodyHandle Handle = SceneContext.Physics.Simulation.Bodies.Add(BodyDescription.CreateDynamic(new RigidPose(Parent.Transform.GlobalMatrix.TranslationVector.ToSystemNumerics(), Matrix4x4.RotationQuaternion(Parent.Transform.GlobalMatrix).ToSystemNumerics()),
                             Inertia,
                             new CollidableDescription(meshIndex, 0.1f),
                             new BodyActivityDescription(0.01f)));
             Index = Handle.Value;
-            Body = new BodyReference(Handle, MyPhysics.Simulation.Bodies);
-            MyPhysics.RigidBodies.Add(this);
+            Body = new BodyReference(Handle, SceneContext.Physics.Simulation.Bodies);
+            SceneContext.Physics.RigidBodies.Add(this);
         }
 
         public override void OnDestroy()
         {
-            MyPhysics.Simulation.Bodies.Remove(Body.Handle);
-            MyPhysics.RigidBodies.Remove(this);
+            SceneContext.Physics.Simulation.Bodies.Remove(Body.Handle);
+            SceneContext.Physics.RigidBodies.Remove(this);
         }
 
         private void Transform_PositionChange()

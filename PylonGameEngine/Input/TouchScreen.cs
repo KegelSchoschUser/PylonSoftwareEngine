@@ -142,6 +142,7 @@ namespace PylonGameEngine.Input
             }
         }
 
+
         internal static void DisableWPFTabletSupport()
         {
             // Get a collection of the tablet devices for this window.

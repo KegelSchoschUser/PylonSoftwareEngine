@@ -10,16 +10,18 @@ using PylonGameEngine.Utilities;
 
 namespace PylonGameEngine.Networking.Server
 {
-    internal class ServerClient
+    public class ServerClient
     {
         private NetworkStream Stream;
         private byte[] ReceiveBuffer;
         private TcpClient TcpClient;
-        public string Id { get; private set; }
+        public int Id { get; private set; }
+        private Server Server;
 
-        public ServerClient(string id)
+        public ServerClient(int id, Server server)
         {
             Id = id;
+            Server = server;
         }
 
         public void Connect(TcpClient tcpClient)

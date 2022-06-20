@@ -3,6 +3,7 @@ using BepuPhysics.Collidables;
 using BepuPhysics.CollisionDetection;
 using BepuPhysics.Constraints;
 using BepuUtilities;
+using PylonGameEngine.SceneManagement;
 using PylonGameEngine.Utilities;
 using System;
 using System.Numerics;
@@ -12,6 +13,7 @@ namespace PylonGameEngine.Physics
 {
     public struct DemoPoseIntegratorCallbacks : IPoseIntegratorCallbacks
     {
+        internal Scene SceneContext;
         /// <summary>
         /// Fraction of dynamic body linear velocity to remove per unit of time. Values range from 0 to 1. 0 is fully undamped, while values very close to 1 will remove most velocity.
         /// </summary>
@@ -78,7 +80,7 @@ namespace PylonGameEngine.Physics
             //Since these callbacks don't use per-body damping values, we can precalculate everything.
             linearDampingDt = new Vector<float>(MathF.Pow(MathHelper.Clamp(1 - LinearDamping, 0, 1), dt));
             angularDampingDt = new Vector<float>(MathF.Pow(MathHelper.Clamp(1 - AngularDamping, 0, 1), dt));
-            gravityWideDt = Vector3Wide.Broadcast(MyPhysics.Gravity.ToSystemNumerics() * dt);
+            gravityWideDt = Vector3Wide.Broadcast(SceneContext.Physics.Gravity.ToSystemNumerics() * dt);
         }
 
         /// <summary>
@@ -101,7 +103,7 @@ namespace PylonGameEngine.Physics
             //The types are laid out in array-of-structures-of-arrays (AOSOA) format. That's because this function is frequently called from vectorized contexts within the solver.
             //Transforming to "array of structures" (AOS) format for the callback and then back to AOSOA would involve a lot of overhead, so instead the callback works on the AOSOA representation directly.
 
-            var RigidBody = MyPhysics.RigidBodies.Find(x => x.Index == bodyIndices[0]);
+            var RigidBody = SceneContext.Physics.RigidBodies.Find(x => x.Index == bodyIndices[0]);
             if (RigidBody != null)
             {
                 if (RigidBody.UseGravity && RigidBody.UsePhysics)
@@ -132,6 +134,7 @@ namespace PylonGameEngine.Physics
     }
     public unsafe struct DemoNarrowPhaseCallbacks : INarrowPhaseCallbacks
     {
+        internal Scene SceneContext;
         public SpringSettings ContactSpringiness;
 
         public void Initialize(Simulation simulation)
@@ -161,22 +164,22 @@ namespace PylonGameEngine.Physics
 
             if (a.Mobility == CollidableMobility.Dynamic)
             {
-                A_Rigid = MyPhysics.RigidBodies.Find(x => x.Index == a.BodyHandle.Value);
+                A_Rigid = SceneContext.Physics.RigidBodies.Find(x => x.Index == a.BodyHandle.Value);
             }
             else if (a.Mobility == CollidableMobility.Static)
             {
-                A_Trigger = MyPhysics.TriggerBodies.Find(x => x.Index == a.BodyHandle.Value);
-                A_Static = MyPhysics.StaticBodies.Find(x => x.Index == a.BodyHandle.Value);
+                A_Trigger = SceneContext.Physics.TriggerBodies.Find(x => x.Index == a.BodyHandle.Value);
+                A_Static = SceneContext.Physics.StaticBodies.Find(x => x.Index == a.BodyHandle.Value);
             }
 
             if (b.Mobility == CollidableMobility.Dynamic)
             {
-                B_Rigid = MyPhysics.RigidBodies.Find(x => x.Index == b.BodyHandle.Value);
+                B_Rigid = SceneContext.Physics.RigidBodies.Find(x => x.Index == b.BodyHandle.Value);
             }
             else if (b.Mobility == CollidableMobility.Static)
             {
-                B_Trigger = MyPhysics.TriggerBodies.Find(x => x.Index == b.BodyHandle.Value);
-                B_Static = MyPhysics.StaticBodies.Find(x => x.Index == b.BodyHandle.Value);
+                B_Trigger = SceneContext.Physics.TriggerBodies.Find(x => x.Index == b.BodyHandle.Value);
+                B_Static = SceneContext.Physics.StaticBodies.Find(x => x.Index == b.BodyHandle.Value);
             }
 
             bool MobilityCheck = a.Mobility == CollidableMobility.Dynamic || b.Mobility == CollidableMobility.Dynamic;
@@ -213,7 +216,23 @@ namespace PylonGameEngine.Physics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe bool ConfigureContactManifold<TManifold>(int workerIndex, CollidablePair pair, ref TManifold manifold, out PairMaterialProperties pairMaterial) where TManifold : unmanaged, IContactManifold<TManifold>
         {
-            pairMaterial.FrictionCoefficient = 1f;
+            PhysicsComponent BodyA = null;
+            if(SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.A.BodyHandle.Value) != null)
+                BodyA = SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.A.BodyHandle.Value);
+            else if (SceneContext.Physics.StaticBodies.Find(x => x.Index == pair.A.BodyHandle.Value) != null)
+                BodyA = SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.A.BodyHandle.Value);
+
+            PhysicsComponent BodyB = null;
+            if (SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.B.BodyHandle.Value) != null)
+                BodyB = SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.B.BodyHandle.Value);
+            else if (SceneContext.Physics.StaticBodies.Find(x => x.Index == pair.B.BodyHandle.Value) != null)
+                BodyB = SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.B.BodyHandle.Value);
+
+            pairMaterial = default;
+
+            if (BodyA != null && BodyB != null)
+                pairMaterial.FrictionCoefficient = BodyA.Friction * BodyB.Friction;
+
             pairMaterial.MaximumRecoveryVelocity = 2f;
             pairMaterial.SpringSettings = ContactSpringiness;
             return true;

@@ -19,6 +19,6 @@ namespace PylonGameEngine.Networking
             DataWriter = new DataWriter(Data);
         }
 
-        public virtual void OnPacketReceived(DataReader dataReader, string Id) { }
+        public virtual void OnPacketReceived(DataReader dataReader, int Id) { }
     }
 }

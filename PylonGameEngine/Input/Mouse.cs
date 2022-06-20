@@ -174,7 +174,7 @@ namespace PylonGameEngine.Input
                 UpButtons.UnionWith(UpButtonsBuffer);
                 UpButtonsBuffer.Clear();
 
-
+                if(InputManager.Window.IsDisposed == false)
                 if (LockedRectange.IsEmpty == false && InputManager.Window.GlobalRectangle == LockedRectange)
                 {
                     var Pos = LockedRectange.Location + new Size(LockedRectange.Size.Width / 2, LockedRectange.Size.Height / 2);

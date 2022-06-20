@@ -12,6 +12,9 @@ namespace PylonGameEngine.Networking
         public const int BufferSize = 4096;
         internal static List<(string, Type)> RegisteredPackets = new List<(string, Type)>();
 
+        public static List<Client.Client> Clients = new List<Client.Client>();
+        public static List<Server.Server> Servers = new List<Server.Server>();
+
         public static void RegisterPacket<PacketType>() where PacketType : PacketBase, new()
         {
             Type Type = typeof(PacketType);

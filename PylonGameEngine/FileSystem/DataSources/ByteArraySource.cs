@@ -22,6 +22,12 @@ namespace PylonGameEngine.FileSystem.DataSources
             ReadOffset = 0;
         }
 
+        public ByteArraySource(byte[] Bytes)
+        {
+            Data = Bytes.ToList();
+            ReadOffset = 0;
+        }
+
         //public DataReader ReadData()
         //{
         //    return new DataReader(this);

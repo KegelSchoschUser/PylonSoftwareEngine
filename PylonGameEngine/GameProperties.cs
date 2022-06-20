@@ -12,5 +12,7 @@ namespace PylonGameEngine
         public static SplashScreen SplashScreen = new SplashScreen(null, false);
 
         public static string Roaming => MyFileSystem.ROAMING + @"\" + GameName;
+
+        public static bool UseAudioEngine = true;
     }
 }

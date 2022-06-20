@@ -712,19 +712,43 @@ namespace PylonGameEngine.UI.Drawing
 
         internal ID2D1Bitmap1 GetAsBitmapI()
         {
+            if(CreatedFromGUIObject != null)
+            {
+                ApplyClip();
+            }
+
             var bitmapProperties = new BitmapProperties1(RenderTarget.PixelFormat);
             var bitmap = DeviceContext.CreateBitmap(new Vortice.Mathematics.SizeI((int)RenderTarget.Size.Width, (int)RenderTarget.Size.Height), IntPtr.Zero, 0, ref bitmapProperties);
-            bitmap.CopyFromRenderTarget(RenderTarget);
+            var result = bitmap.CopyFromRenderTarget(RenderTarget);
+
+            if (CreatedFromGUIObject != null)
+            {
+                var Clip = CreatedFromGUIObject.GetClip();
+
+                CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
+            }
+
             return bitmap;
         }
 
         public PylonBitmap GetAsBitmap()
         {
+            if (CreatedFromGUIObject != null)
+            {
+                ApplyClip();
+            }
+
             var bitmapProperties = new BitmapProperties1(RenderTarget.PixelFormat);
             var bitmap = DeviceContext.CreateBitmap(new Vortice.Mathematics.SizeI((int)RenderTarget.Size.Width, (int)RenderTarget.Size.Height), IntPtr.Zero, 0, ref bitmapProperties);
             bitmap.CopyFromRenderTarget(RenderTarget);
-            return new PylonBitmap(bitmap);
 
+            if (CreatedFromGUIObject != null)
+            {
+                var Clip = CreatedFromGUIObject.GetClip();
+
+                CreateClip(Clip.Item1, Clip.Item2, Clip.Item3, Clip.Item4);
+            }
+            return new PylonBitmap(bitmap);
         }
 
 
@@ -732,6 +756,7 @@ namespace PylonGameEngine.UI.Drawing
         public void ApplyGaussianBlur(float Deviation = 3.0f, bool HardBorder = false)
         {
             var Bitmap = GetAsBitmapI();
+            
             GaussianBlur gaussianBlur = new GaussianBlur(DeviceContext);
             gaussianBlur.SetInput(0, Bitmap, new SharpGen.Runtime.RawBool(false));
 
@@ -741,6 +766,7 @@ namespace PylonGameEngine.UI.Drawing
 
             Clear(RGBColor.Transparent);
             DrawImage(gaussianBlur);
+
             gaussianBlur.Release();
             Bitmap.Release();
         }

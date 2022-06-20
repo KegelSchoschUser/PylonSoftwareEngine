@@ -17,6 +17,7 @@ namespace PylonGameEngine.SceneManagement
         public List<GameObject3D> Children { get; private set; }
 
         public List<string> Tags = new List<string>();
+        public bool Visible = true;
 
         internal Scene SceneContext = null;
 
@@ -28,11 +29,11 @@ namespace PylonGameEngine.SceneManagement
 
             OnCreate();
         }
-
+            
         public void AddComponent(Component3D component)
         {
             component.Parent = this;
-            component.Scene = SceneContext;
+            component.SceneContext = SceneContext;
             Components.Add(component);
             SceneContext.Components.Add(component);
             component.Initialize();
@@ -50,12 +51,19 @@ namespace PylonGameEngine.SceneManagement
             gameObject.Transform.SetParent(this.Transform);
             Children.Add(gameObject);
 
+            gameObject.OnAddScene();
+
             if (gameObject is Camera)
             {
                 SceneContext.Cameras.Add((Camera)gameObject);
                 if (SceneContext.Cameras.Count == 1)
                     SceneContext.MainCamera = (Camera)gameObject;
             }
+        }
+
+        public virtual void OnAddScene()
+        {
+
         }
 
         public void Destroy()
