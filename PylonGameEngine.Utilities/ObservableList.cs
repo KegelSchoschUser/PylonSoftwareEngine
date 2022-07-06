@@ -24,6 +24,20 @@ namespace PylonGameEngine.Utilities
             On_Item_Changed += (x) => { };
         }
 
+        public T this[int index]
+        {
+            get
+            {
+               
+                return base[index];
+            }
+            set
+            {
+                base[index] = value;
+                ItemChanged(value);
+            }
+        }
+
         public new void Add(T item)
         {
             base.Add(item);

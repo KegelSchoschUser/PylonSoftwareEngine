@@ -1,5 +1,6 @@
 ﻿using PylonGameEngine.Mathematics;
 using PylonGameEngine.ShaderLibrary;
+using PylonGameEngine.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,38 +11,106 @@ namespace PylonGameEngine
 {
     public class Mesh
     {
-        public List<Vector3> Points = new List<Vector3>();
-        public List<Vector2> UVs = new List<Vector2>();
-        public List<Vector3> Normals = new List<Vector3>();
-        public List<TrianglePointer> Triangles = new List<TrianglePointer>();
+        public ObservableList<Vector3> Points = new ObservableList<Vector3>();
+        public ObservableList<Vector2> UVs = new ObservableList<Vector2>();
+        public ObservableList<Vector3> Normals = new ObservableList<Vector3>();
+        public ObservableList<TrianglePointer> Triangles = new ObservableList<TrianglePointer>();
 
 
-        public Mesh()
+        public Mesh(bool AutoUpdateBuffers = true)
         {
+            if (AutoUpdateBuffers)
+            {
+                Points.On_ItemAdded += (i) => { UpdateBuffers(); };
+                Points.On_ItemRemoved += (i) => { UpdateBuffers(); };
+                Points.On_Item_Changed += (i) => { UpdateBuffers(); };
 
+                UVs.On_ItemAdded += (i) => { UpdateBuffers(); };
+                UVs.On_ItemRemoved += (i) => { UpdateBuffers(); };
+                UVs.On_Item_Changed += (i) => { UpdateBuffers(); };
+
+                Normals.On_ItemAdded += (i) => { UpdateBuffers(); };
+                Normals.On_ItemRemoved += (i) => { UpdateBuffers(); };
+                Normals.On_Item_Changed += (i) => { UpdateBuffers(); };
+
+                Triangles.On_ItemAdded += (i) => { UpdateBuffers(); };
+                Triangles.On_ItemRemoved += (i) => { UpdateBuffers(); };
+                Triangles.On_Item_Changed += (i) => { UpdateBuffers(); };
+            }
         }
 
+        public void UpdateBuffers()
+        {
+            {
+                List<Triangle> output = new List<Triangle>();
 
-        private Triangle[] TriangleDataBuffer = new Triangle[0];
-        public Triangle[] TriangleData
+                for (int i = 0; i < Triangles.Count; i++)
+                {
+                    output.Add(new Triangle(Points[Triangles[i].P1Index],
+                                            Points[Triangles[i].P2Index],
+                                            Points[Triangles[i].P3Index],
+                                            UVs[Triangles[i].UV1Index],
+                                            UVs[Triangles[i].UV2Index],
+                                            UVs[Triangles[i].UV3Index],
+                                            Normals[Triangles[i].NormalIndex]
+                                            ));
+                }
+
+                TriangleDataBuffer = output;
+            }
+
+            {
+                List<(Triangle, Material)> output = new List<(Triangle, Material)>();
+                var triangledata = TriangleData;
+
+                for (int i = 0; i < Triangles.Count; i++)
+                {
+                    output.Add((triangledata[i], Triangles[i].Material));
+                }
+
+                TriangleDataMaterialBuffer = output;
+            }
+
+            {
+                //CAN BE OPTIMIZED
+
+                List<Material> Materials = new List<Material>();
+
+                foreach (var item in TriangleDataMaterialBuffer)
+                {
+                    if (Materials.Contains(item.Item2) == false)
+                    {
+                        Materials.Add(item.Item2);
+                    }
+                }
+
+                MeshMaterialBuffer.Clear();
+
+                foreach (var mat in Materials)
+                {
+                    List<Triangle> Triangles = new List<Triangle>();
+                    MeshMaterialBuffer.Add((Triangles, mat));
+
+                    foreach (var tri in TriangleDataMaterialBuffer)
+                    {
+                        if(tri.Item2 == mat)
+                        {
+                            Triangles.Add(tri.Item1);
+                        }
+                    }
+                }
+            }
+        }
+
+        private List<Triangle> TriangleDataBuffer = new List<Triangle>();
+        private List<(Triangle, Material)> TriangleDataMaterialBuffer = new List<(Triangle, Material)>();
+        private List<(List<Triangle>, Material)> MeshMaterialBuffer = new List<(List<Triangle>, Material)>();
+
+
+        public List<Triangle> TriangleData
         {
             get
             {
-                if (TriangleDataBuffer.Length != Triangles.Count)
-                {
-                    TriangleDataBuffer = new Triangle[Triangles.Count];
-                }
-                for (int i = 0; i < Triangles.Count; i++)
-                {
-                    TriangleDataBuffer[i].P1 = Points[Triangles[i].P1Index];
-                    TriangleDataBuffer[i].P2 = Points[Triangles[i].P2Index];
-                    TriangleDataBuffer[i].P3 = Points[Triangles[i].P3Index];
-                    TriangleDataBuffer[i].UV1 = UVs[Triangles[i].UV1Index];
-                    TriangleDataBuffer[i].UV2 = UVs[Triangles[i].UV2Index];
-                    TriangleDataBuffer[i].UV3 = UVs[Triangles[i].UV3Index];
-                    TriangleDataBuffer[i].Normal = Normals[Triangles[i].NormalIndex];
-                }
-
                 return TriangleDataBuffer;
             }
         }
@@ -50,156 +119,23 @@ namespace PylonGameEngine
         {
             get
             {
-                List<(Triangle, Material)> output = new List<(Triangle, Material)>();
-                var triangledata = TriangleData;
-
-                for (int i = 0; i < Triangles.Count; i++)
-                {
-                    output.Add((triangledata[i], Triangles[i].Material));
-
-                }
-
-                return output;
+                return TriangleDataMaterialBuffer;
             }
         }
 
         public List<Triangle> GetTriangles(Material Material)
         {
-            var triangles = new List<Triangle>();
-
-            foreach (var triangle in TriangleDataMaterial)
+            foreach (var item in MeshMaterialBuffer)
             {
-                if (triangle.Item2 == Material)
+                if (item.Item2 == Material)
                 {
-                    triangles.Add(triangle.Item1);
+                    return item.Item1;
                 }
             }
 
-            return triangles;
+            return new List<Triangle>();
         }
 
-        /*
-                //public List<Triangle> TriangleData
-                //{
-                //    get
-                //    {
-                //        List<Triangle> output = new List<Triangle>();
-
-                //        for (int i = 0; i < Triangles.Count; i++)
-                //        {
-                //            output.Add(new Triangle(Points[Triangles[i].P1Index],
-                //                                    Points[Triangles[i].P2Index],
-                //                                    Points[Triangles[i].P3Index],
-                //                                    UVs[Triangles[i].UV1Index],
-                //                                    UVs[Triangles[i].UV2Index],
-                //                                    UVs[Triangles[i].UV3Index],
-                //                                    Normals[Triangles[i].NormalIndex]
-                //                                    ));
-
-                //        }
-
-                //        return output;
-                //    }
-                //}
-
-                private Triangle[] TriangleDataBuffer = new Triangle[0];
-                public Triangle[] TriangleData
-                {
-                    get
-                    {
-                        var triangles = Triangles;
-                        if (TriangleDataBuffer.Length != triangles.Count)
-                        {
-                            TriangleDataBuffer = new Triangle[triangles.Count];
-                            for (int i = 0; i < TriangleDataBuffer.Length; i++)
-                            {
-                                TriangleDataBuffer[i] = new Triangle();
-                            }
-                        }
-
-                        //List<Triangle> output = new List<Triangle>();
-
-                        for (int i = 0; i < triangles.Count; i++)
-                        {
-                            TriangleDataBuffer[i].P1 = Points[Triangles[i].P1Index];
-                            TriangleDataBuffer[i].P2 = Points[Triangles[i].P2Index];
-                            TriangleDataBuffer[i].P3 = Points[Triangles[i].P3Index];
-
-                            TriangleDataBuffer[i].UV1 = UVs[Triangles[i].UV1Index];
-                            TriangleDataBuffer[i].UV2 = UVs[Triangles[i].UV2Index];
-                            TriangleDataBuffer[i].UV3 = UVs[Triangles[i].UV3Index];
-
-                            TriangleDataBuffer[i].Normal = Normals[Triangles[i].NormalIndex];
-
-                        }
-
-                        return TriangleDataBuffer;
-                    }
-                }
-
-                private (Triangle, Material)[] TriangleDataMaterialBuffer = new (Triangle, Material)[0];
-                public (Triangle, Material)[] TriangleDataMaterial
-                {
-                    get
-                    {
-                        Triangle[] triangledata = TriangleData;
-
-                        if (TriangleDataMaterialBuffer.Length != triangledata.Length)
-                            TriangleDataMaterialBuffer = new (Triangle, Material)[triangledata.Length];
-
-
-                        for (int i = 0; i < triangledata.Length; i++)
-                        {
-                            TriangleDataMaterialBuffer[i].Item1 = triangledata[i];
-                            TriangleDataMaterialBuffer[i].Item2 = Triangles[i].Material;
-                        }
-                        return TriangleDataMaterialBuffer;
-                    }
-                }
-
-                //private Triangle[] GetTrianglesBuffer = new Triangle[0];
-                //public Triangle[] GetTriangles(Material Material)
-                //{
-                //    //List<Triangle> triangles = new List<Triangle>();
-                //    var triangleDataMaterial = TriangleDataMaterial;
-                //    int length = triangleDataMaterial.Length;
-                //    if (GetTrianglesBuffer.Length != triangleDataMaterial.Length)
-                //    {
-                //        GetTrianglesBuffer = new Triangle[triangleDataMaterial.Length];
-                //    }
-
-                //    int FoundVertices = 0;
-                //    for (int i = 0; i < triangleDataMaterial.Length; i++)
-                //    {
-                //        if (triangleDataMaterial[i].Item2 == Material)
-                //        {
-                //            GetTrianglesBuffer[i] = triangleDataMaterial[i].Item1;
-                //            FoundVertices++;
-                //        }
-                //    }
-
-                //    Array.Resize(ref GetTrianglesBuffer, FoundVertices);
-
-
-                //    return GetTrianglesBuffer;
-                //}
-
-                public Triangle[] GetTriangles(Material Material)
-                {
-                    var triangles = new HashSet<Triangle>();
-                    var triangleDataMaterial = TriangleDataMaterial;
-
-                    foreach (var triangle in triangleDataMaterial)
-                    {
-                        if (triangle.Item2 == Material)
-                        {
-                            triangles.Add(triangle.Item1);
-                        }
-                    }
-
-                    return triangles.ToArray();
-                }
-                */
         public void AddTriangle(Triangle triangle, Material materialIndex)
         {
             Points.Add(triangle.P1);
@@ -424,7 +360,8 @@ namespace PylonGameEngine
                 {
                     if (Current != null)
                     {
-                        
+
+
                     }
                 }
             }

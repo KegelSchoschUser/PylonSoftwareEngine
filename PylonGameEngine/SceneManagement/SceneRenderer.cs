@@ -231,7 +231,7 @@ namespace PylonGameEngine.SceneManagement
                 var triangles = Primitves2D.Quad(obj.Transform.Size, null).TriangleData;
 
                 Triangles.AddRange(triangles);
-                RawObjects.Add((triangles.Length * 3, obj.GlobalMatrix, obj.Graphics.Texture));
+                RawObjects.Add((triangles.Count * 3, obj.GlobalMatrix, obj.Graphics.Texture));
             }
 
             if (RawObjects.Count == 0 || Triangles.Count == 0)

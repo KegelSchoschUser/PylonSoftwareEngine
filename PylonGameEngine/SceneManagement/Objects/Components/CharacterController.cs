@@ -61,7 +61,8 @@ namespace PylonGameEngine.SceneManagement.Objects.Components
         public KeyboardKey Sprint = KeyboardKey.Shift;
         public KeyboardKey Jump = KeyboardKey.Space;
 
-        bool OnGround
+        public bool OverrideOnGround = false;
+        public bool OnGround
         {
             get
             {
@@ -104,11 +105,11 @@ namespace PylonGameEngine.SceneManagement.Objects.Components
 
             if (SceneContext.InputManager.Keyboard.KeyPressed(MoveRight))
                 MoveDirection += Parent.Transform.Right;
-            if (SceneContext.InputManager.Keyboard.KeyPressed(Jump) && OnGround)
+            if (SceneContext.InputManager.Keyboard.KeyPressed(Jump) && (OnGround || OverrideOnGround))
                 MoveDirection += Parent.Transform.Up;
 
 
-            if(OnGround)
+            if((OnGround || OverrideOnGround))
                 MoveDirection *= new Vector3(5, Mathf.Abs(SceneContext.Physics.Gravity.Y) / 2f, 5);
             else
                 MoveDirection *= new Vector3(0.01f, 1, 0.01f);
@@ -157,7 +158,7 @@ namespace PylonGameEngine.SceneManagement.Objects.Components
                 }
             }
 
-            if(OnGround)
+            if((OnGround || OverrideOnGround))
                 Body.Velocity.Linear = MoveDirection;
             else
                 Body.Velocity.Linear += MoveDirection;

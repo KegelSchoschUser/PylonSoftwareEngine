@@ -210,7 +210,61 @@ namespace PylonGameEngine.Physics
         public bool AllowContactGeneration(int workerIndex, CollidablePair pair, int childIndexA, int childIndexB)
         {
             //return AllowContactGeneration(workerIndex, pair.A, pair.B, )
-            return true;
+            //return true;
+            if (pair.A.Mobility == pair.B.Mobility)
+                return false;
+
+            TriggerBody A_Trigger = null;
+            TriggerBody B_Trigger = null;
+
+            RigidBody A_Rigid = null;
+            RigidBody B_Rigid = null;
+
+            StaticBody A_Static = null;
+            StaticBody B_Static = null;
+
+            if (pair.A.Mobility == CollidableMobility.Dynamic)
+            {
+                A_Rigid = SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.A.BodyHandle.Value);
+            }
+            else if (pair.A.Mobility == CollidableMobility.Static)
+            {
+                A_Trigger = SceneContext.Physics.TriggerBodies.Find(x => x.Index == pair.A.BodyHandle.Value);
+                A_Static = SceneContext.Physics.StaticBodies.Find(x => x.Index == pair.A.BodyHandle.Value);
+            }
+
+            if (pair.B.Mobility == CollidableMobility.Dynamic)
+            {
+                B_Rigid = SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.B.BodyHandle.Value);
+            }
+            else if (pair.B.Mobility == CollidableMobility.Static)
+            {
+                B_Trigger = SceneContext.Physics.TriggerBodies.Find(x => x.Index == pair.B.BodyHandle.Value);
+                B_Static = SceneContext.Physics.StaticBodies.Find(x => x.Index == pair.B.BodyHandle.Value);
+            }
+
+            bool MobilityCheck = pair.A.Mobility == CollidableMobility.Dynamic || pair.B.Mobility == CollidableMobility.Dynamic;
+
+            if (A_Trigger == null && B_Trigger == null
+                && A_Rigid == null && B_Rigid == null
+                && A_Static == null && B_Static == null || MobilityCheck == false)
+                return false;
+
+            if (A_Trigger != null || B_Trigger != null)
+            {
+                if ((A_Trigger != null && B_Trigger != null) == false)
+                {
+                    if (A_Trigger != null)
+                        A_Trigger.InvokeEvent(B_Rigid != null ? B_Rigid : B_Static);
+
+                    if (B_Trigger != null)
+                        B_Trigger.InvokeEvent(A_Rigid != null ? A_Rigid : A_Static);
+                }
+                return false;
+            }
+            bool CollisionEnabledCheck = (A_Rigid != null ? A_Rigid.UseCollisions : A_Static.UseCollisions) && (B_Rigid != null ? B_Rigid.UseCollisions : B_Static.UseCollisions);
+
+            return CollisionEnabledCheck;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
