@@ -20,6 +20,11 @@
             Name = name;
         }
 
+        public void OnDestroy()
+        {
+            Mesh.Destroy();
+        }
+
         //[Obsolete]
         //public void LoadMeshFromOBJFile(string Filename, bool RightHanded = false)
         //{

@@ -30,6 +30,19 @@ namespace PylonGameEngine.Mathematics
             Normal = new Vector3();
         }
 
+        public Triangle(Vector3 p1, Vector3 p2, Vector3 p3)
+        {
+            P1 = p1;
+            P2 = p2;
+            P3 = p3;
+
+            UV1 = new Vector2();
+            UV2 = new Vector2();
+            UV3 = new Vector2();
+
+            Normal = new Vector3();
+        }
+
         public Triangle(Vector3 p1, Vector3 p2, Vector3 p3, Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector3 normal)
         {
             P1 = p1;

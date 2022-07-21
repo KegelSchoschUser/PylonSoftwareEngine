@@ -73,8 +73,15 @@ namespace PylonGameEngine.Physics
 
         public override void OnDestroy()
         {
-            SceneContext.Physics.Simulation.Statics.Remove(Body.Handle);
-            SceneContext.Physics.StaticBodies.Remove(this);
+            try
+            {
+                SceneContext.Physics.Simulation.Statics.Remove(Body.Handle);
+                SceneContext.Physics.StaticBodies.Remove(this);
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private void Transform_PositionChange()

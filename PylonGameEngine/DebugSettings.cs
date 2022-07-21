@@ -30,5 +30,10 @@
                 }
             }
         }
+
+        public static class CharacterSettings
+        {
+            public static bool ShowDebug = false;
+        }
     }
 }

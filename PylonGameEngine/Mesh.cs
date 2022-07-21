@@ -1,4 +1,5 @@
 ﻿using PylonGameEngine.Mathematics;
+using PylonGameEngine.Render11;
 using PylonGameEngine.ShaderLibrary;
 using PylonGameEngine.Utilities;
 using System;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Vortice.Direct3D11;
 
 namespace PylonGameEngine
 {
@@ -15,28 +17,27 @@ namespace PylonGameEngine
         public ObservableList<Vector2> UVs = new ObservableList<Vector2>();
         public ObservableList<Vector3> Normals = new ObservableList<Vector3>();
         public ObservableList<TrianglePointer> Triangles = new ObservableList<TrianglePointer>();
+        bool AutoUpdateBuffers;
 
-
-        public Mesh(bool AutoUpdateBuffers = true)
+        public Mesh(bool autoUpdateBuffers = true)
         {
-            if (AutoUpdateBuffers)
-            {
-                Points.On_ItemAdded += (i) => { UpdateBuffers(); };
-                Points.On_ItemRemoved += (i) => { UpdateBuffers(); };
-                Points.On_Item_Changed += (i) => { UpdateBuffers(); };
+            AutoUpdateBuffers = autoUpdateBuffers;
 
-                UVs.On_ItemAdded += (i) => { UpdateBuffers(); };
-                UVs.On_ItemRemoved += (i) => { UpdateBuffers(); };
-                UVs.On_Item_Changed += (i) => { UpdateBuffers(); };
-
-                Normals.On_ItemAdded += (i) => { UpdateBuffers(); };
-                Normals.On_ItemRemoved += (i) => { UpdateBuffers(); };
-                Normals.On_Item_Changed += (i) => { UpdateBuffers(); };
-
-                Triangles.On_ItemAdded += (i) => { UpdateBuffers(); };
-                Triangles.On_ItemRemoved += (i) => { UpdateBuffers(); };
-                Triangles.On_Item_Changed += (i) => { UpdateBuffers(); };
-            }
+            Points.On_ItemAdded         += (i) => { if(AutoUpdateBuffers){ UpdateBuffers();}};
+            Points.On_ItemRemoved       += (i) => { if(AutoUpdateBuffers){UpdateBuffers();}};
+            Points.On_Item_Changed      += (i) => { if(AutoUpdateBuffers){UpdateBuffers();}};
+                                           
+            UVs.On_ItemAdded            += (i) => { if(AutoUpdateBuffers){UpdateBuffers();}};
+            UVs.On_ItemRemoved          += (i) => { if(AutoUpdateBuffers){UpdateBuffers();}};
+            UVs.On_Item_Changed         += (i) => { if(AutoUpdateBuffers){UpdateBuffers();}};
+                                                  
+            Normals.On_ItemAdded        += (i) => { if(AutoUpdateBuffers){UpdateBuffers();}};
+            Normals.On_ItemRemoved      += (i) => { if(AutoUpdateBuffers){UpdateBuffers();}};
+            Normals.On_Item_Changed     += (i) => { if(AutoUpdateBuffers){UpdateBuffers();}};
+                                                  
+            Triangles.On_ItemAdded      += (i) => { if(AutoUpdateBuffers){UpdateBuffers();}};
+            Triangles.On_ItemRemoved    += (i) => { if(AutoUpdateBuffers){UpdateBuffers();}};
+            Triangles.On_Item_Changed   += (i) => { if(AutoUpdateBuffers){UpdateBuffers();}};
         }
 
         public void UpdateBuffers()
@@ -100,11 +101,36 @@ namespace PylonGameEngine
                     }
                 }
             }
+
+            {
+                foreach (var ValuePair in DirectXBuffersBuffer)
+                {
+                    ValuePair.Item2.Release();
+                    ValuePair.Item3.Release();
+                }
+
+                DirectXBuffersBuffer.Clear();
+
+                foreach (var ValuePair in MeshMaterialBuffer)
+                {
+                    var Material = ValuePair.Item2;
+                    var Triangles = ValuePair.Item1;
+
+                    var Vertices = new Span<RawVertex>(Triangle.ArrayToRawVertices(Triangles).ToArray());
+                    var Indices = new Span<int>(Mesh.CreateOrderedIndicesList(Vertices.Length).ToArray());
+
+                    ID3D11Buffer VertexBuffer = D3D11GraphicsDevice.Device.CreateBuffer(BindFlags.VertexBuffer, Vertices);
+                    ID3D11Buffer IndexBuffer = D3D11GraphicsDevice.Device.CreateBuffer(BindFlags.IndexBuffer, Indices);
+
+                    DirectXBuffersBuffer.Add((Material, VertexBuffer, IndexBuffer, Triangles.Count));
+                }
+            }
         }
 
         private List<Triangle> TriangleDataBuffer = new List<Triangle>();
         private List<(Triangle, Material)> TriangleDataMaterialBuffer = new List<(Triangle, Material)>();
         private List<(List<Triangle>, Material)> MeshMaterialBuffer = new List<(List<Triangle>, Material)>();
+        private List<(Material, ID3D11Buffer, ID3D11Buffer, int)> DirectXBuffersBuffer = new List<(Material, ID3D11Buffer, ID3D11Buffer, int)>();
 
 
         public List<Triangle> TriangleData
@@ -135,6 +161,14 @@ namespace PylonGameEngine
 
             return new List<Triangle>();
         }
+        
+        public List<(Material, ID3D11Buffer, ID3D11Buffer, int)> DirectXBuffers
+        {
+            get
+            {
+                return DirectXBuffersBuffer;
+            }
+        }
 
         public void AddTriangle(Triangle triangle, Material materialIndex)
         {
@@ -160,6 +194,20 @@ namespace PylonGameEngine
             int normalindex = Normals.Count - 1;
 
             Triangles.Add(new TrianglePointer(materialIndex, p1index, p2index, p3index, uv1index, uv2index, uv3index, normalindex));
+        }
+
+        public void AddTriangles(List<Triangle> triangles, Material materialIndex)
+        {
+            bool UpdateState = AutoUpdateBuffers;
+
+            AutoUpdateBuffers = false;
+            foreach (var tri in triangles)
+            {
+                AddTriangle(tri, materialIndex);
+            }
+            if(UpdateState)
+                UpdateBuffers();
+            AutoUpdateBuffers = UpdateState;
         }
 
         public void AddQuad(Quad Quad, Material material)
@@ -418,6 +466,18 @@ namespace PylonGameEngine
                                                        otherTriangle.UV2Index + UVOffset,
                                                        otherTriangle.UV3Index + UVOffset,
                                                        otherTriangle.NormalIndex + NormalOffset));
+            }
+        }
+
+        public void Destroy()
+        {
+            foreach (var buffer in DirectXBuffersBuffer)
+            {
+                var VertexBuffer = buffer.Item2;
+                var IndexBuffer = buffer.Item3;
+
+                VertexBuffer.Release();
+                IndexBuffer.Release();
             }
         }
     }

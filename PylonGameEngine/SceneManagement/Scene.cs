@@ -76,7 +76,9 @@ namespace PylonGameEngine.SceneManagement
         {
             if (obj.SceneContext == null)
                 obj.SceneContext = this;
-            Objects.Add(obj);
+
+            if(Objects.Contains(obj) == false)
+                Objects.Add(obj);
 
             obj.OnAddScene();
 

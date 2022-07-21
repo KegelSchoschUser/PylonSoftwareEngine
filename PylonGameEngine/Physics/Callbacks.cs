@@ -147,148 +147,45 @@ namespace PylonGameEngine.Physics
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool AllowContactGeneration(int workerIndex, CollidableReference a, CollidableReference b, ref float speculativeMargin)
         {
-            //While the engine won't even try creating pairs between statics at all, it will ask about kinematic-kinematic pairs.
-            //Those pairs cannot emit constraints since both involved bodies have infinite inertia. Since most of the demos don't need
-            //to collect information about kinematic-kinematic pairs, we'll require that at least one of the bodies needs to be dynamic.
-            if (a.Mobility == b.Mobility)
-                return false;
+            var A_ValuePair = SceneContext.Physics.Found(a.BodyHandle.Value);
+            var B_ValuePair = SceneContext.Physics.Found(b.BodyHandle.Value);
 
-            TriggerBody A_Trigger = null;
-            TriggerBody B_Trigger = null;
+            bool AllowCollision = CollisionCheck.CanCollide(A_ValuePair.Item1, B_ValuePair.Item1, A_ValuePair.Item2.UseCollisions, B_ValuePair.Item2.UseCollisions);
 
-            RigidBody A_Rigid = null;
-            RigidBody B_Rigid = null;
-
-            StaticBody A_Static = null;
-            StaticBody B_Static = null;
-
-            if (a.Mobility == CollidableMobility.Dynamic)
+            if (CollisionCheck.ObjectCollidedTrigger(A_ValuePair.Item1, B_ValuePair.Item1))
             {
-                A_Rigid = SceneContext.Physics.RigidBodies.Find(x => x.Index == a.BodyHandle.Value);
-            }
-            else if (a.Mobility == CollidableMobility.Static)
-            {
-                A_Trigger = SceneContext.Physics.TriggerBodies.Find(x => x.Index == a.BodyHandle.Value);
-                A_Static = SceneContext.Physics.StaticBodies.Find(x => x.Index == a.BodyHandle.Value);
+                if (A_ValuePair.Item1 == CollisionType.Trigger)
+                    (A_ValuePair.Item2 as TriggerBody).InvokeEvent(B_ValuePair.Item2);
+
+                if (B_ValuePair.Item1 == CollisionType.Trigger)
+                    (B_ValuePair.Item2 as TriggerBody).InvokeEvent(A_ValuePair.Item2);
             }
 
-            if (b.Mobility == CollidableMobility.Dynamic)
-            {
-                B_Rigid = SceneContext.Physics.RigidBodies.Find(x => x.Index == b.BodyHandle.Value);
-            }
-            else if (b.Mobility == CollidableMobility.Static)
-            {
-                B_Trigger = SceneContext.Physics.TriggerBodies.Find(x => x.Index == b.BodyHandle.Value);
-                B_Static = SceneContext.Physics.StaticBodies.Find(x => x.Index == b.BodyHandle.Value);
-            }
-
-            bool MobilityCheck = a.Mobility == CollidableMobility.Dynamic || b.Mobility == CollidableMobility.Dynamic;
-
-            if (A_Trigger == null && B_Trigger == null
-                && A_Rigid == null && B_Rigid == null
-                && A_Static == null && B_Static == null || MobilityCheck == false)
-                return false;
-
-            if (A_Trigger != null || B_Trigger != null)
-            {
-                if ((A_Trigger != null && B_Trigger != null) == false)
-                {
-                    if (A_Trigger != null)
-                        A_Trigger.InvokeEvent(B_Rigid != null ? B_Rigid : B_Static);
-
-                    if (B_Trigger != null)
-                        B_Trigger.InvokeEvent(A_Rigid != null ? A_Rigid : A_Static);
-                }
-                return false;
-            }
-            bool CollisionEnabledCheck = (A_Rigid != null ? A_Rigid.UseCollisions : A_Static.UseCollisions) && (B_Rigid != null ? B_Rigid.UseCollisions : B_Static.UseCollisions);
-
-            return CollisionEnabledCheck;
+            return AllowCollision;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool AllowContactGeneration(int workerIndex, CollidablePair pair, int childIndexA, int childIndexB)
         {
-            //return AllowContactGeneration(workerIndex, pair.A, pair.B, )
-            //return true;
-            if (pair.A.Mobility == pair.B.Mobility)
-                return false;
-
-            TriggerBody A_Trigger = null;
-            TriggerBody B_Trigger = null;
-
-            RigidBody A_Rigid = null;
-            RigidBody B_Rigid = null;
-
-            StaticBody A_Static = null;
-            StaticBody B_Static = null;
-
-            if (pair.A.Mobility == CollidableMobility.Dynamic)
-            {
-                A_Rigid = SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.A.BodyHandle.Value);
-            }
-            else if (pair.A.Mobility == CollidableMobility.Static)
-            {
-                A_Trigger = SceneContext.Physics.TriggerBodies.Find(x => x.Index == pair.A.BodyHandle.Value);
-                A_Static = SceneContext.Physics.StaticBodies.Find(x => x.Index == pair.A.BodyHandle.Value);
-            }
-
-            if (pair.B.Mobility == CollidableMobility.Dynamic)
-            {
-                B_Rigid = SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.B.BodyHandle.Value);
-            }
-            else if (pair.B.Mobility == CollidableMobility.Static)
-            {
-                B_Trigger = SceneContext.Physics.TriggerBodies.Find(x => x.Index == pair.B.BodyHandle.Value);
-                B_Static = SceneContext.Physics.StaticBodies.Find(x => x.Index == pair.B.BodyHandle.Value);
-            }
-
-            bool MobilityCheck = pair.A.Mobility == CollidableMobility.Dynamic || pair.B.Mobility == CollidableMobility.Dynamic;
-
-            if (A_Trigger == null && B_Trigger == null
-                && A_Rigid == null && B_Rigid == null
-                && A_Static == null && B_Static == null || MobilityCheck == false)
-                return false;
-
-            if (A_Trigger != null || B_Trigger != null)
-            {
-                if ((A_Trigger != null && B_Trigger != null) == false)
-                {
-                    if (A_Trigger != null)
-                        A_Trigger.InvokeEvent(B_Rigid != null ? B_Rigid : B_Static);
-
-                    if (B_Trigger != null)
-                        B_Trigger.InvokeEvent(A_Rigid != null ? A_Rigid : A_Static);
-                }
-                return false;
-            }
-            bool CollisionEnabledCheck = (A_Rigid != null ? A_Rigid.UseCollisions : A_Static.UseCollisions) && (B_Rigid != null ? B_Rigid.UseCollisions : B_Static.UseCollisions);
-
-            return CollisionEnabledCheck;
+            float f = 1.0f;
+            return AllowContactGeneration(workerIndex, pair.A, pair.B, ref f);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe bool ConfigureContactManifold<TManifold>(int workerIndex, CollidablePair pair, ref TManifold manifold, out PairMaterialProperties pairMaterial) where TManifold : unmanaged, IContactManifold<TManifold>
         {
-            PhysicsComponent BodyA = null;
-            if(SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.A.BodyHandle.Value) != null)
-                BodyA = SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.A.BodyHandle.Value);
-            else if (SceneContext.Physics.StaticBodies.Find(x => x.Index == pair.A.BodyHandle.Value) != null)
-                BodyA = SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.A.BodyHandle.Value);
+            var A_ValuePair = SceneContext.Physics.Found(pair.A.BodyHandle.Value);
+            var B_ValuePair = SceneContext.Physics.Found(pair.B.BodyHandle.Value);
 
-            PhysicsComponent BodyB = null;
-            if (SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.B.BodyHandle.Value) != null)
-                BodyB = SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.B.BodyHandle.Value);
-            else if (SceneContext.Physics.StaticBodies.Find(x => x.Index == pair.B.BodyHandle.Value) != null)
-                BodyB = SceneContext.Physics.RigidBodies.Find(x => x.Index == pair.B.BodyHandle.Value);
-
+            bool AllowCollision = CollisionCheck.CanCollide(A_ValuePair.Item1, B_ValuePair.Item1, A_ValuePair.Item2.UseCollisions, B_ValuePair.Item2.UseCollisions);
             pairMaterial = default;
 
-            if (BodyA != null && BodyB != null)
-                pairMaterial.FrictionCoefficient = BodyA.Friction * BodyB.Friction;
+            if (AllowCollision)
+                pairMaterial.FrictionCoefficient = A_ValuePair.Item2.Friction * B_ValuePair.Item2.Friction;
 
             pairMaterial.MaximumRecoveryVelocity = 2f;
             pairMaterial.SpringSettings = ContactSpringiness;
+
             return true;
         }
 

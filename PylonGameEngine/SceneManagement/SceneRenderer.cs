@@ -15,13 +15,6 @@ namespace PylonGameEngine.SceneManagement
 {
     public class SceneRenderer
     {
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct MatrixBufferStructure
-        {
-            public Mathematics.Matrix4x4 ViewMatrix;
-            public Mathematics.Matrix4x4 ProjectionMatrix;
-        }
-
         public RenderTexture MainRenderTarget
         {
             get
@@ -90,6 +83,7 @@ namespace PylonGameEngine.SceneManagement
             foreach (var camera in Scene.Cameras)
             {
                 camera.RenderTarget.Clear();
+                camera.UpdateBuffers();
             }
 
             Render3D();
@@ -111,98 +105,76 @@ namespace PylonGameEngine.SceneManagement
         #region 3D
         public void Render3D()
         {
-            int verts = 0;
             D3D11GraphicsDevice.DeviceContext.OMSetDepthStencilState(DepthStencilStateEnabled);
             D3D11GraphicsDevice.DeviceContext.IASetInputLayout(InputLayout3D);
             D3D11GraphicsDevice.DeviceContext.VSSetShader(VertexShader3D);
 
+            List<(Material, List<(ID3D11Buffer, ID3D11Buffer, Matrix4x4, int)>)> MaterialsBuffers = new List<(Material, List<(ID3D11Buffer, ID3D11Buffer, Matrix4x4, int)>)>();
             foreach (var material in MyGame.Materials)
             {
-                List<Triangle> Triangles = new List<Triangle>();
-                List<(int, Matrix4x4)> RawObjects = new System.Collections.Generic.List<(int, Matrix4x4)>();
+                MaterialsBuffers.Add((material, new List<(ID3D11Buffer, ID3D11Buffer, Matrix4x4, int)>()));
+            }
 
-                var GameObjects3D = Scene.GetRenderOrder3D();
-                foreach (var obj in GameObjects3D)
+            var GameObjects3D = Scene.GetRenderOrder3D();
+            foreach (var obj in GameObjects3D)
+            {
+                if (obj.Visible == false)
+                    continue;
+                if (obj is MeshObject)
                 {
-                    if (obj.Visible == false)
-                        continue;
-                    if (obj is MeshObject)
+                    var meshobj = obj as MeshObject;
+                    var DirectXBuffers = meshobj.Mesh.DirectXBuffers;
+
+                    foreach (var ValuePair in DirectXBuffers)
                     {
-                        var meshobj = obj as MeshObject;
-                        var triangles = meshobj.Mesh.GetTriangles(material);
-                    
-                        Triangles.AddRange(triangles);
-                        RawObjects.Add((triangles.Count * 3, obj.Transform.GlobalMatrix));
-                        verts += triangles.Count * 3;
+                        var Entry = MaterialsBuffers.Find(x => x.Item1 == ValuePair.Item1);
+                        Entry.Item2.Add((ValuePair.Item2, ValuePair.Item3, obj.Transform.GlobalMatrix, ValuePair.Item4));
                     }
                 }
+            }
 
-                if (RawObjects.Count == 0 || Triangles.Count == 0)
+            foreach (var entry in MaterialsBuffers)
+            {
+                if (entry.Item2.Count == 0)
                     continue;
 
 
-                material.Shader.InitializeShader(D3D11GraphicsDevice.Device, D3D11GraphicsDevice.DeviceContext);
+                entry.Item1.Shader.InitializeShader(D3D11GraphicsDevice.Device, D3D11GraphicsDevice.DeviceContext);
 
-                var Vertices = new Span<RawVertex>(Triangle.ArrayToRawVertices(Triangles).ToArray());
-                var Indices = new Span<int>(Mesh.CreateOrderedIndicesList(Vertices.Length).ToArray());
-
-                ID3D11Buffer VertexBuffer = D3D11GraphicsDevice.Device.CreateBuffer(BindFlags.VertexBuffer, Vertices);
-                ID3D11Buffer IndexBuffer = D3D11GraphicsDevice.Device.CreateBuffer(BindFlags.IndexBuffer, Indices);
-
-                D3D11GraphicsDevice.DeviceContext.IASetVertexBuffer(0, VertexBuffer, Marshal.SizeOf(new RawVertex()), 0);
-                D3D11GraphicsDevice.DeviceContext.IASetIndexBuffer(IndexBuffer, Format.R32_UInt, 0);
-
-                foreach (var camera in Scene.Cameras)
+                foreach (var obj in entry.Item2)
                 {
-                    if (camera != Scene.MainCamera && camera.Enabled == true)
-                        RenderCamera3D(camera, RawObjects);
+                    D3D11GraphicsDevice.DeviceContext.IASetVertexBuffer(0, obj.Item1, Marshal.SizeOf(new RawVertex()), 0);
+                    D3D11GraphicsDevice.DeviceContext.IASetIndexBuffer(obj.Item2, Format.R32_UInt, 0);
+
+                    int verticescount = obj.Item4 * 3;
+ 
+                    foreach (var camera in Scene.Cameras)
+                    {
+                        if (camera != Scene.MainCamera && camera.Enabled == true)
+                            RenderCamera3D(camera, obj.Item3, verticescount);
+                    }
+
+                    if (Scene.Cameras.Contains(Scene.MainCamera) && Scene.MainCamera.Enabled == true)
+                        RenderCamera3D(Scene.MainCamera, obj.Item3, verticescount);
                 }
-
-                if (Scene.Cameras.Contains(Scene.MainCamera) && Scene.MainCamera.Enabled == true)
-                    RenderCamera3D(Scene.MainCamera, RawObjects);
-
-
-                VertexBuffer.Release();
-                IndexBuffer.Release();
-                Vertices.Clear();
-                Indices.Clear();
-                Triangles.Clear();
             }
         }
 
-        [StructLayout(LayoutKind.Sequential)]
-        internal struct CameraPositionBufferStructure
-        {
-            public Mathematics.Vector3 CameraPosition;
-            public float padding;
-        }
 
-        private void RenderCamera3D(Camera Camera, List<(int, Matrix4x4)> RawObjects)
+        private void RenderCamera3D(Camera Camera, Matrix4x4 ObjectMatrix, int verticescount)
         {
             Camera.RenderTarget.OnRender();
             D3D11GraphicsDevice.DeviceContext.OMSetRenderTargets(Camera.RenderTarget.InternalRenderTarget, Camera.RenderTarget.DepthStencilView);
 
-            var MatrixBuffer = CreateCameraMatrixBuffer(Camera, true);
-            D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(0, MatrixBuffer);
+            D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(0, Camera.CameraMatrixBuffer3D);
+            D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(1, Camera.CameraPositionBuffer);
 
-            var CameraPositionBuffer = CreateStructBuffer(new CameraPositionBufferStructure() { CameraPosition = Camera.Transform.GlobalPosition });
-            D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(1, CameraPositionBuffer);
+            ObjectMatrix.Transpose();
 
-            int VertexOffset = 0;
-            for (int i = 0; i < RawObjects.Count; i++)
-            {
-                Mathematics.Matrix4x4 ObjectMatrix = RawObjects[i].Item2;
-                ObjectMatrix.Transpose();
-
-                var ObjectMatrixBuffer = CreateStructBuffer(ObjectMatrix);
-                D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(2, ObjectMatrixBuffer);
-                D3D11GraphicsDevice.DeviceContext.Draw(RawObjects[i].Item1, VertexOffset);
-                VertexOffset += RawObjects[i].Item1;
-                ObjectMatrixBuffer.Release();
-            }
-
-            MatrixBuffer.Release();
-            CameraPositionBuffer.Release();
+            var ObjectMatrixBuffer = D3D11GraphicsDevice.CreateStructBuffer(ObjectMatrix);
+            D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(2, ObjectMatrixBuffer);
+            D3D11GraphicsDevice.DeviceContext.Draw(verticescount, 0);
+            ObjectMatrixBuffer.Release();
         }
 
         #endregion 3D
@@ -220,8 +192,7 @@ namespace PylonGameEngine.SceneManagement
             D3D11GraphicsDevice.DeviceContext.IASetInputLayout(InputLayout2D);
             D3D11GraphicsDevice.DeviceContext.VSSetShader(VertexShader2D);
 
-            var MatrixBuffer = CreateCameraMatrixBuffer(Scene.MainCamera, false);
-            D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(0, MatrixBuffer);
+            D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(0, Scene.MainCamera.CameraMatrixBuffer2D);
 
             List<Triangle> Triangles = new List<Triangle>();
             List<(int, Matrix4x4, Texture)> RawObjects = new System.Collections.Generic.List<(int, Matrix4x4, Texture)>();
@@ -253,7 +224,7 @@ namespace PylonGameEngine.SceneManagement
                 Mathematics.Matrix4x4 ObjectMatrix = RawObjects[i].Item2;
                 ObjectMatrix.Transpose();
 
-                var ObjectMatrixBuffer = CreateStructBuffer(ObjectMatrix);
+                var ObjectMatrixBuffer = D3D11GraphicsDevice.CreateStructBuffer(ObjectMatrix);
                 D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(1, ObjectMatrixBuffer);
 
 
@@ -272,7 +243,6 @@ namespace PylonGameEngine.SceneManagement
 
             VertexBuffer.Release();
             IndexBuffer.Release();
-            MatrixBuffer.Release();
             Vertices.Clear();
             Indices.Clear();
             Triangles.Clear();
@@ -372,47 +342,6 @@ namespace PylonGameEngine.SceneManagement
             };
 
             return InputElements;
-        }
-        private static ID3D11Buffer CreateCameraMatrixBuffer(Camera Camera, bool RenderMode3D)
-        {
-            MatrixBufferStructure Matrix = new MatrixBufferStructure();
-
-            if (RenderMode3D)
-            {
-                var Viewmatrix = Camera.ViewMatrix3D;
-                var ProjectionMatrix = Camera.ProjectionMatrix;
-                Viewmatrix.Transpose();
-                ProjectionMatrix.Transpose();
-                Matrix.ViewMatrix = Viewmatrix;
-                Matrix.ProjectionMatrix = ProjectionMatrix;
-            }
-            else
-            {
-                var Viewmatrix = Camera.ViewMatrix2D;
-                var ProjectionMatrix = Camera.OrthographicMatrix;
-                Viewmatrix.Transpose();
-                ProjectionMatrix.Transpose();
-                Matrix.ViewMatrix = Viewmatrix;
-                Matrix.ProjectionMatrix = ProjectionMatrix;
-            }
-
-            return CreateStructBuffer(Matrix);
-        }
-        private static ID3D11Buffer CreateStructBuffer<T>(T ObjectMatrix) where T : unmanaged
-        {
-            BufferDescription BufferDescription = new BufferDescription()
-            {
-                Usage = ResourceUsage.Default,
-                SizeInBytes = System.Runtime.InteropServices.Marshal.SizeOf(ObjectMatrix),
-                BindFlags = BindFlags.ConstantBuffer,
-                CpuAccessFlags = CpuAccessFlags.None,
-                OptionFlags = ResourceOptionFlags.None,
-                StructureByteStride = 0
-            };
-
-            ID3D11Buffer MatrixBuffer = D3D11GraphicsDevice.Device.CreateBuffer(in ObjectMatrix, BufferDescription);
-
-            return MatrixBuffer;
         }
 
         private static ID3D11DepthStencilState DepthStencilStateEnabled;

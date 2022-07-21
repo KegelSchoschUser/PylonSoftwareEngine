@@ -1,5 +1,7 @@
 ﻿using PylonGameEngine.Mathematics;
 using PylonGameEngine.Render11;
+using System.Runtime.InteropServices;
+using Vortice.Direct3D11;
 
 namespace PylonGameEngine.SceneManagement.Objects
 {
@@ -12,6 +14,10 @@ namespace PylonGameEngine.SceneManagement.Objects
         public bool Enabled = true;
 
         public RenderTexture RenderTarget;
+
+        internal ID3D11Buffer CameraMatrixBuffer3D;
+        internal ID3D11Buffer CameraMatrixBuffer2D;
+        internal ID3D11Buffer CameraPositionBuffer;
 
         public Camera(RenderTexture renderTarget)
         {
@@ -153,6 +159,62 @@ namespace PylonGameEngine.SceneManagement.Objects
                 //return Matrix4x4.OrthoLH(GlobalManager.MainWindow.Width / OrthographicFoV, GlobalManager.MainWindow.Height / OrthographicFoV, 0, 1);;
                 return Matrix4x4.OrthoOffCenterLH((-RenderTarget.Size.X) / 2f * OrthographicFoV, (RenderTarget.Size.X) / 2f, (-RenderTarget.Size.Y) / 2f * OrthographicFoV, (RenderTarget.Size.Y) / 2f, 0, 1);
             }
+        }
+
+        internal void UpdateBuffers()
+        {
+            if(CameraMatrixBuffer3D != null && CameraMatrixBuffer2D != null && CameraPositionBuffer != null)
+            {
+                CameraMatrixBuffer3D.Release();
+                CameraMatrixBuffer2D.Release();
+                CameraPositionBuffer.Release();
+            }
+
+            CameraMatrixBuffer3D = CreateCameraMatrixBuffer(this, true);
+            CameraMatrixBuffer2D = CreateCameraMatrixBuffer(this, true);
+
+            CameraPositionBuffer = D3D11GraphicsDevice.CreateStructBuffer(new CameraPositionBufferStructure() { CameraPosition = this.Transform.GlobalPosition });
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct MatrixBufferStructure
+        {
+            public Mathematics.Matrix4x4 ViewMatrix;
+            public Mathematics.Matrix4x4 ProjectionMatrix;
+        }
+
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct CameraPositionBufferStructure
+        {
+            public Mathematics.Vector3 CameraPosition;
+            public float padding;
+        }
+
+        private static ID3D11Buffer CreateCameraMatrixBuffer(Camera Camera, bool RenderMode3D)
+        {
+            MatrixBufferStructure Matrix = new MatrixBufferStructure();
+
+            if (RenderMode3D)
+            {
+                var Viewmatrix = Camera.ViewMatrix3D;
+                var ProjectionMatrix = Camera.ProjectionMatrix;
+                Viewmatrix.Transpose();
+                ProjectionMatrix.Transpose();
+                Matrix.ViewMatrix = Viewmatrix;
+                Matrix.ProjectionMatrix = ProjectionMatrix;
+            }
+            else
+            {
+                var Viewmatrix = Camera.ViewMatrix2D;
+                var ProjectionMatrix = Camera.OrthographicMatrix;
+                Viewmatrix.Transpose();
+                ProjectionMatrix.Transpose();
+                Matrix.ViewMatrix = Viewmatrix;
+                Matrix.ProjectionMatrix = ProjectionMatrix;
+            }
+
+            return D3D11GraphicsDevice.CreateStructBuffer(Matrix);
         }
     }
 }

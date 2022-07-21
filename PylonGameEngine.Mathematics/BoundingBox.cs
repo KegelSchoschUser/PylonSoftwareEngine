@@ -44,6 +44,14 @@
             return new BoundingBox(min, max);
         }
 
+        public bool PointInBox(Vector3 Point)
+        {
+            if (Min <= Point && Point <= Max)
+                return true;
+
+            return false;
+        }
+
         public static BoundingBox operator *(Matrix4x4 matrix, BoundingBox boundingBox)
         {
             return new BoundingBox(matrix * boundingBox.Min, matrix * boundingBox.Max);

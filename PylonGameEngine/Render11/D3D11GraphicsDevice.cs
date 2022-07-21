@@ -466,5 +466,22 @@ namespace PylonGameEngine.Render11
                 return Bitmap.FromStream(stream);
             }
         }
+
+        internal static ID3D11Buffer CreateStructBuffer<T>(T ObjectMatrix) where T : unmanaged
+        {
+            BufferDescription BufferDescription = new BufferDescription()
+            {
+                Usage = ResourceUsage.Default,
+                SizeInBytes = System.Runtime.InteropServices.Marshal.SizeOf(ObjectMatrix),
+                BindFlags = BindFlags.ConstantBuffer,
+                CpuAccessFlags = CpuAccessFlags.None,
+                OptionFlags = ResourceOptionFlags.None,
+                StructureByteStride = 0
+            };
+
+            ID3D11Buffer MatrixBuffer = D3D11GraphicsDevice.Device.CreateBuffer(in ObjectMatrix, BufferDescription);
+
+            return MatrixBuffer;
+        }
     }
 }

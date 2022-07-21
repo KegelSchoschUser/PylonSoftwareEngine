@@ -48,9 +48,12 @@ namespace PylonGameEngine.Physics
                 case InitializationDescription._Shape.Mesh:
                     {
                         SceneContext.Physics.BufferPool.Take<BepuPhysics.Collidables.Triangle>(InitDesc.Triangles.Count, out var triangles);
+                        List<Mathematics.Triangle> tris = new List<Mathematics.Triangle>();
                         for (int i = 0; i < InitDesc.Triangles.Count; ++i)
                         {
                             triangles[i] = new BepuPhysics.Collidables.Triangle(InitDesc.Triangles[i].P3.ToSystemNumerics(), InitDesc.Triangles[i].P2.ToSystemNumerics(), InitDesc.Triangles[i].P1.ToSystemNumerics());
+                            if(i%2 == 0)
+                            tris.Add(new Mathematics.Triangle(InitDesc.Triangles[i].P1.ToSystemNumerics(), InitDesc.Triangles[i].P2.ToSystemNumerics(), InitDesc.Triangles[i].P3.ToSystemNumerics()));
                         }
                         //Parent.Transform.GlobalMatrix.TranslationVector
                         BepuPhysics.Collidables.Mesh collisionShape = new BepuPhysics.Collidables.Mesh(triangles, Parent.Transform.Scale.ToSystemNumerics(), SceneContext.Physics.BufferPool);
@@ -74,7 +77,7 @@ namespace PylonGameEngine.Physics
 
             Index = Handle.Value;
             Body = new StaticReference(Handle, SceneContext.Physics.Simulation.Statics);
-            Body.Pose.Position = -Parent.Transform.Position.ToSystemNumerics();
+            Body.Pose.Position = Parent.Transform.Position.ToSystemNumerics();
             SceneContext.Physics.TriggerBodies.Add(this);
         }
 

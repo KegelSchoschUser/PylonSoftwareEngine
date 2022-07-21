@@ -10,11 +10,9 @@ namespace PylonGameEngine.Physics
     public class RigidBody : PhysicsComponent
     {
         public BodyReference Body;
+        private InitializationDescription InitDesc = new InitializationDescription();
         public bool UseGravity = true;
         public bool UsePhysics = true;
-        public bool UseCollisions = true;
-        private InitializationDescription InitDesc = new InitializationDescription();
-
         public BepuPhysics.Collidables.Mesh? CollisionMesh;
         public int Index { get; private set; }
 
@@ -264,6 +262,7 @@ namespace PylonGameEngine.Physics
         {
             Parent.Transform.UnsafeSetPosition(Vector3.FromSystemNumerics(Body.Pose.Position));
             Parent.Transform.UnsafeSetRotation(Quaternion.FromSystemNumerics(Body.Pose.Orientation));
+
         }
 
 

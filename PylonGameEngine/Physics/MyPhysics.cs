@@ -89,5 +89,29 @@ namespace PylonGameEngine.Physics
         {
             TriggerBodies.Add(body);
         }
+
+        internal (CollisionType, PhysicsComponent) Found(int Handle)
+        {
+            var Rigid = RigidBodies.Find(x => x.Index == Handle);
+            var Static = StaticBodies.Find(x => x.Index == Handle);
+            var Trigger = TriggerBodies.Find(x => x.Index == Handle);
+
+            if (Rigid != null)
+            {
+                return (CollisionType.Rigid, Rigid);
+            }
+
+            if (Static != null)
+            {
+                return (CollisionType.Static, Static);
+            }
+
+            if (Trigger != null)
+            {
+                return (CollisionType.Trigger, Trigger);
+            }
+
+            return (CollisionType.None, null);
+        }
     }
 }
