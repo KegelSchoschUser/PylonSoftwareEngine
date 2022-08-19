@@ -111,6 +111,8 @@ namespace PylonGameEngine
 
             GameTickLoop.Stop();
             RenderLoop.Stop();
+
+            Environment.Exit(0);
         }
 
         private static void GameTickLoop_Tick()

@@ -22,6 +22,7 @@ namespace PylonGameEngine.UI.Drawing
         internal ID2D1DeviceContext DeviceContext;
         private IDWriteFactory7 WriteFactory;
         private GUIObject CreatedFromGUIObject;
+        public bool Accept_Push_Pop_Calls = true;
 
         public Graphics(Texture texture)
         {
@@ -586,6 +587,8 @@ namespace PylonGameEngine.UI.Drawing
 
 
             RenderTarget.FillGeometry(geometry, brush.br);
+
+            geometry.Release();
         }
 
         public void DrawGeometry(Pen pen, Vector2[] points, bool Closed = true)
@@ -603,11 +606,15 @@ namespace PylonGameEngine.UI.Drawing
             {
                 Points.Add(points[i].ToSystemNumerics());
             }
-            sink.AddLines(Points.ToArray());
+            var array = Points.ToArray();
+            sink.AddLines(array);
             sink.EndFigure((FigureEnd)(Closed ? 1 : 0));
             sink.Close();
 
             RenderTarget.DrawGeometry(geometry, pen.br, pen.Width);
+
+            geometry.Release();
+            geometry.Dispose();
         }
         /*
         public void DrawBezierCurve(Pen pen, QuadraticBezierCurve Curve)
@@ -901,11 +908,13 @@ namespace PylonGameEngine.UI.Drawing
 
         public void CreateClip(float x, float y, float x2, float y2)
         {
+            if(Accept_Push_Pop_Calls)
             RenderTarget.PushAxisAlignedClip(new RawRectF(x, y, x2, y2), AntialiasMode.PerPrimitive);
         }
 
         public void ApplyClip()
         {
+            if(Accept_Push_Pop_Calls)
             RenderTarget.PopAxisAlignedClip();
         }
         #endregion Effects

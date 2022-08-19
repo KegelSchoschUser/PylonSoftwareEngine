@@ -16,10 +16,23 @@ namespace PylonGameEngine.FileSystem.Filetypes.WAVE
         public float[] Samples;
 
 
+        [Obsolete]
+        public WaveFile()
+        {
+
+        }
+
         public WaveFile(string FileName)
         {
             DataSource = new MyFileStream(FileName);
             Initialize();
+        }
+
+        public static bool Verify(string FileName)
+        {
+            WaveFile wav = new WaveFile();
+            wav.DataSource = new MyFileStream(FileName);
+            return wav.Initialize();
         }
 
         private bool Initialize()

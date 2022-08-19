@@ -171,7 +171,7 @@ namespace PylonGameEngine.SceneManagement.Objects
             }
 
             CameraMatrixBuffer3D = CreateCameraMatrixBuffer(this, true);
-            CameraMatrixBuffer2D = CreateCameraMatrixBuffer(this, true);
+            CameraMatrixBuffer2D = CreateCameraMatrixBuffer(this, false);
 
             CameraPositionBuffer = D3D11GraphicsDevice.CreateStructBuffer(new CameraPositionBufferStructure() { CameraPosition = this.Transform.GlobalPosition });
         }

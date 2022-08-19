@@ -55,6 +55,8 @@ namespace PylonGameEngine.Audio
             }
         }
 
+        public delegate void OnBufferEnd();
+        public event OnBufferEnd BufferEnd;
 
         IXAudio2SourceVoice Voice;
         public byte[] Buffer { get; private set; }
@@ -62,12 +64,14 @@ namespace PylonGameEngine.Audio
         public Audio(int SampleRate = 48000, int Channels = 2)
         {
             CreateVoice(SampleRate, Channels);
+            BufferEnd += () => { };
         }
 
         public Audio(PylonAudioFile file)
         {
             CreateVoice(file.SampleRate, file.ChannelCount);
             AddBuffer(file.Samples, true);
+            BufferEnd += () => { };
         }
 
         private void CreateVoice(int SampleRate = 48000, int Channels = 2)
@@ -78,6 +82,7 @@ namespace PylonGameEngine.Audio
 
         private void Voice_BufferEnd(IntPtr obj)
         {
+            BufferEnd();
             if (Loop)
             {
                 MyGame.RenderLoop.Invoke(() => { Play(); });

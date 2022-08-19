@@ -92,6 +92,28 @@ namespace PylonGameEngine.SceneManagement
                 FocusedLostObject = null;
         }
 
+        public void Remove(GUIObject gUIObject)
+        {
+            GUIObjects.Remove(gUIObject);
+
+            if (gUIObject.Parent == null)
+            {
+                foreach (var child in gUIObject.Children)
+                {
+                    child.Parent = null;
+                }
+            }
+            else
+            {
+                foreach (var child in gUIObject.Children)
+                {
+                    child.Parent = gUIObject.Parent;
+                }
+            }
+
+            gUIObject.Destroy();
+        }
+
         internal void UpdateFrame()
         {
 

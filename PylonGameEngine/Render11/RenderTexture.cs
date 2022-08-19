@@ -59,7 +59,7 @@ namespace PylonGameEngine.Render11
         {
             lock (MyGame.RenderLock)
             {
-                D3D11GraphicsDevice.DeviceContext.ClearRenderTargetView(InternalRenderTarget, RGBColor.Blue);
+                D3D11GraphicsDevice.DeviceContext.ClearRenderTargetView(InternalRenderTarget, RGBColor.Black);
                 D3D11GraphicsDevice.DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth, 1f, 0);
             }
         }
