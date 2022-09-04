@@ -44,8 +44,8 @@ namespace PylonGameEngine
             GameTickLoop = new GameLoop(GameProperties.GameTickRate, "GameTickLoop");
             GameTickLoop.Tick += GameTickLoop_Tick;
 
-            StandardResources.AddResources();
             D3D11GraphicsDevice.INIT();
+            StandardResources.AddResources();
 
             if(GameProperties.UseAudioEngine)
                 AudioEngine.Initialize();

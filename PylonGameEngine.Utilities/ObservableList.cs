@@ -24,6 +24,15 @@ namespace PylonGameEngine.Utilities
             On_Item_Changed += (x) => { };
         }
 
+        public ObservableList(List<T> list)
+        {
+            AddRange(list);
+
+            On_ItemAdded += (x) => { };
+            On_ItemRemoved += (x) => { };
+            On_Item_Changed += (x) => { };
+        }
+
         public T this[int index]
         {
             get

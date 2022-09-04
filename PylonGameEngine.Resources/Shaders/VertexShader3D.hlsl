@@ -1,18 +1,18 @@
 ///////////////////////
 ////   GLOBALS
 ///////////////////////
-cbuffer MatrixBuffer : register(b0)
+cbuffer MatrixBuffer : register(b1)
 {
 	matrix viewMatrix;
 	matrix projectionMatrix;
 };
 
-cbuffer CameraPosition : register(b1)
+cbuffer CameraPosition : register(b2)
 {
 	float3 cameraPosition;
 };
 
-cbuffer ObjectBuffer : register(b2)
+cbuffer ObjectBuffer : register(b3)
 {
 	matrix objectmatrix;
 };
@@ -38,7 +38,7 @@ struct PixelInputType
 /////////////////////////////////////
 /////   Vertex Shader
 /////////////////////////////////////
-PixelInputType EntryPoint3D(VertexInputType input)
+PixelInputType Entry(VertexInputType input)
 {
 	PixelInputType output;
 	float4 worldPosition;

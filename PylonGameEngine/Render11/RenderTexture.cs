@@ -47,6 +47,7 @@ namespace PylonGameEngine.Render11
             if (InternalRenderTarget != null)
                 InternalRenderTarget.Release();
             InternalRenderTarget = D3D11GraphicsDevice.Device.CreateRenderTargetView(InternalTexture);
+            Clear();
         }
 
         internal virtual void OnRender()
@@ -59,7 +60,7 @@ namespace PylonGameEngine.Render11
         {
             lock (MyGame.RenderLock)
             {
-                D3D11GraphicsDevice.DeviceContext.ClearRenderTargetView(InternalRenderTarget, RGBColor.Black);
+                D3D11GraphicsDevice.DeviceContext.ClearRenderTargetView(InternalRenderTarget, RGBColor.Transparent);
                 D3D11GraphicsDevice.DeviceContext.ClearDepthStencilView(DepthStencilView, DepthStencilClearFlags.Depth, 1f, 0);
             }
         }

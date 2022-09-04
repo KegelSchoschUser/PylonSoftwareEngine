@@ -6,6 +6,8 @@ using PylonGameEngine.Networking;
 using PylonGameEngine.Render11;
 using PylonGameEngine.SceneManagement;
 using PylonGameEngine.SceneManagement.Objects;
+using PylonGameEngine.ShaderLibrary;
+using PylonGameEngine.ShaderLibrary.CoreShaders;
 using PylonGameEngine.Utilities;
 using System;
 using System.Drawing;
@@ -103,7 +105,7 @@ namespace MyTestGame
             MyLog.Default.Write("test", LogSeverity.Critical);
             MyLog.Default.Write("test", LogSeverity.Crash);
 
-            for (int x = 0; x < 2; x++)
+            for (int x = 0; x < 1; x++)
             {
                 Scene Scene1 = new Scene();
                 SceneManager.AddScene(Scene1);
@@ -116,11 +118,22 @@ namespace MyTestGame
                 Scene1.Add(MainCamera);
                 MainCamera.AddComponent(new FlyScript());
 
+
+                //MeshObject twoisone = new MeshObject();
+                //twoisone.SetName("2is1");
+                //twoisone.Mesh = Mesh.LoadFromObjectFile(@"C:\Users\Endric\Desktop\2is1\2is1.obj", true);
+                //SceneManager.ActiveScene.Add(twoisone);
+
+
                 MeshObject Cube = new MeshObject();
                 Scene1.Add(Cube);
-                Cube.Mesh = Primitves3D.CreateCube(MyGame.Materials.Get("DEBUG_Red"), Vector3.Zero, new Vector3(1, 5, 1));
+                Material texture = new Material("gameengineisttoll!", new Neon(RGBColor.PylonOrange)); // new TextureShader(@"A:\PylonGameEngine\CONTENT\Logo\KLogo.png"));
+                MyGame.Materials.Add(texture);
+                Cube.Mesh = Primitves3D.CreateCube(texture, Vector3.Zero, new Vector3(5, 5, 5));
                 Cube.Transform.Position = new Vector3(0, 0, 5);
-                Cube.AddComponent(new CubeRotator());
+                //Cube.AddComponent(new CubeRotator());
+
+
 
                 MeshObject blueCube = new MeshObject();
                 Scene1.Add(blueCube);
@@ -133,7 +146,7 @@ namespace MyTestGame
                 flySwitch.OnClick += (x) => { FlyScript.Enabled = !FlyScript.Enabled; x.Text = "FlyMode: " + (FlyScript.Enabled ? "OFF" : "ON"); };
 
 
-                for (int i = 0; i < 1; i++)
+                for (int i = 0; i < 0; i++)
                 {
                     Window Window2 = Window.CreateWindow("Test2", Vector2.Zero, new Vector2(500, 500), false, true);
                     WindowRenderTarget WindowRenderTarget2 = new WindowRenderTarget(Window2);
@@ -147,10 +160,11 @@ namespace MyTestGame
 
                     MeshObject greenCube = new MeshObject();
                     Scene1.Add(greenCube);
-                    greenCube.Mesh = Primitves3D.CreateCube(MyGame.Materials.Get("DEBUG_Green"));
+                    greenCube.Mesh = Primitves3D.CreateCube(MyGame.Materials.Get("DEBUG_Green"), new Vector3(), new Vector3(10, 10, 10));
                     Camera2.AddObject(greenCube);
                 }
             }
+
 
             MyGame.Start();
         }

@@ -1,5 +1,6 @@
 ﻿using PylonGameEngine.Mathematics;
 using PylonGameEngine.ShaderLibrary;
+using PylonGameEngine.ShaderLibrary.CoreShaders;
 
 namespace PylonGameEngine
 {
@@ -15,27 +16,27 @@ namespace PylonGameEngine
 
 
             var RedColorShader = new ColorShader();
-            RedColorShader.Input.Color = new RGBColor(1, 0, 0);
+            RedColorShader.Properties.Color = new RGBColor(1, 0, 0);
             Red.Shader = RedColorShader;
             MyGame.Materials.Add(Red);
 
             var GreenColorShader = new ColorShader();
-            GreenColorShader.Input.Color = new RGBColor(0, 1, 0);
+            GreenColorShader.Properties.Color = new RGBColor(0, 1, 0);
             Green.Shader = GreenColorShader;
             MyGame.Materials.Add(Green);
 
             var BlueColorShader = new ColorShader();
-            BlueColorShader.Input.Color = new RGBColor(0, 0, 1);
+            BlueColorShader.Properties.Color = new RGBColor(0, 0, 1);
             Blue.Shader = BlueColorShader;
             MyGame.Materials.Add(Blue);
 
             var WhiteColorShader = new ColorShader();
-            WhiteColorShader.Input.Color = new RGBColor(1, 1, 1);
+            WhiteColorShader.Properties.Color = new RGBColor(1, 1, 1);
             White.Shader = WhiteColorShader;
             MyGame.Materials.Add(White);
 
             var BlackColorShader = new ColorShader();
-            BlackColorShader.Input.Color = new RGBColor(0, 0, 0);
+            BlackColorShader.Properties.Color = new RGBColor(0, 0, 0);
             Black.Shader = BlackColorShader;
             MyGame.Materials.Add(Black);
         }

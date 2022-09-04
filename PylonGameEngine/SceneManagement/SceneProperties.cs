@@ -1,5 +1,7 @@
 ﻿using PylonGameEngine.Mathematics;
 using PylonGameEngine.Render11;
+using PylonGameEngine.ShaderLibrary.CoreShaders;
+using System;
 
 namespace PylonGameEngine.SceneManagement
 {
@@ -25,22 +27,24 @@ namespace PylonGameEngine.SceneManagement
 
         public SkyBox(RGBColor color)
         {
-            SkyBoxMaterial = new Material("", new ShaderLibrary.ColorShader(color));
+            SkyBoxMaterial = new Material("", new ColorShader(color));
         }
 
         public SkyBox(Texture texture)
         {
-            SkyBoxMaterial = new Material("", new ShaderLibrary.TextureShader(texture));
+            throw new Exception();
+            //SkyBoxMaterial = new Material("", new ShaderLibrary.TextureShader(texture));
         }
 
         public void ChangeMaterial(RGBColor color)
         {
-            ((ShaderLibrary.ColorShader)SkyBoxMaterial.Shader).Input.Color = color;
+            ((ColorShader)SkyBoxMaterial.Shader).Properties.Color = color;
         }
 
         public void ChangeMaterial(Texture texture)
         {
-            ((ShaderLibrary.TextureShader)SkyBoxMaterial.Shader).Textures[0] = texture;
+            throw new Exception();
+            //((ShaderLibrary.TextureShader)SkyBoxMaterial.Shader).Textures[0] = texture;
         }
     }
 }

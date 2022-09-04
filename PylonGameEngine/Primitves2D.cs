@@ -22,7 +22,7 @@ namespace PylonGameEngine
             m.UVs.Add(new Vector2(1, 1));
             m.UVs.Add(new Vector2(0, 1));
 
-            m.Normals.Add(Vector3.Zero);
+            m.Normals.Add(Vector3.Forward);
 
             m.Triangles.Add(new TrianglePointer(materialindex, 0, 1, 2, 0, 1, 2, 0));
             m.Triangles.Add(new TrianglePointer(materialindex, 0, 2, 3, 0, 2, 3, 0));

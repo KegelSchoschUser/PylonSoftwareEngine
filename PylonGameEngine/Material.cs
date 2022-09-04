@@ -1,4 +1,5 @@
-﻿using PylonGameEngine.ShaderLibrary;
+﻿using PylonGameEngine.ShaderLibrary.Core;
+using PylonGameEngine.ShaderLibrary.CoreShaders;
 using PylonGameEngine.Utilities;
 
 namespace PylonGameEngine
@@ -11,6 +12,7 @@ namespace PylonGameEngine
         {
             Name = displayname;
             Shader = new ColorShader();
+            Shader.Initialize();
         }
 
 
@@ -18,6 +20,7 @@ namespace PylonGameEngine
         {
             Name = displayname;
             Shader = shader;
+            Shader.Initialize();
         }
 
         public int Index

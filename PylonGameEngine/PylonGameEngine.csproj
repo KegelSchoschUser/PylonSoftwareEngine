@@ -68,6 +68,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="ShaderLibrary\SpecularShader.old.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="ShaderLibrary\SpecularShader.old.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\PylonGameEngine.Mathematics\PylonGameEngine.Mathematics.csproj" />
     <ProjectReference Include="..\PylonGameEngine.Resources\PylonGameEngine.Resources.csproj" />
     <ProjectReference Include="..\PylonGameEngine.Utilities\PylonGameEngine.Utilities.csproj" />

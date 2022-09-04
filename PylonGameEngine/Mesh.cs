@@ -1,6 +1,7 @@
 ﻿using PylonGameEngine.Mathematics;
 using PylonGameEngine.Render11;
 using PylonGameEngine.ShaderLibrary;
+using PylonGameEngine.ShaderLibrary.CoreShaders;
 using PylonGameEngine.Utilities;
 using System;
 using System.Collections.Generic;
@@ -336,7 +337,10 @@ namespace PylonGameEngine
                         f[1] -= 1;
                         f[2] -= 1;
 
-                        Output.Triangles.Add(new TrianglePointer(currentMaterial, f[0], f[1], f[2], 0, 0, 0, 0));
+                        if(RightHanded == false)
+                            Output.Triangles.Add(new TrianglePointer(currentMaterial, f[0], f[1], f[2], 0, 0, 0, 0));
+                        else
+                            Output.Triangles.Add(new TrianglePointer(currentMaterial, f[2], f[1], f[0], 0, 0, 0, 0));
                     }
                 }
                 else
@@ -374,7 +378,6 @@ namespace PylonGameEngine
 
                 }
             }
-
             return Output;
         }
         public static List<Material> ParseMTLFile(string Filename)
@@ -386,8 +389,11 @@ namespace PylonGameEngine
 
                 if (line.StartsWith("newmtl "))
                 {
+
+
                     string[] parts = line.Split(' ');
-                    Current = new Material(parts[1]);
+                    Current = new Material(parts[1], new ColorShader(RGBColor.GetRandomColor()));
+                    Output.Add(Current);
                     MyGame.Materials.Add(Current);
                 }
                 else if (line.StartsWith("map_Kd "))
@@ -395,7 +401,8 @@ namespace PylonGameEngine
                     string[] parts = line.Split(' ');
                     if (line.Length > 10)
                     {
-                        Current.Shader = new TextureShader(new Render11.Texture(new FileInfo(Path.Combine(Path.GetDirectoryName(Filename), parts[1])).FullName));
+                        throw new Exception();
+                        //Current.Shader = new TextureShader(new Render11.Texture(new FileInfo(Path.Combine(Path.GetDirectoryName(Filename), parts[1])).FullName));
 
                     }
                     else
@@ -406,11 +413,7 @@ namespace PylonGameEngine
                 }
                 else if (line.StartsWith(""))
                 {
-                    if (Current != null)
-                    {
-
-
-                    }
+                   
                 }
             }
 

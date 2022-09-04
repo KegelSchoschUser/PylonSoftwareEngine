@@ -1,15 +1,20 @@
 ﻿using PylonGameEngine.Mathematics;
 using PylonGameEngine.Render11;
 using PylonGameEngine.SceneManagement.Objects;
-using PylonGameEngine.ShaderLibrary;
+using PylonGameEngine.ShaderLibrary.Core;
+using PylonGameEngine.ShaderLibrary.CoreShaders;
+using PylonGameEngine.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Media.Media3D;
 using Vortice.D3DCompiler;
 using Vortice.Direct3D;
 using Vortice.Direct3D11;
 using Vortice.DXGI;
+using Camera = PylonGameEngine.SceneManagement.Objects.Camera;
 
 namespace PylonGameEngine.SceneManagement
 {
@@ -28,21 +33,10 @@ namespace PylonGameEngine.SceneManagement
         }
 
         private Scene Scene;
-        private ID3D11VertexShader VertexShader3D;
-        private ID3D11VertexShader VertexShader2D;
-        private ID3D11InputLayout InputLayout3D;
-        private ID3D11InputLayout InputLayout2D;
 
         internal SceneRenderer(Scene scene)
         {
             Scene = scene;
-
-            var VertexShader3DByteCode = CompileVertexShader3D();
-            var VertexShader2DByteCode = CompileVertexShader2D();
-            VertexShader3D = D3D11GraphicsDevice.Device.CreateVertexShader(VertexShader3DByteCode);
-            VertexShader2D = D3D11GraphicsDevice.Device.CreateVertexShader(VertexShader2DByteCode);
-            InputLayout3D = D3D11GraphicsDevice.Device.CreateInputLayout(CreateInputLayoutDescription3D(), VertexShader3DByteCode);
-            InputLayout2D = D3D11GraphicsDevice.Device.CreateInputLayout(CreateInputLayoutDescription2D(), VertexShader2DByteCode);
 
             DepthStencilDescription DepthStencilDesc = new DepthStencilDescription()
             {
@@ -97,17 +91,13 @@ namespace PylonGameEngine.SceneManagement
                     else if (camera.RenderTarget is DesktopRenderTarget)
                         ((DesktopRenderTarget)camera.RenderTarget).Present();
             }
-
-
-
         }
 
         #region 3D
         public void Render3D()
         {
+            D3D11GraphicsDevice.TurnOnAlphaBlending();
             D3D11GraphicsDevice.DeviceContext.OMSetDepthStencilState(DepthStencilStateEnabled);
-            D3D11GraphicsDevice.DeviceContext.IASetInputLayout(InputLayout3D);
-            D3D11GraphicsDevice.DeviceContext.VSSetShader(VertexShader3D);
 
             List<(Material, List<(ID3D11Buffer, ID3D11Buffer, Matrix4x4, int)>)> MaterialsBuffers = new List<(Material, List<(ID3D11Buffer, ID3D11Buffer, Matrix4x4, int)>)>();
             foreach (var material in MyGame.Materials)
@@ -123,76 +113,65 @@ namespace PylonGameEngine.SceneManagement
                 if (obj is MeshObject)
                 {
                     var meshobj = obj as MeshObject;
+
                     var DirectXBuffers = meshobj.Mesh.DirectXBuffers;
 
                     foreach (var ValuePair in DirectXBuffers)
                     {
                         var Entry = MaterialsBuffers.Find(x => x.Item1 == ValuePair.Item1);
+                        if (Entry.Item1 is null)
+                            continue;
                         Entry.Item2.Add((ValuePair.Item2, ValuePair.Item3, obj.Transform.GlobalMatrix, ValuePair.Item4));
                     }
                 }
             }
 
+           foreach (var camera in Scene.Cameras)
+           {
+               if (camera != Scene.MainCamera && camera.Enabled == true)
+                   RenderMaterials(camera, MaterialsBuffers); 
+           }
+
+            if (Scene.Cameras.Contains(Scene.MainCamera) && Scene.MainCamera.Enabled == true)
+                RenderMaterials(Scene.MainCamera, MaterialsBuffers);
+        }
+
+        private void RenderMaterials(Camera camera, List<(Material, List<(ID3D11Buffer, ID3D11Buffer, Matrix4x4, int)>)> MaterialsBuffers)
+        {
             foreach (var entry in MaterialsBuffers)
             {
                 if (entry.Item2.Count == 0)
                     continue;
 
-
-                entry.Item1.Shader.InitializeShader(D3D11GraphicsDevice.Device, D3D11GraphicsDevice.DeviceContext);
+                entry.Item1.Shader.Render();
 
                 foreach (var obj in entry.Item2)
                 {
-                    D3D11GraphicsDevice.DeviceContext.IASetVertexBuffer(0, obj.Item1, Marshal.SizeOf(new RawVertex()), 0);
-                    D3D11GraphicsDevice.DeviceContext.IASetIndexBuffer(obj.Item2, Format.R32_UInt, 0);
-
-                    int verticescount = obj.Item4 * 3;
- 
-                    foreach (var camera in Scene.Cameras)
+                    foreach (var step in entry.Item1.Shader.ShaderSteps)
                     {
-                        if (camera != Scene.MainCamera && camera.Enabled == true)
-                            RenderCamera3D(camera, obj.Item3, verticescount);
+                        step.Activate();
+                        if(step.GetType() == typeof(ShaderStep))
+                            step.Render(camera, obj.Item1, obj.Item2, obj.Item3.Transposed, obj.Item4 * 3);
+                        else
+                            step.Render(camera);
                     }
-
-                    if (Scene.Cameras.Contains(Scene.MainCamera) && Scene.MainCamera.Enabled == true)
-                        RenderCamera3D(Scene.MainCamera, obj.Item3, verticescount);
                 }
             }
         }
 
-
-        private void RenderCamera3D(Camera Camera, Matrix4x4 ObjectMatrix, int verticescount)
-        {
-            Camera.RenderTarget.OnRender();
-            D3D11GraphicsDevice.DeviceContext.OMSetRenderTargets(Camera.RenderTarget.InternalRenderTarget, Camera.RenderTarget.DepthStencilView);
-
-            D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(0, Camera.CameraMatrixBuffer3D);
-            D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(1, Camera.CameraPositionBuffer);
-
-            ObjectMatrix.Transpose();
-
-            var ObjectMatrixBuffer = D3D11GraphicsDevice.CreateStructBuffer(ObjectMatrix);
-            D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(2, ObjectMatrixBuffer);
-            D3D11GraphicsDevice.DeviceContext.Draw(verticescount, 0);
-            ObjectMatrixBuffer.Release();
-        }
-
         #endregion 3D
-
+        
         #region 2D
-        private TextureShader textureshader2D = new TextureShader();
+        private GUIShader textureshader2D = new GUIShader();
 
         public void Render2D()
         {
             if (MainRenderTarget == null)
                 return;
-            MainRenderTarget.OnRender();
-            D3D11GraphicsDevice.DeviceContext.OMSetRenderTargets(MainRenderTarget.InternalRenderTarget, MainRenderTarget.DepthStencilView);
-            D3D11GraphicsDevice.DeviceContext.OMSetDepthStencilState(DepthStencilStateDisabled);
-            D3D11GraphicsDevice.DeviceContext.IASetInputLayout(InputLayout2D);
-            D3D11GraphicsDevice.DeviceContext.VSSetShader(VertexShader2D);
 
-            D3D11GraphicsDevice.DeviceContext.VSSetConstantBuffer(0, Scene.MainCamera.CameraMatrixBuffer2D);
+            D3D11GraphicsDevice.DeviceContext.OMSetDepthStencilState(DepthStencilStateDisabled);
+
+            MainRenderTarget.OnRender();
 
             List<Triangle> Triangles = new List<Triangle>();
             List<(int, Matrix4x4, Texture)> RawObjects = new System.Collections.Generic.List<(int, Matrix4x4, Texture)>();
@@ -214,9 +193,9 @@ namespace PylonGameEngine.SceneManagement
             ID3D11Buffer VertexBuffer = D3D11GraphicsDevice.Device.CreateBuffer(BindFlags.VertexBuffer, Vertices);
             ID3D11Buffer IndexBuffer = D3D11GraphicsDevice.Device.CreateBuffer(BindFlags.IndexBuffer, Indices);
 
-            D3D11GraphicsDevice.DeviceContext.IASetVertexBuffer(0, VertexBuffer, Marshal.SizeOf(new RawVertex()), 0);
-            D3D11GraphicsDevice.DeviceContext.IASetIndexBuffer(IndexBuffer, Format.R32_UInt, 0);
 
+            textureshader2D.Render();
+            textureshader2D.ShaderSteps[0].Activate();
 
             int VertexOffset = 0;
             for (int i = 0; i < RawObjects.Count; i++)
@@ -232,10 +211,8 @@ namespace PylonGameEngine.SceneManagement
                     textureshader2D.Textures.Add(RawObjects[i].Item3);
                 else
                     textureshader2D.Textures[0] = RawObjects[i].Item3;
-                textureshader2D.InitializeShader(D3D11GraphicsDevice.Device, D3D11GraphicsDevice.DeviceContext);
-                textureshader2D.SetShaderTextures(D3D11GraphicsDevice.Device, D3D11GraphicsDevice.DeviceContext);
 
-                D3D11GraphicsDevice.DeviceContext.Draw(RawObjects[i].Item1, VertexOffset);
+                textureshader2D.ShaderSteps[0].Render(Scene.MainCamera, VertexBuffer, IndexBuffer, ObjectMatrix, RawObjects[i].Item1, VertexOffset);
                 VertexOffset += RawObjects[i].Item1;
 
                 ObjectMatrixBuffer.Release();
@@ -249,100 +226,8 @@ namespace PylonGameEngine.SceneManagement
         }
 
         #endregion 2D
-
+        
         #region RenderUtilities
-
-        private Blob CompileVertexShader3D()
-        {
-            Compiler.Compile(PylonGameEngine.Resources.Shaders.VertexShader3D, "EntryPoint3D", this.GetType().Name, "vs_4_0", out Blob ShaderByteCode, out Blob ErrorBlob);
-            if (ErrorBlob != null)
-            {
-                Console.Write("ShaderCompileError (3D): " + Encoding.Default.GetString(ErrorBlob.AsBytes()));
-            }
-
-            return ShaderByteCode;
-        }
-
-        private Blob CompileVertexShader2D()
-        {
-            Compiler.Compile(PylonGameEngine.Resources.Shaders.VertexShader2D, "EntryPoint2D", this.GetType().Name, "vs_4_0", out Blob ShaderByteCode, out Blob ErrorBlob);
-            if (ErrorBlob != null)
-            {
-                Console.Write("ShaderCompileError (3D): " + Encoding.Default.GetString(ErrorBlob.AsBytes()));
-            }
-
-            return ShaderByteCode;
-        }
-
-        private InputElementDescription[] CreateInputLayoutDescription3D()
-        {
-            InputElementDescription[] InputElements = new InputElementDescription[]
-            {
-                    new InputElementDescription()
-                    {
-                        SemanticName = "POSITION",
-                        SemanticIndex = 0,
-                        Format = Format.R32G32B32_Float,
-                        Slot = 0,
-                        AlignedByteOffset = 0,
-                        Classification = InputClassification.PerVertexData,
-                        InstanceDataStepRate = 0
-                    },
-                    new InputElementDescription()
-                    {
-                        SemanticName = "TEXCOORD",
-                        SemanticIndex = 0,
-                        Format = Format.R32G32_Float,
-                        Slot = 0,
-                        AlignedByteOffset = InputElementDescription.AppendAligned,
-                        Classification = InputClassification.PerVertexData,
-                        InstanceDataStepRate = 0
-                    },
-                    new InputElementDescription()
-                    {
-                        SemanticName = "NORMAL",
-                        SemanticIndex = 0,
-                        Format = Format.R32G32B32_Float,
-                        Slot = 0,
-                        AlignedByteOffset = InputElementDescription.AppendAligned,
-                        Classification = InputClassification.PerVertexData,
-                        InstanceDataStepRate = 0
-                    }
-
-            };
-
-            return InputElements;
-        }
-
-        private InputElementDescription[] CreateInputLayoutDescription2D()
-        {
-            InputElementDescription[] InputElements = new InputElementDescription[]
-            {
-                    new InputElementDescription()
-                    {
-                        SemanticName = "POSITION",
-                        SemanticIndex = 0,
-                        Format = Format.R32G32B32_Float,
-                        Slot = 0,
-                        AlignedByteOffset = 0,
-                        Classification = InputClassification.PerVertexData,
-                        InstanceDataStepRate = 0
-                    },
-                    new InputElementDescription()
-                    {
-                        SemanticName = "TEXCOORD",
-                        SemanticIndex = 0,
-                        Format = Format.R32G32_Float,
-                        Slot = 0,
-                        AlignedByteOffset = InputElementDescription.AppendAligned,
-                        Classification = InputClassification.PerVertexData,
-                        InstanceDataStepRate = 0
-                    }
-
-            };
-
-            return InputElements;
-        }
 
         private static ID3D11DepthStencilState DepthStencilStateEnabled;
         private static ID3D11DepthStencilState DepthStencilStateDisabled;
