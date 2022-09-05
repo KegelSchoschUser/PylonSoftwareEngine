@@ -55,10 +55,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\PylonGameEngine.Mathematics\PylonGameEngine.Mathematics.csproj" />
-    <ProjectReference Include="..\PylonGameEngine.Resources\PylonGameEngine.Resources.csproj" />
-    <ProjectReference Include="..\PylonGameEngine.Utilities\PylonGameEngine.Utilities.csproj" />
-    <ProjectReference Include="..\PylonGameEngine\PylonGameEngine.csproj" />
+    <ProjectReference Include="..\PylonSoftwareEngine.Mathematics\PylonSoftwareEngine.Mathematics.csproj" />
+    <ProjectReference Include="..\PylonSoftwareEngine.Resources\PylonSoftwareEngine.Resources.csproj" />
+    <ProjectReference Include="..\PylonSoftwareEngine.Utilities\PylonSoftwareEngine.Utilities.csproj" />
+    <ProjectReference Include="..\PylonSoftwareEngine\PylonSoftwareEngine.csproj" />
   </ItemGroup>
 
   <ItemGroup>

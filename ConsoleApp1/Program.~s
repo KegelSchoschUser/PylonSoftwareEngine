@@ -1,9 +1,9 @@
 
-    public class CameraScript1 : GameScript
+    public class CameraScript1 : SoftwareScript
     {
         public override void UpdateTick()
         {
-            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.Num1))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.Num1))
             {
                 ((CameraObject)Parent).Activate();
 
@@ -11,11 +11,11 @@
         }
     }
 
-    public class CameraScript2 : GameScript
+    public class CameraScript2 : SoftwareScript
     {
         public override void UpdateTick()
         {
-            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.Num2))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.Num2))
             {
                 ((CameraObject)Parent).Activate();
 
@@ -23,47 +23,47 @@
         }
     }
 
-    public class MyScript : GameScript
+    public class MyScript : SoftwareScript
     {
         bool Trackmouse = true;
         public override void UpdateFrame()
         {
             float multiplier = 2f;
-            if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.I))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyDown(KeyboardKey.I))
             {
                 Console.WriteLine();
-                Console.WriteLine(MyGameWorld.ActiveCamera.Position);
-                Console.WriteLine(MyGameWorld.ActiveCamera.Rotation);
+                Console.WriteLine(MySoftwareWorld.ActiveCamera.Position);
+                Console.WriteLine(MySoftwareWorld.ActiveCamera.Rotation);
             }
 
-            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.LeftShift))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.LeftShift))
             {
                 multiplier = 4f;
             }
 
-            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.W))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.W))
             {
-                MyGameWorld.Objects[0].Position += MyGameWorld.Objects[0].Forward * multiplier;
+                MySoftwareWorld.Objects[0].Position += MySoftwareWorld.Objects[0].Forward * multiplier;
             }
-            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.S))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.S))
             {
-                MyGameWorld.Objects[0].Position += MyGameWorld.Objects[0].Backward * multiplier;
+                MySoftwareWorld.Objects[0].Position += MySoftwareWorld.Objects[0].Backward * multiplier;
             }
-            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.A))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.A))
             {
-                MyGameWorld.Objects[0].Position += MyGameWorld.Objects[0].Left * multiplier;
+                MySoftwareWorld.Objects[0].Position += MySoftwareWorld.Objects[0].Left * multiplier;
             }
-            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.D))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.D))
             {
-                MyGameWorld.Objects[0].Position += MyGameWorld.Objects[0].Right * multiplier;
+                MySoftwareWorld.Objects[0].Position += MySoftwareWorld.Objects[0].Right * multiplier;
             }
-            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.Space))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.Space))
             {
-                MyGameWorld.Objects[0].Position += MyGameWorld.Objects[0].Up * multiplier;
+                MySoftwareWorld.Objects[0].Position += MySoftwareWorld.Objects[0].Up * multiplier;
             }
-            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.C))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.C))
             {
-                MyGameWorld.Objects[0].Position += MyGameWorld.Objects[0].Down * multiplier;
+                MySoftwareWorld.Objects[0].Position += MySoftwareWorld.Objects[0].Down * multiplier;
             }
 
 
@@ -71,24 +71,24 @@
             if (Trackmouse) {
                 //  Console.WriteLine(Mouse.Delta);
                 
-                ((TextObject)MyGameWorld.GUIObjects[0]).Text = Mouse.Delta.ToString();
+                ((TextObject)MySoftwareWorld.GUIObjects[0]).Text = Mouse.Delta.ToString();
                 //Random r = new Random();
-                //((TextObject)MyGameWorld.GUIObjects[0]).Text = r.Next(0, 1000).ToString();
-                MyGameWorld.Objects[0].Rotation.X += Mouse.Delta.Y / 4f;
-                MyGameWorld.Objects[0].Rotation.Y += Mouse.Delta.X / 4f;
+                //((TextObject)MySoftwareWorld.GUIObjects[0]).Text = r.Next(0, 1000).ToString();
+                MySoftwareWorld.Objects[0].Rotation.X += Mouse.Delta.Y / 4f;
+                MySoftwareWorld.Objects[0].Rotation.Y += Mouse.Delta.X / 4f;
             }
-            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.Q))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.Q))
             {
-                MyGameWorld.Objects[0].Rotation.Z += 3f;
+                MySoftwareWorld.Objects[0].Rotation.Z += 3f;
             }
-            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.E))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.E))
             {
-                MyGameWorld.Objects[0].Rotation.Z -= 3f;
+                MySoftwareWorld.Objects[0].Rotation.Z -= 3f;
             }
 
-            if (PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.LeftAlt) && PylonGameEngine.Input.Keyboard.KeyPressed(KeyboardKey.F4))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.LeftAlt) && PylonSoftwareEngine.Input.Keyboard.KeyPressed(KeyboardKey.F4))
             {
-                MyGame.Stop();
+                MySoftware.Stop();
             }
         }
 
@@ -96,43 +96,43 @@
         {
 
 
-            if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.G))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyDown(KeyboardKey.G))
             {
                 Mouse.LockCursor(GlobalManager.MainWindow.Rect);
                 Console.WriteLine(Mouse.CursorLockState);
             }
-            if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.T))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyDown(KeyboardKey.T))
             {
                 Mouse.UnlockCursor();
                 Console.WriteLine(Mouse.CursorLockState);
 
             }
-            if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.H))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyDown(KeyboardKey.H))
             {
                 Mouse.HideCursor();
             }
-            if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.J))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyDown(KeyboardKey.J))
             {
 
                 Mouse.ShowCursor();
 
             }
 
-            if (PylonGameEngine.Input.Keyboard.KeyDown(KeyboardKey.Numpad0))
+            if (PylonSoftwareEngine.Input.Keyboard.KeyDown(KeyboardKey.Numpad0))
             {
                 Trackmouse = !Trackmouse;
             }
         }
         //public override void UpdateFrame()
         //{
-        //   BillBoard.DrawLine(MyGameWorld.Objects[0].Position, MyGameWorld.Objects[0].Position + (MyGameWorld.Objects[0].Forward * 100f), 0.25f, GlobalResources.Materials[2]);
+        //   BillBoard.DrawLine(MySoftwareWorld.Objects[0].Position, MySoftwareWorld.Objects[0].Position + (MySoftwareWorld.Objects[0].Forward * 100f), 0.25f, GlobalResources.Materials[2]);
         //    BillBoard.DrawLine(new Vector3(0, 0, 0), new Vector3(1, 0, 0) * 100f, 0.25f, GlobalResources.Materials[2]);
         //    BillBoard.DrawLine(new Vector3(0, 0, 0), new Vector3(0, 1, 0) * 100f, 0.25f, GlobalResources.Materials[3]);
         //    BillBoard.DrawLine(new Vector3(0, 0, 0), new Vector3(0, 0, 1) * 100f, 0.25f, GlobalResources.Materials[4]);
         //}
     }
 
-    public class GenerationScript : GameScript
+    public class GenerationScript : SoftwareScript
     {
         private struct ChunkPos
         {
@@ -154,13 +154,13 @@
         public readonly float YMultiplier = 100f;
         public readonly float XMultiplier = .5f;
         public readonly float ZMultiplier = .5f;
-        private readonly Dictionary<ChunkPos, GameObject3D> chunks = new Dictionary<ChunkPos, GameObject3D>();
+        private readonly Dictionary<ChunkPos, SoftwareObject3D> chunks = new Dictionary<ChunkPos, SoftwareObject3D>();
         private readonly FastNoise fastNoise = new FastNoise();
         public override void UpdateTick()
         {
             //return;
-            int curChunkPosX = (int)System.MathF.Floor(((GameObject3D)Parent).Position.X / (chunkSize * chunkScale)) * (chunkSize * chunkScale);
-            int curChunkPosZ = (int)System.MathF.Floor(((GameObject3D)Parent).Position.Z / (chunkSize * chunkScale)) * (chunkSize * chunkScale);
+            int curChunkPosX = (int)System.MathF.Floor(((SoftwareObject3D)Parent).Position.X / (chunkSize * chunkScale)) * (chunkSize * chunkScale);
+            int curChunkPosZ = (int)System.MathF.Floor(((SoftwareObject3D)Parent).Position.Z / (chunkSize * chunkScale)) * (chunkSize * chunkScale);
 
             if (curChunk.X != curChunkPosX || curChunk.Z != curChunkPosZ || curChunk.Z != curChunkPosZ)
             {
@@ -254,7 +254,7 @@
                             };
                             Chunk.Mesh.Materials.Add(GlobalResources.Materials[0]);
                             lock (WorldManager.Objects.LOCK)
-                                MyGameWorld.Objects.Add(Chunk);
+                                MySoftwareWorld.Objects.Add(Chunk);
 
                             chunks.Add(new ChunkPos(chunkX, chunkZ), Chunk);
 
@@ -262,7 +262,7 @@
                     }
                 }
                 //unload chunks
-                foreach (KeyValuePair<ChunkPos, GameObject3D> c in chunks)
+                foreach (KeyValuePair<ChunkPos, SoftwareObject3D> c in chunks)
                 {
                     ChunkPos cp = c.Key;
                     if (System.MathF.Abs(curChunkPosX - cp.X) > (chunkSize * chunkScale) * (chunkDist + 3) ||
@@ -283,9 +283,9 @@
         public static void Main()
         {
 #if !DEBUG
-            MyGame.HideConsole();
+            MySoftware.HideConsole();
 #endif
-            MyGame.Initialize(new MyGameOptions() { AppName = "GIW TEST", Version = new MyVersion(1, 0, 0), WindowSize = new System.Drawing.Size(1920, 1080), SplashScreenPath = null });
+            MySoftware.Initialize(new MySoftwareOptions() { AppName = "GIW TEST", Version = new MyVersion(1, 0, 0), WindowSize = new System.Drawing.Size(1920, 1080), SplashScreenPath = null });
             //WindowThreadManager.Execute(() => new D3D11GraphicsDevice()); //IMPORTANT BUT MUST BE FIXED LATER (SEVERITY: LOW)...
             new D3D11GraphicsDevice();
 
@@ -300,7 +300,7 @@
             GlobalResources.Materials.Add(Grass);
 
             MeshObject Plane = new MeshObject("Plane.obj", true);
-            MyGameWorld.Objects.Add(Plane);
+            MySoftwareWorld.Objects.Add(Plane);
             var PlaneShader = new SpecularTextureShader("tex.png");
             PlaneShader.Input.ambientColor = new RGBColor(0.35f, 0.35f, 0.35f);
             PlaneShader.Input.diffuseColor = new RGBColor(1, 1, 1);
@@ -358,9 +358,9 @@
             Plane.Rotation.Y = 0f;
 
             TextObject textObject = new TextObject();
-            MyGameWorld.GUIObjects.Add(textObject);
+            MySoftwareWorld.GUIObjects.Add(textObject);
 
-            MyGame.Start();
+            MySoftware.Start();
 
             MyLog.Default.Write("PROGRAMM ENDED!", LogSeverity.Crash);
 
@@ -368,7 +368,7 @@
 
 
 
-        public static PylonGameEngine.Mathematics.Vector3 scale = new PylonGameEngine.Mathematics.Vector3();
+        public static PylonSoftwareEngine.Mathematics.Vector3 scale = new PylonSoftwareEngine.Mathematics.Vector3();
         public static float fl = 0;
 
         public static MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
@@ -377,7 +377,7 @@
 
         public static float?[] Values = new float?[100];
         public static float Master = 0f;
-        private static void NAudio_Tick(GameLoop sender)
+        private static void NAudio_Tick(SoftwareLoop sender)
         {
             Master = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Console).AudioMeterInformation.MasterPeakValue * 20f;
             Parallel.For(0, enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Console).AudioMeterInformation.PeakValues.Count, i =>
@@ -387,19 +387,19 @@
 
 
             //   return;
-            fl += 5f * MyGame.GameTickLoop.DeltaTime * Master;
+            fl += 5f * MySoftware.SoftwareTickLoop.DeltaTime * Master;
 
-            MyGameWorld.ActiveCamera.Position.Z = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Console).AudioMeterInformation.PeakValues.Count * 20 / 4;
+            MySoftwareWorld.ActiveCamera.Position.Z = enumerator.GetDefaultAudioEndpoint(DataFlow.Render, Role.Console).AudioMeterInformation.PeakValues.Count * 20 / 4;
 
-            float posX = (MyGameWorld.Objects.Count) * Abstand - 43;
-            MyGameWorld.ActiveCamera.Position.X = (MyGameWorld.Objects.Count) * Abstand;
+            float posX = (MySoftwareWorld.Objects.Count) * Abstand - 43;
+            MySoftwareWorld.ActiveCamera.Position.X = (MySoftwareWorld.Objects.Count) * Abstand;
             Parallel.For(0, Values.Length, i =>
             {
                 if (Values[i] != null)
                 {
                     MeshObject Stripe = new MeshObject
                     {
-                        Mesh = new Mesh(((MeshObject)MyGameWorld.Objects[0]).Mesh),
+                        Mesh = new Mesh(((MeshObject)MySoftwareWorld.Objects[0]).Mesh),
 
 
                         Position = new Vector3(posX, 0, i * 20)
@@ -421,13 +421,13 @@
                     //scale.Y = ;
                     Stripe.Scale.Y = (float)(Values[i] / 10);
 
-                    MyGameWorld.Objects.Add(Stripe);
+                    MySoftwareWorld.Objects.Add(Stripe);
                 }
             });
 
-            while (MyGameWorld.Objects.Count > 500)
+            while (MySoftwareWorld.Objects.Count > 500)
             {
-                MyGameWorld.Objects.RemoveAt(1);
+                MySoftwareWorld.Objects.RemoveAt(1);
             }
 
         }
@@ -436,7 +436,7 @@
         public static unsafe void SaveScreenshot(string path, ContainerFormat format = ContainerFormat.Png)
         {
 
-            ID3D11Texture2D source = MyGame.GameOptions.Headless ? D3D11GraphicsDevice.OffscreenTexture : D3D11GraphicsDevice.BackBufferTexture;
+            ID3D11Texture2D source = MySoftware.SoftwareOptions.Headless ? D3D11GraphicsDevice.OffscreenTexture : D3D11GraphicsDevice.BackBufferTexture;
 
             using (ID3D11Texture2D staging = D3D11GraphicsDevice.CaptureTexture(source))
             {

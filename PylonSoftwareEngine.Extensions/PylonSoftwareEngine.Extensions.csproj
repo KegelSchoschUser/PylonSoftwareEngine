@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows10.0.22000.0</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PylonSoftwareEngine.Mathematics\PylonSoftwareEngine.Mathematics.csproj" />
+    <ProjectReference Include="..\PylonSoftwareEngine.Resources\PylonSoftwareEngine.Resources.csproj" />
+    <ProjectReference Include="..\PylonSoftwareEngine.Utilities\PylonSoftwareEngine.Utilities.csproj" />
+    <ProjectReference Include="..\PylonSoftwareEngine\PylonSoftwareEngine.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,30 +1,30 @@
-﻿using PylonGameEngine;
-using PylonGameEngine.GUI.GUIObjects;
-using PylonGameEngine.Input;
-using PylonGameEngine.Mathematics;
-using PylonGameEngine.Networking;
-using PylonGameEngine.Render11;
-using PylonGameEngine.SceneManagement;
-using PylonGameEngine.SceneManagement.Objects;
-using PylonGameEngine.ShaderLibrary;
-using PylonGameEngine.ShaderLibrary.CoreShaders;
-using PylonGameEngine.Utilities;
+﻿using PylonSoftwareEngine;
+using PylonSoftwareEngine.Input;
+using PylonSoftwareEngine.Mathematics;
+using PylonSoftwareEngine.Networking;
+using PylonSoftwareEngine.Render11;
+using PylonSoftwareEngine.SceneManagement;
+using PylonSoftwareEngine.SceneManagement.Objects;
+using PylonSoftwareEngine.ShaderLibrary;
+using PylonSoftwareEngine.ShaderLibrary.CoreShaders;
+using PylonSoftwareEngine.UI.GUIObjects;
+using PylonSoftwareEngine.Utilities;
 using System;
 using System.Drawing;
 using System.Text;
 using System.Threading;
 
-namespace MyTestGame
+namespace MyTestSoftware
 {
-    public class FlyScript : GameScript
+    public class FlyScript : SoftwareScript
     {
         public static bool Enabled = false;
         public override void UpdateTick()
         {
-            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.Backspace))
-                MyGame.Stop();
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonSoftwareEngine.Input.KeyboardKey.Backspace))
+                MySoftware.Stop();
 
-            if (SceneContext.InputManager.Keyboard.KeyDown(PylonGameEngine.Input.KeyboardKey.G))
+            if (SceneContext.InputManager.Keyboard.KeyDown(PylonSoftwareEngine.Input.KeyboardKey.G))
             {
                 if (Mouse.CursorLocked)
                     Mouse.UnlockMouse();
@@ -34,37 +34,37 @@ namespace MyTestGame
 
             if (Enabled)
                 return;
-            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.W))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonSoftwareEngine.Input.KeyboardKey.W))
             {
                 Parent.Transform.Position += Parent.Transform.Forward * 5f * FixedDeltaTime;
             }
 
-            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.S))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonSoftwareEngine.Input.KeyboardKey.S))
                 Parent.Transform.Position += Parent.Transform.Backward * 5f * FixedDeltaTime;
 
-            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.A))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonSoftwareEngine.Input.KeyboardKey.A))
                 Parent.Transform.Position += Parent.Transform.Left * 5f * FixedDeltaTime;
 
-            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.D))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonSoftwareEngine.Input.KeyboardKey.D))
                 Parent.Transform.Position += Parent.Transform.Right * 5f * FixedDeltaTime;
 
-            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.Space))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonSoftwareEngine.Input.KeyboardKey.Space))
                 Parent.Transform.Position += Parent.Transform.Up * 5f * FixedDeltaTime;
 
-            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.C))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonSoftwareEngine.Input.KeyboardKey.C))
                 Parent.Transform.Position += Parent.Transform.Down * 5f * FixedDeltaTime;
 
-            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.Q))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonSoftwareEngine.Input.KeyboardKey.Q))
                 Parent.Transform.Rotation *= Quaternion.FromEuler(0, 0, 2);
 
-            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonGameEngine.Input.KeyboardKey.E))
+            if (SceneContext.InputManager.Keyboard.KeyPressed(PylonSoftwareEngine.Input.KeyboardKey.E))
                 Parent.Transform.Rotation *= Quaternion.FromEuler(0, 0, -2);
 
             if (Mouse.CursorLocked)
                 Parent.Transform.Rotation *= Quaternion.FromEuler(SceneContext.InputManager.Mouse.Delta.Y / 4f, SceneContext.InputManager.Mouse.Delta.X / 4f, 0);
         }
     }
-    public class CubeRotator : GameScript
+    public class CubeRotator : SoftwareScript
     {
         public static Random r = new Random((int)(DateTime.Now.Ticks / 69));
         public override void UpdateFrame()
@@ -73,11 +73,11 @@ namespace MyTestGame
         }
     }
 
-    public class LookAtScript : GameScript
+    public class LookAtScript : SoftwareScript
     {
 
-        private GameObject3D LookatObject;
-        public LookAtScript(GameObject3D lookatObject)
+        private SoftwareObject3D LookatObject;
+        public LookAtScript(SoftwareObject3D lookatObject)
         {
             LookatObject = lookatObject;
         }
@@ -93,11 +93,11 @@ namespace MyTestGame
         [STAThread]
         public static void Main(string[] args)
         {
-            GameProperties.GameName = "GIW TEST";
-            GameProperties.Version = new MyVersion(1, 0, 0);
-            GameProperties.SplashScreen = new SplashScreen((Bitmap)Bitmap.FromFile("Splash.png"));
-            GameProperties.RenderTickRate = 60;
-            MyGame.Initialize();
+            SoftwareProperties.SoftwareName = "GIW TEST";
+            SoftwareProperties.Version = new MyVersion(1, 0, 0);
+            SoftwareProperties.SplashScreen = new SplashScreen((Bitmap)Bitmap.FromFile("Splash.png"));
+            SoftwareProperties.RenderTickRate = 60;
+            MySoftware.Initialize();
 
             MyLog.Default.Write("test", LogSeverity.Info);
             MyLog.Default.Write("test", LogSeverity.Warning);
@@ -127,8 +127,8 @@ namespace MyTestGame
 
                 MeshObject Cube = new MeshObject();
                 Scene1.Add(Cube);
-                Material texture = new Material("gameengineisttoll!", new Neon(RGBColor.PylonOrange)); // new TextureShader(@"A:\PylonGameEngine\CONTENT\Logo\KLogo.png"));
-                MyGame.Materials.Add(texture);
+                Material texture = new Material("Softwareengineisttoll!", new Neon(RGBColor.PylonOrange)); // new TextureShader(@"A:\PylonSoftwareEngine\CONTENT\Logo\KLogo.png"));
+                MySoftware.Materials.Add(texture);
                 Cube.Mesh = Primitves3D.CreateCube(texture, Vector3.Zero, new Vector3(5, 5, 5));
                 Cube.Transform.Position = new Vector3(0, 0, 5);
                 //Cube.AddComponent(new CubeRotator());
@@ -137,7 +137,7 @@ namespace MyTestGame
 
                 MeshObject blueCube = new MeshObject();
                 Scene1.Add(blueCube);
-                blueCube.Mesh = Primitves3D.CreateCube(MyGame.Materials.Get("DEBUG_Blue"));
+                blueCube.Mesh = Primitves3D.CreateCube(MySoftware.Materials.Get("DEBUG_Blue"));
                 MainCamera.AddObject(blueCube);
 
                 Button flySwitch = new Button();
@@ -160,13 +160,13 @@ namespace MyTestGame
 
                     MeshObject greenCube = new MeshObject();
                     Scene1.Add(greenCube);
-                    greenCube.Mesh = Primitves3D.CreateCube(MyGame.Materials.Get("DEBUG_Green"), new Vector3(), new Vector3(10, 10, 10));
+                    greenCube.Mesh = Primitves3D.CreateCube(MySoftware.Materials.Get("DEBUG_Green"), new Vector3(), new Vector3(10, 10, 10));
                     Camera2.AddObject(greenCube);
                 }
             }
 
 
-            MyGame.Start();
+            MySoftware.Start();
         }
     }
 }
