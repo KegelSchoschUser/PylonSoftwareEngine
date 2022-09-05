@@ -1,4 +1,11 @@
-﻿//using PylonSoftwareEngine.GUI.GUIObjects;
+﻿/*!
+ * PylonSoftwareEngine - C# Library for creating Software/Games with DirectX (11)
+ * https://github.com/PylonDev/PylonSoftwareEngine
+ * Copyright (C) 2022 Endric Barnekow <pylon@pylonmediagroup.de>
+ * https://github.com/PylonDev/PylonSoftwareEngine/blob/master/LICENSE.md
+ */
+
+//using PylonSoftwareEngine.GUI.GUIObjects;
 //using PylonSoftwareEngine.Mathematics;
 //using PylonSoftwareEngine.UI;
 //using PylonSoftwareEngine.UI.Drawing;
